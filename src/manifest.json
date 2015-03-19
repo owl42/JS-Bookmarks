@@ -1,0 +1,39 @@
+{
+	"manifest_version": 2,
+	"name": "Sunshine",
+	"version": "0.0.1",
+	"default_locale": "en",
+	"description": "__MSG_extDesc__",
+	"icons": {
+		"16":"img/icon16.png",
+		"48":"img/icon48.png",
+		"128":"img/icon128.png"
+	},
+	"page_action": {
+		"default_icon": "img/icon48.png",
+		"default_title": "Just do it.",
+		"default_popup": "popup.html"
+	},
+	"author": "Gerald <gera2ld@163.com>",
+	"background": {
+		"persistent": true,
+		"page": "background.html"
+	},
+	"chrome_url_overrides": {
+		//"newtab": "index.html"
+	},
+	"options_page": "index.html",
+	"homepage_url": "http://geraldl.net",
+	"offline_enabled": true,
+	"permissions": [
+		"<all_urls>",
+		"tabs",
+		"activeTab",
+		"background",
+		"bookmarks",
+		"geolocation",
+		"notifications",
+		"storage"
+	],
+	"content_security_policy": "script-src 'self'; object-src 'self'"
+}
