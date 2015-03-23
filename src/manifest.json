@@ -9,20 +9,20 @@
 		"48":"img/icon48.png",
 		"128":"img/icon128.png"
 	},
-	"page_action": {
+	"browser_action": {
 		"default_icon": "img/icon48.png",
 		"default_title": "Just do it.",
-		"default_popup": "popup.html"
+		"default_popup": "popup/popup.html"
 	},
 	"author": "Gerald <gera2ld@163.com>",
 	"background": {
 		"persistent": true,
-		"page": "background.html"
+		"page": "background/background.html"
 	},
 	"chrome_url_overrides": {
 		//"newtab": "index.html"
 	},
-	"options_page": "index.html",
+	"options_page": "index/index.html",
 	"homepage_url": "http://geraldl.net",
 	"offline_enabled": true,
 	"permissions": [

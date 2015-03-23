@@ -1,0 +1,133 @@
+@import "../common.less";
+@menu-height: 3rem;
+@logo-size: 48px;
+@menu-background: #234;
+@footer-background: #446;
+@footer-height: 3rem;
+@groups-background: #567;
+@group-hover-background: darken(@groups-background,5%);
+@collection-font-size: 1rem;
+@collection-height: 3rem;
+@collection-icon-width: @collection-height;
+@collection-number-width: 3em;
+@collection-hover-background: darken(@groups-background,10%);
+
+body {
+	width: 380px;
+	height: 600px;
+}
+.view {
+	width: 100%;
+	height: 100%;
+}
+.hide {
+	display: none;
+}
+.homeCol {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	.menu {
+		position: absolute;
+		width: 100%;
+		height: @menu-height;
+		top: 0;
+		z-index: 1;
+		font-size: 1.5rem;
+		color: darken(white,10%);
+		background: @menu-background;
+		padding: 0 .5rem;
+		.left {
+			float: left;
+		}
+		.right {
+			float: right;
+		}
+		.item {
+			margin-left: 1rem;
+			cursor: pointer;
+			float: left;
+			height: @menu-height;
+			line-height: @menu-height;
+			&:hover {
+				color: white;
+			}
+		}
+		.logo {
+			background: url('/img/icon48.png') no-repeat;
+			height: @logo-size;
+			padding-left: @logo-size;
+			margin-left: 0;
+			color: yellow;
+			text-decoration: none;
+		}
+	}
+	.content {
+		color: white;
+		background: @groups-background;
+		overflow-y: auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		padding: @menu-height 0 @footer-height;
+		.group {
+			cursor: pointer;
+			color: darken(white,20%);
+			.label {
+				padding: .2em 1em;
+				.title {
+					margin-right: .5em;
+				}
+				&:hover {
+					background: @group-hover-background;
+				}
+			}
+		}
+		.item {
+			font-size: @collection-font-size;
+			cursor: pointer;
+			position: relative;
+			height: @collection-height;
+			&>* {
+				height: @collection-height;
+				line-height: @collection-height;
+				display: block;
+			}
+			.icon {
+				width: @collection-icon-width;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			.title {
+				width: 100%;
+				padding: 0 @collection-number-width 0 @collection-icon-width;
+			}
+			.number {
+				width: @collection-number-width;
+				position: absolute;
+				right: 0;
+				top: 0;
+				text-align: right;
+				padding-right: 1em;
+			}
+			&:hover {
+				background: @collection-hover-background;
+			}
+		}
+	}
+	.footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		color: white;
+		background: @footer-background;
+		padding: 1rem;
+		height: @footer-height;
+	}
+}
+.contentCol {
+}

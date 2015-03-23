@@ -51,6 +51,6 @@ chrome.runtime.onMessage.addListener(function(req,src,callback){
 
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
 	if(/^(https?|ftps?):/.test(tab.url)) {
-		chrome.pageAction.show(tabId);
+		//chrome.pageAction.show(tabId);
 	}
 });

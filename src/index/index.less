@@ -15,29 +15,26 @@
 @tabs-header-height: 3rem;
 @tabs-header-font-size: 1.5rem;
 
-@import "common.less";
+@import "../common.less";
 nav {
 	background: @nav-background;
-	position: relative;
-	font-size: 0;
 	height: @nav-height;
+	font-size: 1.5rem;
 	.left,.right {
-		position: absolute;
-		top: 0;
+		font-size: 0;
 		&>* {
 			font-size: 1.5rem;
 		}
 	}
 	.left {
-		left: 0;
+		float: left;
 	}
 	.right {
-		right: 0;
+		float: right;
 	}
 	.center {
 		text-align: center;
 		margin: 0 @nav-right-width 0 @nav-left-width;
-		font-size: 1.5rem;
 	}
 	.menu {
 		height: @nav-height;

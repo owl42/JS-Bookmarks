@@ -1,0 +1,41 @@
+<div class="homeCol" ng-controller="Home">
+	<div class="menu">
+		<div class="left">
+			<a class="logo item" href="http://geraldl.net">Starfish</a>
+		</div>
+		<div class="right">
+			<a class="item"><i class="fa fa-plus"></i></a>
+			<a class="item" ng-click="showSettings()"><i class="fa fa-cog"></i></a>
+		</div>
+	</div>
+	<div class="content">
+		<section>
+			<ul class="items">
+				<li class="item">
+					<span class="icon"></span>
+					<span class="title">所有书签</span>
+					<span class="number">{{count}}</span>
+				</li>
+			</ul>
+		</section>
+		<section class="group" ng-repeat="group in groups">
+			<div class="label" ng-click="group.collapse=!group.collapse">
+				<span class="title">{{group.title}}</span>
+				<i class="fa" ng-class="{true:'fa-caret-right',false:'fa-caret-down'}[group.collapse]"></i>
+			</div>
+			<ul class="items" ng-class="{'hide':group.collapse}">
+				<li class="item" ng-repeat="item in group.items">
+					<span class="icon"></span>
+					<span class="title">{{item.title}}</span>
+					<span class="number">{{item.number}}</span>
+				</li>
+			</ul>
+		</section>
+	</div>
+	<div class="footer">
+		这里显示点什么？
+	</div>
+</div>
+<div class="contentCol">
+	<div ui-view></div>
+</div>
