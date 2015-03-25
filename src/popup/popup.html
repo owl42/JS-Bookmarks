@@ -1,15 +1,18 @@
 <!doctype html>
 <html ng-app="popup" ng-csp>
 	<head>
+		<meta charset="utf-8" />
 		<title>Sunshine</title>
+		<link rel="stylesheet" type="text/css" href="../lib/angular-csp.css" />
 		<link rel="stylesheet" type="text/css" href="../lib/font-awesome/font-awesome.min.css" />
 		<link rel="stylesheet/less" type="text/css" href="popup.less" />
 		<script src="../lib/less.min.js"></script>
 		<script src="../lib/angular.js"></script>
 		<script src="../lib/angular-ui-router.js"></script>
 	</head>
-	<body>
+	<body data-controller="{{$state.current.name}}">
 		<div class="view" ui-view></div>
 		<script src="popup.js"></script>
+		<script src="utils.js"></script>
 	</body>
 </html>

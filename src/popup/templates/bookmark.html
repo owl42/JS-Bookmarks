@@ -1,0 +1,37 @@
+<div class="menu">
+	<div class="left">
+		<a class="item" ng-click="back()">
+			<i class="fa fa-arrow-circle-o-left"></i>
+		</a>
+	</div>
+</div>
+<div class="content">
+	<div class="screenshot"></div>
+	<form ng-submit="save()">
+		<div class="field">
+			<label>地址</label>
+			<input type=text ng-model="form.url">
+		</div>
+		<div class="field">
+			<label>名字</label>
+			<input type=text ng-model="form.title">
+		</div>
+		<div class="field">
+			<label>描述</label>
+			<textarea ng-model="form.desc"></textarea>
+		</div>
+		<div class="field">
+			<label>分类</label>
+			<collections data="form.collection"></collections>
+		</div>
+		<div class="field">
+			<label>标签</label>
+			<tags data="form.tags"></tags>
+		</div>
+		<div class="buttons">
+			<div class="submit" ng-click="save()">保存</div>
+			<!--<input type="submit" class="submit" value="保存">-->
+			<div class="cancel" ng-click="back()">取消</div>
+		</div>
+	</form>
+</div>

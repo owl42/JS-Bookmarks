@@ -19,9 +19,6 @@
 		"persistent": true,
 		"page": "background/background.html"
 	},
-	"chrome_url_overrides": {
-		//"newtab": "index.html"
-	},
 	"options_page": "index/index.html",
 	"homepage_url": "http://geraldl.net",
 	"offline_enabled": true,

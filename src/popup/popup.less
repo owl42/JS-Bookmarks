@@ -6,27 +6,46 @@
 @footer-height: 3rem;
 @groups-background: #567;
 @group-hover-background: darken(@groups-background,5%);
+@menu-collection-color: white;
+@menu-collection-font-size: 1rem;
+@menu-collection-height: 3rem;
+@menu-collection-icon-width: @menu-collection-height;
+@menu-collection-number-width: 3em;
+@menu-collection-hover-background: darken(@groups-background,10%);
+@collections-background: white;
+@collection-color: black;
 @collection-font-size: 1rem;
-@collection-height: 3rem;
+@collection-height: 2rem;
 @collection-icon-width: @collection-height;
-@collection-number-width: 3em;
-@collection-hover-background: darken(@groups-background,10%);
+@collection-number-width: 0;
+@collection-hover-background: darken(@collections-background,10%);
+@screenshot-width: 130px;
+@screenshot-height: 130px;
 
+.fill() {
+	width: 100%;
+	height: 100%;
+}
+.clear {
+	clear: both;
+}
 body {
 	width: 380px;
 	height: 600px;
 }
 .view {
-	width: 100%;
-	height: 100%;
+	.fill;
+	overflow: hidden;
 }
-.hide {
-	display: none;
-}
-.homeCol {
-	width: 100%;
-	height: 100%;
-	position: relative;
+.col {
+	.fill;
+	transition: left .5s ease;
+	position: absolute;
+	top: 0;
+	.wrap {
+		.fill;
+		position: relative;
+	}
 	.menu {
 		position: absolute;
 		width: 100%;
@@ -34,7 +53,6 @@ body {
 		top: 0;
 		z-index: 1;
 		font-size: 1.5rem;
-		color: darken(white,10%);
 		background: @menu-background;
 		padding: 0 .5rem;
 		.left {
@@ -49,6 +67,7 @@ body {
 			float: left;
 			height: @menu-height;
 			line-height: @menu-height;
+			color: darken(white,20%);
 			&:hover {
 				color: white;
 			}
@@ -61,6 +80,12 @@ body {
 			color: yellow;
 			text-decoration: none;
 		}
+	}
+}
+.homeCol {
+	left: 0;
+	&:not(.index) {
+		left: -100%;
 	}
 	.content {
 		color: white;
@@ -85,36 +110,25 @@ body {
 				}
 			}
 		}
-		.item {
-			font-size: @collection-font-size;
-			cursor: pointer;
-			position: relative;
-			height: @collection-height;
+		.collection {
+			color: @menu-collection-color;
+			font-size: @menu-collection-font-size;
+			height: @menu-collection-height;
 			&>* {
-				height: @collection-height;
-				line-height: @collection-height;
-				display: block;
+				height: @menu-collection-height;
+				line-height: @menu-collection-height;
 			}
 			.icon {
-				width: @collection-icon-width;
-				position: absolute;
-				left: 0;
-				top: 0;
+				width: @menu-collection-icon-width;
 			}
 			.title {
-				width: 100%;
-				padding: 0 @collection-number-width 0 @collection-icon-width;
+				padding: 0 @menu-collection-number-width 0 @menu-collection-icon-width;
 			}
 			.number {
-				width: @collection-number-width;
-				position: absolute;
-				right: 0;
-				top: 0;
-				text-align: right;
-				padding-right: 1em;
+				width: @menu-collection-number-width;
 			}
 			&:hover {
-				background: @collection-hover-background;
+				background: @menu-collection-hover-background;
 			}
 		}
 	}
@@ -130,4 +144,173 @@ body {
 	}
 }
 .contentCol {
+	background: @groups-background;
+	color: white;
+	left: 0;
+	.homeCol.index~& {
+		left: 100%;
+	}
+	.content {
+		padding-top: @menu-height;
+		text-align: center;
+	}
+	.screenshot {
+		border: 2px ridge silver;
+		margin: 1em auto;
+		width: @screenshot-width;
+		height: @screenshot-height;
+	}
+	.field {
+		margin-bottom: 1em;
+	}
+	form {
+		text-align: left;
+		display: inline-block;
+		label {
+			font-size: .8rem;
+			display: block;
+		}
+		.field {
+			width: 260px;
+			&>input[type=text] {
+				line-height: 1.5rem;
+				width: 100%;
+				border: none;
+			}
+			&>textarea {
+				height: 5em;
+				width: 100%;
+				border: none;
+				resize: none;
+			}
+		}
+		.buttons {
+			text-align: center;
+			&>* {
+				text-align: center;
+				display: inline-block;
+				width: 100px;
+				border-radius: .3rem;
+				font-size: 1rem;
+				line-height: 2rem;
+				cursor: pointer;
+				border: none;
+			}
+		}
+		.submit {
+			@bgcolor: green;
+			background: darken(@bgcolor,10%);
+			&:hover {
+				background: @bgcolor;
+			}
+		}
+		.cancel {
+			@bgcolor: brown;
+			background: darken(@bgcolor,10%);
+			&:hover {
+				background: @bgcolor;
+			}
+		}
+	}
+}
+.tags {
+	@bgcolor: darken(@groups-background,20%);
+	background: @bgcolor;
+	border-radius: .3rem;
+	cursor: text;
+	padding: .3rem;
+	ul {
+		li {
+			list-style: none;
+			float: left;
+			position: relative;
+			padding: .2rem 1rem .2rem .2rem;
+			border-radius: .2rem;
+			line-height: 1rem;
+			margin: 0 .5rem .5rem 0;
+			&:not(.input) {
+				background: lighten(@bgcolor,10%);
+			}
+			.fa-tag {
+				color: yellow;
+			}
+			.remove {
+				cursor: pointer;
+				position: absolute;
+				top: 0;
+				right: .2rem;
+				font-size: .4rem;
+				color: gray;
+				&:hover {
+					color: yellow;
+				}
+			}
+		}
+		overflow-y: visible;
+	}
+	.input {
+		padding-left: 0;
+		padding-right: 0;
+		form {
+			position: relative;
+		}
+		input[type=text] {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			color: white;
+			font-size: .8rem;
+			background: transparent;
+			border: none;
+			outline: none;
+		}
+		span {
+			opacity: 0;
+			white-space: nowrap;
+		}
+	}
+	&:not(.focused) .input {
+		width: 0;
+		overflow: hidden;
+	}
+}
+.collection {
+	color: @collection-color;
+	font-size: @collection-font-size;
+	list-style: none;
+	cursor: pointer;
+	position: relative;
+	height: @collection-height;
+	&>* {
+		height: @collection-height;
+		line-height: @collection-height;
+		display: block;
+	}
+	.icon {
+		width: @collection-icon-width;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	.title {
+		width: 100%;
+		padding: 0 @collection-number-width 0 @collection-icon-width;
+	}
+	.number {
+		width: @collection-number-width;
+		position: absolute;
+		right: 0;
+		top: 0;
+		text-align: right;
+		padding-right: 1em;
+	}
+	&:hover {
+		background: @collection-hover-background;
+	}
+}
+.collections {
+	background: @collections-background;
+	border-radius: .3rem;
+	overflow: hidden;
 }
