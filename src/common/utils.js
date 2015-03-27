@@ -1,18 +1,7 @@
-angular.module('popup')
-	.factory('uiUtils',function($location){
+angular.module('app')
+	.directive('tags',function(paths){
 		return {
-			delayedBack:function($scope,url){
-				setTimeout(function(){
-					$scope.$apply(function(){
-						$location.path(url);
-					});
-				},500);
-			},
-		};
-	})
-	.directive('tags',function(){
-		return {
-			templateUrl: 'templates/extra/tags.html',
+			templateUrl: paths.common+'templates/tags.html',
 			replace: true,
 			restrict: 'E',
 			scope: {
@@ -42,9 +31,9 @@ angular.module('popup')
 			},
 		};
 	})
-	.directive('collections',function($rootScope){
+	.directive('collections',function(paths,$rootScope){
 		return {
-			templateUrl: 'templates/extra/collections.html',
+			templateUrl: paths.common+'templates/collections.html',
 			replace: true,
 			restrict: 'E',
 			scope: {
@@ -55,15 +44,27 @@ angular.module('popup')
 			},
 		};
 	})
-	.directive('collection',function(){
+	.directive('collection',function(paths){
 		return {
-			templateUrl: 'templates/extra/collection.html',
+			templateUrl: paths.common+'templates/collection.html',
 			replace: true,
 			restrict: 'E',
 			scope: {
 				data: '=',
 			},
 			link: function(scope, element, attrs) {
+			},
+		};
+	})
+	.directive('bookmarkinfo',function(paths){
+		return {
+			restrict:'E',
+			replace:true,
+			scope:{
+				data:'=',
+			},
+			templateUrl:paths.common+'templates/bookmarkinfo.html',
+			link:function(scope,element,attrs){
 			},
 		};
 	})

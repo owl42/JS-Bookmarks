@@ -1,0 +1,331 @@
+.circleButton(@size,@color,@bgcolor) {
+	text-align: center;
+	width: @size;
+	height: @size;
+	line-height: @size;
+	color: @color;
+	&:hover {
+		background: @bgcolor;
+	}
+}
+
+@body-background: darken(white,10%);
+@search-engine-width: 3rem;
+@search-submit-width: 2rem;
+@nav-height: 3rem;
+@nav-left-width: 200px;
+@nav-right-width: 400px;
+@nav-background: #234;
+@left-side-background: #567;
+@left-side-width: 300px;
+@right-side-background: #89a;
+@right-side-width: 380px;
+@bookmark-background: white;
+@bookmark-height: 3rem;
+@bookmark-icon-size: 16px;
+@bookmark-snapshot-width: 100px;
+@bookmark-button-size: 2rem;
+
+@import "../common/common.less";
+body {
+	background: @body-background;
+}
+nav {
+	background: @nav-background;
+	height: @nav-height;
+	line-height: @nav-height;
+	font-size: 1.5rem;
+	.left,.right {
+		font-size: 0;
+		&>* {
+			float: left;
+		}
+	}
+	.left {
+		float: left;
+	}
+	.right {
+		float: right;
+	}
+	.center {
+		font-weight: bold;
+		color: gold;
+		text-align: center;
+		margin: 0 @nav-right-width 0 @nav-left-width;
+	}
+	.menu {
+		font-size: 1.5rem;
+		height: @nav-height;
+		cursor: pointer;
+		display: inline-block;
+		margin: 0 1rem;
+		color: darken(gold,20%);
+		&:hover {
+			color: gold;
+		}
+	}
+}
+.searchbox {
+	@font-size: 1rem;
+	.fillY() {
+		height: 2rem;
+		line-height: 2rem;
+	}
+	.fillY;
+	font-size: @font-size;
+	width: 300px;
+	position: relative;
+	margin: .5rem 1rem;
+	input.search {
+		padding: 0 @search-submit-width 0 @search-engine-width+1rem;
+		width: 100%;
+		border: 1px solid gray;
+		outline: none;
+		border-radius: .5rem;
+		.fillY;
+	}
+	input[type=submit] {
+		display: none;
+	}
+	.engine,.engines {
+		text-align: center;
+		position: absolute;
+		left: 0;
+		cursor: pointer;
+	}
+	.engine {
+		top: 0;
+		.fillY;
+		font-size: 0;
+		&>* {
+			vertical-align: middle;
+			font-size: @font-size;
+		}
+		label {
+			cursor: inherit;
+			display: inline-block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: @search-engine-width;
+		}
+	}
+	.engines {
+		top: 2.5rem;
+		border: 1px solid silver;
+		z-index: 100;
+		box-shadow: 2px 5px 5px black;
+		border-radius: .3rem;
+		overflow: hidden;
+		.option {
+			padding: 0 .5rem;
+			height: 2rem;
+			line-height: 2rem;
+			background: white;
+			&:hover {
+				color: white;
+				background: gray;
+			}
+		}
+	}
+	.submit {
+		text-align: center;
+		cursor: pointer;
+		position: absolute;
+		width: @search-submit-width;
+		top: 0;
+		right: 0;
+		.fillY;
+	}
+}
+.side {
+	z-index: 1;
+	color: white;
+	top: @nav-height;
+	bottom: 0;
+	padding: 1rem 2rem;
+	font-size: 1rem;
+	position: fixed;
+	overflow: auto;
+	.right {
+		float: right;
+		margin-left: 1em;
+	}
+	&.left {
+		background: @left-side-background;
+		width: @left-side-width;
+		left: 0;
+		&:not(.ng-hide)~.main {
+			padding-left: @left-side-width;
+		}
+	}
+	&.right {
+		background: @right-side-background;
+		width: @right-side-width;
+		right: 0;
+		&:not(.ng-hide)~.main {
+			padding-right: @right-side-width;
+		}
+	}
+	&:not(.ng-hide) {
+		display: block;
+	}
+	.field {
+		width: 100%;
+		position: relative;
+	}
+	.close {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		border-radius: 50%;
+		cursor: pointer;
+		.circleButton(2rem,white,brown);
+	}
+}
+.user {
+	.login>* {
+		margin-bottom: .5rem;
+	}
+	.header {
+		line-height: @field-height;
+		.mode {
+			font-weight: bold;
+		}
+		.right {
+			cursor: pointer;
+			&:hover {
+				padding-right: 2px;
+			}
+		}
+		.avatar {
+			text-align: center;
+			margin: 2rem 0 1rem;
+			img {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+			}
+		}
+		.name {
+			text-align: center;
+		}
+	}
+	.footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		padding: 1rem;
+		&>* {
+			vertical-align: middle;
+		}
+	}
+	.field {
+		&>input {
+			line-height: @field-height;
+			width: 100%;
+			outline: none;
+			border: 1px solid gray;
+			border-radius: @field-radius;
+			padding: 0 .5rem 0 @field-icon-width;
+			&:focus {
+				&~.fa {
+					color: darken(#ccc,20%);
+				}
+				border-color: dodgerblue;
+			}
+		}
+		&>.fa {
+			color: #ccc;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: @field-icon-width;
+			line-height: @field-height;
+			text-align: center;
+		}
+	}
+}
+a,a:visited {
+	color: cyan;
+}
+button {
+	&.sign {
+		.colorButton(dodgerblue);
+		width: 100%;
+	}
+}
+.main {
+	position: fixed;
+	top: @nav-height;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.bookmarks {
+	height: 100%;
+	overflow: auto;
+}
+.bookmark {
+	cursor: pointer;
+	height: @bookmark-height;
+	background: @bookmark-background;
+	margin: .5rem 0;
+	&>* {
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.snapshot {
+		width: @bookmark-snapshot-width;
+		height: 100%;
+	}
+	img.icon {
+		width: @bookmark-icon-size;
+		height: @bookmark-icon-size;
+		margin-right: .5em;
+	}
+	.name {
+		font-size: 1.2rem;
+	}
+	.url {
+		color: gray;
+		margin-left: 4em;
+		max-width: 300px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.desc {
+		display: none;
+	}
+	&:hover {
+		background: darken(white,5%);
+	}
+	&:not(:hover) .panel {
+		display: none;
+	}
+	.panel {
+		float: right;
+		padding-right: 1rem;
+		line-height: @bookmark-height;
+		&>* {
+			font-size: @bookmark-button-size/2;
+			border-radius: 50%;
+			box-shadow: 0 0 1px gray;
+			display: inline-block;
+			margin-right: 1rem;
+			.circleButton(@bookmark-button-size,gray,#456);
+			&:hover {
+				color: white;
+			}
+		}
+		.del {
+			color: red;
+			&:hover {
+				color: white;
+				background: red;
+			}
+		}
+	}
+}

@@ -1,0 +1,53 @@
+angular.module('app',[])
+	.config(function($compileProvider){
+		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
+	})
+	.controller('loginController',function($scope){
+		$scope.mode='login';
+		$scope.switchMode=function(){
+			$scope.mode=$scope.mode=='login'?'signin':'login';
+		};
+		$scope.name='';
+		$scope.email='';
+		$scope.pwd='';
+	})
+	.run(function($rootScope){
+		$rootScope.collections={};
+		$rootScope.leftKey='user';
+		$rootScope.showLeft=function(key){
+			$rootScope.leftKey=$rootScope.leftKey==key?'':key;
+		};
+		$rootScope.user={id:0};
+		$rootScope.engines={items:[],def:0};
+		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
+			$rootScope.$apply(function(){
+				$rootScope.engines=data;
+			});
+		});
+		$rootScope.bookmarks=$rootScope.allbookmarks=[];
+		chrome.runtime.sendMessage({cmd:'GetBookmarks'},function(data){
+			$rootScope.$apply(function(){
+				$rootScope.bookmarks=$rootScope.allbookmarks=data;
+			});
+		});
+		$rootScope.edit=function(data){
+			var newData={},i;
+			for(i in data) newData[i]=data[i];
+			$rootScope.editBookmark={
+				old:data,
+				new:newData,
+			};
+		};
+		$rootScope.closeEdit=function(){
+			$rootScope.editBookmark=null;
+		};
+	})
+	.run(function($rootScope){
+		// test
+		/*$rootScope.user={
+			id:1,
+			name:'Gerald',
+			avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
+		};*/
+	})
+;

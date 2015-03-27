@@ -1,0 +1,42 @@
+<!doctype html>
+<html ng-app="app" ng-csp>
+	<head>
+		<meta charset="utf-8" />
+		<title>Sunshine</title>
+		<link rel="stylesheet" type="text/css" href="../lib/angular-csp.css" />
+		<link rel="stylesheet" type="text/css" href="../lib/font-awesome/font-awesome.min.css" />
+		<link rel="stylesheet/less" type="text/css" href="options.less" />
+		<script src="../lib/less.min.js"></script>
+		<script src="../lib/angular.js"></script>
+	</head>
+	<body>
+		<nav>
+			<div class="left">
+				<a class="menu" ng-click="showLeft('user')"><i class="fa fa-user"></i></a>
+				<a class="menu"><i class="fa fa-list"></i></a>
+				<a class="menu"><i class="fa fa-plus"></i></a>
+			</div>
+			<div class="right">
+				<searchbox data="engines"></searchbox>
+				<a class="menu"><i class="fa fa-home"></i></a>
+				<a class="menu settings"><i class="fa fa-cog"></i></a>
+			</div>
+			<div class="center">Sunshine</div>
+		</nav>
+		<div class="left side" ng-switch="leftKey" ng-show="leftKey">
+			<ng-switch-when="user" ng-include="'templates/user.html'" />
+		</div>
+		<div class="right side" ng-show="editBookmark">
+			<div class="close" ng-click="closeEdit()">
+				<i class="fa fa-remove"></i>
+			</div>
+			<bookmarkinfo data="editBookmark.new"></bookmarkinfo>
+		</div>
+		<div class="main">
+			<bookmarks data="bookmarks"></bookmarks>
+		</div>
+		<script src="options.js"></script>
+		<script src="utils.js"></script>
+		<script src="../common/utils.js"></script>
+	</body>
+</html>

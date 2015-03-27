@@ -1,4 +1,7 @@
-angular.module('popup',['ui.router'])
+angular.module('app',['ui.router'])
+	.value('paths',{
+		common:'../common/',
+	})
 	.config(function($stateProvider,$urlRouterProvider){
 		$urlRouterProvider.otherwise('/');
 		$stateProvider
@@ -29,7 +32,7 @@ angular.module('popup',['ui.router'])
 		});
 		$rootScope.$state=$state;
 		$rootScope.showSettings=function(){
-			chrome.tabs.create({url:chrome.extension.getURL('/index/index.html')});
+			chrome.tabs.create({url:chrome.extension.getURL('/options/options.html')});
 		};
 		$rootScope.editBookmark=function(){
 			$location.path('/bookmarks/0');
@@ -59,8 +62,15 @@ angular.module('popup',['ui.router'])
 
 var Index=function(){
 };
-var Bookmark=function($scope,$rootScope,uiUtils){
-	$scope.form={
+var Bookmark=function($scope,$rootScope,$location){
+	function delayedBack(url){
+		setTimeout(function(){
+			$scope.$apply(function(){
+				$location.path(url);
+			});
+		},500);
+	}
+	$scope.bookmark={
 		url:$rootScope.config.tab.url,
 		title:$rootScope.config.tab.title,
 		desc:'',
@@ -70,7 +80,7 @@ var Bookmark=function($scope,$rootScope,uiUtils){
 	$scope.groups=$rootScope.groups;
 	$scope.back=function(){
 		document.querySelector('.homeCol').classList.add('index');
-		uiUtils.delayedBack($scope,'/');
+		delayedBack('/');
 	};
 	$scope.save=function(){
 		alert('Not supported yet.');

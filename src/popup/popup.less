@@ -1,4 +1,4 @@
-@import "../common.less";
+@import "../common/common.less";
 @menu-height: 3rem;
 @logo-size: 48px;
 @menu-background: #234;
@@ -12,22 +12,10 @@
 @menu-collection-icon-width: @menu-collection-height;
 @menu-collection-number-width: 3em;
 @menu-collection-hover-background: darken(@groups-background,10%);
-@collections-background: white;
-@collection-color: black;
-@collection-font-size: 1rem;
-@collection-height: 2rem;
-@collection-icon-width: @collection-height;
-@collection-number-width: 0;
-@collection-hover-background: darken(@collections-background,10%);
-@screenshot-width: 130px;
-@screenshot-height: 130px;
 
 .fill() {
 	width: 100%;
 	height: 100%;
-}
-.clear {
-	clear: both;
 }
 body {
 	width: 380px;
@@ -150,167 +138,12 @@ body {
 	.homeCol.index~& {
 		left: 100%;
 	}
-	.content {
-		padding-top: @menu-height;
-		text-align: center;
-	}
-	.screenshot {
-		border: 2px ridge silver;
-		margin: 1em auto;
-		width: @screenshot-width;
-		height: @screenshot-height;
+	.bminfo {
+		padding-top: @menu-height+.5rem;
+		width: 260px;
+		margin: 0 auto;
 	}
 	.field {
 		margin-bottom: 1em;
 	}
-	form {
-		text-align: left;
-		display: inline-block;
-		label {
-			font-size: .8rem;
-			display: block;
-		}
-		.field {
-			width: 260px;
-			&>input[type=text] {
-				line-height: 1.5rem;
-				width: 100%;
-				border: none;
-			}
-			&>textarea {
-				height: 5em;
-				width: 100%;
-				border: none;
-				resize: none;
-			}
-		}
-		.buttons {
-			text-align: center;
-			&>* {
-				text-align: center;
-				display: inline-block;
-				width: 100px;
-				border-radius: .3rem;
-				font-size: 1rem;
-				line-height: 2rem;
-				cursor: pointer;
-				border: none;
-			}
-		}
-		.submit {
-			@bgcolor: green;
-			background: darken(@bgcolor,10%);
-			&:hover {
-				background: @bgcolor;
-			}
-		}
-		.cancel {
-			@bgcolor: brown;
-			background: darken(@bgcolor,10%);
-			&:hover {
-				background: @bgcolor;
-			}
-		}
-	}
-}
-.tags {
-	@bgcolor: darken(@groups-background,20%);
-	background: @bgcolor;
-	border-radius: .3rem;
-	cursor: text;
-	padding: .3rem;
-	ul {
-		li {
-			list-style: none;
-			float: left;
-			position: relative;
-			padding: .2rem 1rem .2rem .2rem;
-			border-radius: .2rem;
-			line-height: 1rem;
-			margin: 0 .5rem .5rem 0;
-			&:not(.input) {
-				background: lighten(@bgcolor,10%);
-			}
-			.fa-tag {
-				color: yellow;
-			}
-			.remove {
-				cursor: pointer;
-				position: absolute;
-				top: 0;
-				right: .2rem;
-				font-size: .4rem;
-				color: gray;
-				&:hover {
-					color: yellow;
-				}
-			}
-		}
-		overflow-y: visible;
-	}
-	.input {
-		padding-left: 0;
-		padding-right: 0;
-		form {
-			position: relative;
-		}
-		input[type=text] {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			color: white;
-			font-size: .8rem;
-			background: transparent;
-			border: none;
-			outline: none;
-		}
-		span {
-			opacity: 0;
-			white-space: nowrap;
-		}
-	}
-	&:not(.focused) .input {
-		width: 0;
-		overflow: hidden;
-	}
-}
-.collection {
-	color: @collection-color;
-	font-size: @collection-font-size;
-	list-style: none;
-	cursor: pointer;
-	position: relative;
-	height: @collection-height;
-	&>* {
-		height: @collection-height;
-		line-height: @collection-height;
-		display: block;
-	}
-	.icon {
-		width: @collection-icon-width;
-		position: absolute;
-		left: 0;
-		top: 0;
-	}
-	.title {
-		width: 100%;
-		padding: 0 @collection-number-width 0 @collection-icon-width;
-	}
-	.number {
-		width: @collection-number-width;
-		position: absolute;
-		right: 0;
-		top: 0;
-		text-align: right;
-		padding-right: 1em;
-	}
-	&:hover {
-		background: @collection-hover-background;
-	}
-}
-.collections {
-	background: @collections-background;
-	border-radius: .3rem;
-	overflow: hidden;
 }

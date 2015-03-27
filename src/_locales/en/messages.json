@@ -2,5 +2,9 @@
 	"extDesc": {
 		"description": "Description of this addon",
 		"message": "Bookmark manager."
+	},
+	"extName": {
+		"description": "Name of this addon",
+		"message": "Sunshine"
 	}
 }

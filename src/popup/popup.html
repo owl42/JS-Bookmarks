@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="popup" ng-csp>
+<html ng-app="app" ng-csp>
 	<head>
 		<meta charset="utf-8" />
 		<title>Sunshine</title>
@@ -13,6 +13,6 @@
 	<body data-controller="{{$state.current.name}}">
 		<div class="view" ui-view></div>
 		<script src="popup.js"></script>
-		<script src="utils.js"></script>
+		<script src="../common/utils.js"></script>
 	</body>
 </html>

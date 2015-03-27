@@ -1,0 +1,39 @@
+<div class="user" ng-switch="user.id">
+	<form ng-switch-when="0" class="login" ng-controller="loginController">
+		<div class="header">
+			<div class="right" ng-click="switchMode()">
+				<span>{{'我要'+(mode=='login'?'注册':'登录')}}</span>
+				<i class="fa fa-arrow-circle-o-right"></i>
+			</div>
+			<span class="mode">{{mode=='login'?'登录':'注册'}}</span>
+		</div>
+		<div class="field" ng-if="mode!='login'">
+			<input type=text placeholder="昵称" ng-model="name">
+			<i class="fa fa-cloud"></i>
+		</div>
+		<div class="field">
+			<input type=email placeholder="邮箱" ng-model="email">
+			<i class="fa fa-user"></i>
+		</div>
+		<div class="field">
+			<input type=password placeholder="密码" ng-model="pwd">
+			<i class="fa fa-lock"></i>
+		</div>
+		<div class="buttons">
+			<button type=submit class="sign">{{mode=='login'?'登录':'注册'}}</button>
+		</div>
+	</form>
+	<div ng-switch-default class="userinfo">
+		<div class="header">
+			<div class="avatar">
+				<img ng-src="{{user.avatar}}">
+			</div>
+			<div class="name">{{user.name}}</div>
+		</div>
+	</div>
+	<div class="footer">
+		<img src="/img/icon16.png">
+		<span>&copy;</span>
+		<a href="http://geraldl.net">Sunshine</a>
+	</div>
+</div>

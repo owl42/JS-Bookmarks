@@ -1,0 +1,27 @@
+<div class="bminfo">
+	<div class="screenshot"></div>
+	<div class="field">
+		<label>地址</label>
+		<input type=text ng-model="data.url">
+	</div>
+	<div class="field">
+		<label>名字</label>
+		<input type=text ng-model="data.name">
+	</div>
+	<div class="field">
+		<label>描述</label>
+		<textarea ng-model="data.desc"></textarea>
+	</div>
+	<div class="field">
+		<label>分类</label>
+		<collections data="data.collection"></collections>
+	</div>
+	<div class="field">
+		<label>标签</label>
+		<tags data="data.tags"></tags>
+	</div>
+	<div class="buttons">
+		<button class="save" ng-click="save()">保存</button>
+		<button class="revert" ng-click="revert()">重置</button>
+	</div>
+</div>
