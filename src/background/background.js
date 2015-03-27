@@ -24,7 +24,7 @@ function getBookmarks(data,src,callback){
 		tags:[],
 	},{
 		name:'百度',
-		url:'http://www.baidu.com/#abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+		url:'http://www.baidu.com/',
 		desc:'百度一下，你就知道',
 		tags:[],
 	},{

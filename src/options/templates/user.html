@@ -21,6 +21,7 @@
 		</div>
 		<div class="buttons">
 			<button type=submit class="sign">{{mode=='login'?'登录':'注册'}}</button>
+			<button type=submit class="sign" ng-click="login()">测试登录</button>
 		</div>
 	</form>
 	<div ng-switch-default class="userinfo">
@@ -29,6 +30,9 @@
 				<img ng-src="{{user.avatar}}">
 			</div>
 			<div class="name">{{user.name}}</div>
+		</div>
+		<div class="buttons">
+			<button type=submit class="sign" ng-click="logout()">测试登出</button>
 		</div>
 	</div>
 	<div class="footer">

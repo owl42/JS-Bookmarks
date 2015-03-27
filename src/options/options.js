@@ -2,7 +2,7 @@ angular.module('app',[])
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
 	})
-	.controller('loginController',function($scope){
+	.controller('loginController',function($scope,$rootScope){
 		$scope.mode='login';
 		$scope.switchMode=function(){
 			$scope.mode=$scope.mode=='login'?'signin':'login';
@@ -10,6 +10,13 @@ angular.module('app',[])
 		$scope.name='';
 		$scope.email='';
 		$scope.pwd='';
+		$scope.login=function(){
+			$rootScope.user={
+				id:1,
+				name:'Gerald',
+				avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
+			};
+		};
 	})
 	.run(function($rootScope){
 		$rootScope.collections={};
@@ -31,11 +38,9 @@ angular.module('app',[])
 			});
 		});
 		$rootScope.edit=function(data){
-			var newData={},i;
-			for(i in data) newData[i]=data[i];
 			$rootScope.editBookmark={
 				old:data,
-				new:newData,
+				new:JSON.parse(JSON.stringify(data)),
 			};
 		};
 		$rootScope.closeEdit=function(){
@@ -44,10 +49,8 @@ angular.module('app',[])
 	})
 	.run(function($rootScope){
 		// test
-		/*$rootScope.user={
-			id:1,
-			name:'Gerald',
-			avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
-		};*/
+		$rootScope.logout=function(){
+			$rootScope.user={id:0};
+		};
 	})
 ;
