@@ -1,3 +1,25 @@
-<div class="bookmarks">
-	<bookmark ng-repeat="bookmark in data" data="bookmark"></bookmark>
+<div class="conditions">
+	<div class="collection">
+		<div class="right">
+			<searchbox data="engines"></searchbox>
+		</div>
+		<div class="left">
+			<i class="fa fa-chevron-right"></i>
+			{{conditions.col.title}}
+		</div>
+	</div>
+	<div class="tags">
+		<li ng-repeat="tag in conditions.tags" class="tag">
+			<a ng-click="remove($index)" class="remove">
+				<i class="fa fa-remove"></i>
+			</a>
+			<i class="fa fa-tag"></i>
+			<span class="title">{{tag}}</span>
+		</li>
+		<div class="clear"></div>
+	</div>
 </div>
+<div class="bookmarks">
+	<bookmark ng-repeat="bookmark in conditions.col.children" data="bookmark" ng-show="checkCondition(bookmark)"></bookmark>
+</div>
+<div ui-view></div>

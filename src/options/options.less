@@ -13,9 +13,6 @@
 @search-engine-width: 3rem;
 @search-submit-width: 2rem;
 @nav-height: 3rem;
-@nav-left-width: 200px;
-@nav-right-width: 400px;
-@nav-background: #234;
 @left-side-background: #567;
 @left-side-width: 300px;
 @right-side-background: #89a;
@@ -30,39 +27,16 @@
 body {
 	background: @body-background;
 }
-nav {
-	background: @nav-background;
-	height: @nav-height;
-	line-height: @nav-height;
+.menu {
+	@color: white;
 	font-size: 1.5rem;
-	.left,.right {
-		font-size: 0;
-		&>* {
-			float: left;
-		}
-	}
-	.left {
-		float: left;
-	}
-	.right {
-		float: right;
-	}
-	.center {
-		font-weight: bold;
-		color: gold;
-		text-align: center;
-		margin: 0 @nav-right-width 0 @nav-left-width;
-	}
-	.menu {
-		font-size: 1.5rem;
-		height: @nav-height;
-		cursor: pointer;
-		display: inline-block;
-		margin: 0 1rem;
-		color: darken(gold,20%);
-		&:hover {
-			color: gold;
-		}
+	height: @nav-height;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 1rem;
+	color: darken(@color,20%);
+	&:hover,&.active {
+		color: @color;
 	}
 }
 .searchbox {
@@ -141,7 +115,7 @@ nav {
 .side {
 	z-index: 1;
 	color: white;
-	top: @nav-height;
+	top: 0;
 	bottom: 0;
 	padding: 1rem 2rem;
 	font-size: 1rem;
@@ -183,9 +157,13 @@ nav {
 		.circleButton(2rem,white,brown);
 	}
 }
-.user {
-	.login>* {
-		margin-bottom: .5rem;
+.login>* {
+	margin-bottom: .5rem;
+}
+.left.side {
+	h1 {
+		text-align: center;
+		color: yellow;
 	}
 	.header {
 		line-height: @field-height;
@@ -256,7 +234,7 @@ button {
 }
 .main {
 	position: fixed;
-	top: @nav-height;
+	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
@@ -270,13 +248,13 @@ button {
 	height: @bookmark-height;
 	background: @bookmark-background;
 	margin: .5rem 0;
+	padding-left: .5rem;
+	&:hover {
+		background: darken(white,5%);
+	}
 	&>* {
 		display: inline-block;
 		vertical-align: middle;
-	}
-	.snapshot {
-		width: @bookmark-snapshot-width;
-		height: 100%;
 	}
 	img.icon {
 		width: @bookmark-icon-size;
@@ -296,8 +274,20 @@ button {
 	.desc {
 		display: none;
 	}
-	&:hover {
-		background: darken(white,5%);
+	.tags {
+		display: block;
+		margin-left: @bookmark-icon-size;
+		a {
+			color: #456;
+			&:hover {
+				color: #89f;
+			}
+		}
+	}
+	.snapshot {
+		width: @bookmark-snapshot-width;
+		height: 100%;
+		float: right;
 	}
 	&:not(:hover) .panel {
 		display: none;
@@ -324,5 +314,40 @@ button {
 				background: red;
 			}
 		}
+	}
+}
+.conditions {
+	font-size: 1rem;
+	line-height: 2rem;
+	.tags {
+		padding: 0 .5rem;
+	}
+	.tag {
+		color: white;
+		background: #789;
+	}
+	.left>.fa {
+		width: 2rem;
+		text-align: center;
+	}
+	.right {
+		float: right;
+	}
+}
+.collection.active {
+	font-weight: bold;
+	color: yellow;
+}
+.tags.list {
+	.tag {
+		color: #234;
+		cursor: pointer;
+		background: #abc;
+	}
+	.count {
+		color: white;
+		padding: 2px;
+		font-size: .8rem;
+		background: #456;
 	}
 }

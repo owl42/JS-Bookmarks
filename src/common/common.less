@@ -19,8 +19,8 @@ body {
 	clear: both;
 }
 
-@collections-background: white;
-@collection-color: black;
+@collections-background: #567;
+@collection-color: white;
 @collection-font-size: 1rem;
 @collection-height: 2rem;
 @collection-icon-width: @collection-height;
@@ -39,39 +39,34 @@ body {
 	height: @screenshot-height;
 }
 .tags {
-	@bgcolor: #456;
-	background: @bgcolor;
-	border-radius: .3rem;
-	cursor: text;
-	padding: .3rem;
 	ul {
-		li {
-			list-style: none;
-			float: left;
-			position: relative;
-			padding: .2rem 1rem .2rem .2rem;
-			border-radius: .2rem;
-			line-height: 1rem;
-			margin: 0 .5rem .5rem 0;
-			&:not(.input) {
-				background: lighten(@bgcolor,10%);
-			}
-			.fa-tag {
-				color: yellow;
-			}
-			.remove {
-				cursor: pointer;
-				position: absolute;
-				top: 0;
-				right: .2rem;
-				font-size: .4rem;
-				color: gray;
-				&:hover {
-					color: yellow;
-				}
-			}
-		}
 		overflow-y: visible;
+	}
+	li.tag {
+		list-style: none;
+		padding-right: 1rem;
+		.fa-tag {
+			color: yellow;
+		}
+	}
+	.tag {
+		float: left;
+		position: relative;
+		padding: .2rem;
+		border-radius: .2rem;
+		line-height: 1rem;
+		margin: 0 .5rem .5rem 0;
+	}
+	.remove {
+		cursor: pointer;
+		position: absolute;
+		top: 0;
+		right: .2rem;
+		font-size: .4rem;
+		color: #ccc;
+		&:hover {
+			color: yellow;
+		}
 	}
 	.input {
 		padding-left: 0;
@@ -100,7 +95,7 @@ body {
 		overflow: hidden;
 	}
 }
-.collection {
+li.collection {
 	color: @collection-color;
 	font-size: @collection-font-size;
 	list-style: none;
@@ -167,6 +162,16 @@ body {
 			width: 48%;
 			display: inline;
 		}
+	}
+}
+.field .tags {
+	border-radius: .3rem;
+	padding: .3rem;
+	cursor: text;
+	@bgcolor: #456;
+	background: @bgcolor;
+	.tag:not(.input) {
+		background: lighten(@bgcolor,10%);
 	}
 }
 .buttons {

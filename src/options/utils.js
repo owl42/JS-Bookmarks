@@ -36,18 +36,6 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('bookmarks',function(){
-		return {
-			restrict:'E',
-			replace:true,
-			scope:{
-				data:'=',
-			},
-			templateUrl:'templates/bookmarks.html',
-			link:function(scope,element,attrs){
-			},
-		};
-	})
 	.directive('bookmark',function($rootScope){
 		function shortUrl(url){
 			return url.replace(/^https?:\/\//i,'');
@@ -74,7 +62,8 @@ angular.module('app')
 				scope.getIcon=getIcon;
 				scope.open=open;
 				scope.stop=stop;
-				scope.edit=$rootScope.edit;
+				scope.edit=scope.$parent.edit;
+				scope.limitTag=$rootScope.limitTag;
 			},
 		};
 	})

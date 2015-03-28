@@ -1,0 +1,32 @@
+<div>
+	<a ng-repeat="item in menuitems" class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
+</div>
+<div ng-switch="key">
+	<div ng-switch-when="user">
+		<div class="header">
+			<div class="avatar">
+				<img ng-src="{{user.avatar}}">
+			</div>
+			<div class="name">{{user.name}}</div>
+		</div>
+		<div class="buttons">
+			<button type=submit class="sign" ng-click="logout()">测试登出</button>
+		</div>
+	</div>
+	<div ng-switch-when="groups">
+		<h3>分组</h3>
+		<collection ng-repeat="item in cols" data="item" ng-class="{'active':item===conditions.col}" ng-click="conditions.col=item"></collection>
+		<h3>标签</h3>
+		<div class="tags list">
+			<div ng-repeat="tag in tags" class="tag" ng-click="limitTag(tag.title)">
+				<i class="fa fa-tag"></i>
+				<span class="title">{{tag.title}}</span>
+				<span class="count">{{tag.count}}</span>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div ng-switch-when="settings">
+		这里列出设置项目，右边再显示详细的设置
+	</div>
+</div>

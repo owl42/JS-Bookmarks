@@ -6,12 +6,6 @@
 @footer-height: 3rem;
 @groups-background: #567;
 @group-hover-background: darken(@groups-background,5%);
-@menu-collection-color: white;
-@menu-collection-font-size: 1rem;
-@menu-collection-height: 3rem;
-@menu-collection-icon-width: @menu-collection-height;
-@menu-collection-number-width: 3em;
-@menu-collection-hover-background: darken(@groups-background,10%);
 
 .fill() {
 	width: 100%;
@@ -100,27 +94,6 @@ body {
 				&:hover {
 					background: @group-hover-background;
 				}
-			}
-		}
-		.collection {
-			color: @menu-collection-color;
-			font-size: @menu-collection-font-size;
-			height: @menu-collection-height;
-			&>* {
-				height: @menu-collection-height;
-				line-height: @menu-collection-height;
-			}
-			.icon {
-				width: @menu-collection-icon-width;
-			}
-			.title {
-				padding: 0 @menu-collection-number-width 0 @menu-collection-icon-width;
-			}
-			.number {
-				width: @menu-collection-number-width;
-			}
-			&:hover {
-				background: @menu-collection-hover-background;
 			}
 		}
 	}

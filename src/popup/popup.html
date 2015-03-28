@@ -47,11 +47,7 @@
 								<i class="fa" ng-class="{true:'fa-caret-right',false:'fa-caret-down'}[group.collapse]"></i>
 							</div>
 							<ul class="items" ng-hide="group.collapse">
-								<collection ng-repeat="item in group.items" data="item">
-								<span class="icon"></span>
-								<span class="title">{{item.title}}</span>
-								<span class="number">{{item.number}}</span>
-								</collection>
+								<collection ng-repeat="item in group.items" data="item"></collection>
 							</ul>
 						</section>
 					</div>

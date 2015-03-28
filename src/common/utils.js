@@ -10,7 +10,7 @@ angular.module('app')
 			link: function(scope, element, attrs) {
 				scope.tag='';
 				scope.focused=false;
-				scope.placeholder="Add a tag";
+				scope.placeholder="新标签";
 				scope.add=function(next){
 					var v=scope.tag,i=scope.data.indexOf(v);
 					if(v&&i<0) scope.data.push(v);
