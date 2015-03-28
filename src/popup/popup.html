@@ -11,7 +11,58 @@
 		<script src="../lib/angular-ui-router.js"></script>
 	</head>
 	<body data-controller="{{$state.current.name}}">
-		<div class="view" ui-view></div>
+		<div class="view">
+			<div class="homeCol col" ng-class="{'index':$state.current.name=='index'}"><div class="wrap">
+					<div class="menu">
+						<div class="wrap">
+							<div class="left">
+								<a class="logo item" href="http://geraldl.net"></a>
+								<a class="item" ui-sref="search">
+									<i class="fa fa-search"></i>
+								</a>
+							</div>
+							<div class="right">
+								<a class="item" ng-show="config.urlValid" ui-sref="bookmark({cid:0})">
+									<i class="fa fa-plus"></i>
+								</a>
+								<a class="item" ng-click="showSettings()">
+									<i class="fa fa-cog"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="content">
+						<section>
+							<ul class="items">
+								<li class="collection">
+									<span class="icon"></span>
+									<span class="title">所有书签</span>
+									<span class="number">{{config.count}}</span>
+								</li>
+							</ul>
+						</section>
+						<section class="group" ng-repeat="group in groups">
+							<div class="label" ng-click="group.collapse=!group.collapse">
+								<span class="title">{{group.title}}</span>
+								<i class="fa" ng-class="{true:'fa-caret-right',false:'fa-caret-down'}[group.collapse]"></i>
+							</div>
+							<ul class="items" ng-hide="group.collapse">
+								<collection ng-repeat="item in group.items" data="item">
+								<span class="icon"></span>
+								<span class="title">{{item.title}}</span>
+								<span class="number">{{item.number}}</span>
+								</collection>
+							</ul>
+						</section>
+					</div>
+					<div class="footer">
+						&copy; <a href="http://geraldl.net" target=_blank>Sunshine</a>
+					</div>
+			</div></div>
+			<div class="contentCol col">
+					<div ui-view class="wrap"></div>
+			</div>
+		</div>
 		<script src="popup.js"></script>
 		<script src="../common/utils.js"></script>
 	</body>

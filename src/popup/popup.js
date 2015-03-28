@@ -5,20 +5,19 @@ angular.module('app',['ui.router'])
 	.config(function($stateProvider,$urlRouterProvider){
 		$urlRouterProvider.otherwise('/');
 		$stateProvider
-			.state('popup', {
-				abstract: true,
-				url: '',
-				templateUrl: 'templates/home.html',
-			})
-			.state('popup.index',{
+			.state('index',{
 				url:'/',
-				controller: Index,
 				template: '',
 			})
-			.state('popup.bookmark',{
+			.state('bookmark',{
 				url:'/bookmarks/:id',
 				controller: Bookmark,
 				templateUrl: 'templates/bookmark.html',
+			})
+			.state('search',{
+				url:'/search',
+				controller: Search,
+				templateUrl: 'templates/search.html',
 			})
 		;
 	})
@@ -33,9 +32,6 @@ angular.module('app',['ui.router'])
 		$rootScope.$state=$state;
 		$rootScope.showSettings=function(){
 			chrome.tabs.create({url:chrome.extension.getURL('/options/options.html')});
-		};
-		$rootScope.editBookmark=function(){
-			$location.path('/bookmarks/0');
 		};
 		$rootScope.groups=[{
 			id:1,
@@ -57,19 +53,19 @@ angular.module('app',['ui.router'])
 				$rootScope.collections[coll.id]=coll;
 			});
 		});
+
+		$rootScope.back=function(){
+			document.querySelector('.homeCol').classList.add('index');
+			setTimeout(function(){
+				$rootScope.$apply(function(){
+					$location.path('/');
+				});
+			},500);
+		};
 	})
 ;
 
-var Index=function(){
-};
 var Bookmark=function($scope,$rootScope,$location){
-	function delayedBack(url){
-		setTimeout(function(){
-			$scope.$apply(function(){
-				$location.path(url);
-			});
-		},500);
-	}
 	$scope.bookmark={
 		url:$rootScope.config.tab.url,
 		title:$rootScope.config.tab.title,
@@ -78,11 +74,12 @@ var Bookmark=function($scope,$rootScope,$location){
 		tags:['abc','def'],
 	};
 	$scope.groups=$rootScope.groups;
-	$scope.back=function(){
-		document.querySelector('.homeCol').classList.add('index');
-		delayedBack('/');
-	};
 	$scope.save=function(){
 		alert('Not supported yet.');
 	};
+	$scope.back=$rootScope.back;
+};
+var Search=function($scope,$rootScope){
+	$scope.back=$rootScope.back;
+	document.querySelector('.search input').focus();
 };

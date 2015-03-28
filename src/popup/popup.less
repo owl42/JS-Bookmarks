@@ -43,31 +43,35 @@ body {
 		font-size: 1.5rem;
 		background: @menu-background;
 		padding: 0 .5rem;
-		.left {
-			float: left;
+	}
+	.left,.right {
+		position: absolute;
+		top: 0;
+	}
+	.left {
+		left: 0;
+	}
+	.right {
+		right: 0;
+	}
+	.item {
+		margin: 0 .5rem;
+		cursor: pointer;
+		float: left;
+		height: @menu-height;
+		line-height: @menu-height;
+		color: darken(white,20%);
+		&:hover {
+			color: white;
 		}
-		.right {
-			float: right;
-		}
-		.item {
-			margin-left: 1rem;
-			cursor: pointer;
-			float: left;
-			height: @menu-height;
-			line-height: @menu-height;
-			color: darken(white,20%);
-			&:hover {
-				color: white;
-			}
-		}
-		.logo {
-			background: url('/img/icon48.png') no-repeat;
-			height: @logo-size;
-			padding-left: @logo-size;
-			margin-left: 0;
-			color: yellow;
-			text-decoration: none;
-		}
+	}
+	.logo {
+		background: url('/img/icon48.png') no-repeat;
+		height: @logo-size;
+		padding-left: @logo-size;
+		margin-left: 0;
+		color: yellow;
+		text-decoration: none;
 	}
 }
 .homeCol {
@@ -138,12 +142,40 @@ body {
 	.homeCol.index~& {
 		left: 100%;
 	}
-	.bminfo {
+	.content {
 		padding-top: @menu-height+.5rem;
+		height: 100%;
+		overflow: auto;
+	}
+	.bminfo {
 		width: 260px;
 		margin: 0 auto;
 	}
 	.field {
 		margin-bottom: 1em;
+	}
+}
+.search {
+	@height: 2rem;
+	@left: 3rem;
+	padding-left: @left;
+	position: relative;
+	input {
+		color: white;
+		display: block;
+		width: 100%;
+		height: @height;
+		margin-top: (@menu-height - @height)/2;
+		padding-left: 2rem;
+		font-size: 1.2rem;
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid gray;
+	}
+	.fa {
+		position: absolute;
+		left: @left+.5rem;
+		top: 0;
+		line-height: @height;
 	}
 }
