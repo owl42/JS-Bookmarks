@@ -245,6 +245,7 @@ button {
 	background: @bookmark-background;
 	margin: .5rem 0;
 	padding-left: .5rem;
+	position: relative;
 	&:hover {
 		background: darken(white,5%);
 	}
@@ -289,8 +290,9 @@ button {
 		display: none;
 	}
 	.panel {
-		float: right;
-		padding-right: 1rem;
+		position: absolute;
+		top: 0;
+		right: @bookmark-snapshot-width+1rem;
 		line-height: @bookmark-height;
 		&>* {
 			font-size: @bookmark-button-size/2;
@@ -311,6 +313,9 @@ button {
 			}
 		}
 	}
+}
+body[data-controller='bookmarks.edit'] .bookmark .panel {
+	right: @right-side-width+1rem;
 }
 .conditions {
 	font-size: 1rem;
