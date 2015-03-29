@@ -1,6 +1,10 @@
-<div>
-	<a ng-repeat="item in menuitems" class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
-</div>
+<table class="hor-wrap">
+	<tr>
+		<td ng-repeat="item in menuitems">
+			<a class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
+		</td>
+	</tr>
+</table>
 <div ng-switch="key">
 	<div ng-switch-when="user">
 		<div class="header">

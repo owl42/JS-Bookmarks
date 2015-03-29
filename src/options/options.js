@@ -11,7 +11,7 @@ angular.module('app',['ui.router'])
 						controller:LogIn,
 					},
 					main:{
-						template:'',
+						template:'<h1 align=center>这里可以放幅画</h1>',
 					},
 				}
 			})

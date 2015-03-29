@@ -239,10 +239,6 @@ button {
 	bottom: 0;
 	right: 0;
 }
-.bookmarks {
-	height: 100%;
-	overflow: auto;
-}
 .bookmark {
 	cursor: pointer;
 	height: @bookmark-height;
@@ -350,4 +346,26 @@ button {
 		font-size: .8rem;
 		background: #456;
 	}
+}
+.fill-wrap {
+	width: 100%;
+	height: 100%;
+	tr:not(.expand) {
+		height: 1px;
+	}
+	td {
+		position: relative;
+		.row-wrap {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			overflow: auto;
+		}
+	}
+}
+.hor-wrap {
+	width: 100%;
+	text-align: center;
 }
