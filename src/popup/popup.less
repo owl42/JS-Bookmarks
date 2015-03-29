@@ -133,12 +133,15 @@ body {
 	@left: 3rem;
 	padding-left: @left;
 	position: relative;
+	height: @menu-height;
+	line-height: @menu-height;
+	&>* {
+		vertical-align: middle;
+	}
 	input {
 		color: white;
-		display: block;
 		width: 100%;
 		height: @height;
-		margin-top: (@menu-height - @height)/2;
 		padding-left: 2rem;
 		font-size: 1.2rem;
 		background: transparent;
@@ -147,8 +150,21 @@ body {
 	}
 	.fa {
 		position: absolute;
-		left: @left+.5rem;
+		left: @left+.3rem;
 		top: 0;
-		line-height: @height;
+		line-height: @menu-height;
+	}
+}
+li.collection {
+	@size: 3rem;
+	height: @size;
+	&>* {
+		line-height: @size;
+	}
+	.icon {
+		width: @size;
+	}
+	.title {
+		padding-left: @size;
 	}
 }

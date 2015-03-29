@@ -11,8 +11,28 @@ function getSearchEngines(data,src,callback){
 	});
 }
 
+function getCollections(data,src,callback){
+	data=[];
+	collections.forEach(function(c){
+		data.push({id:c.id,title:c.title,count:c.count});
+	});
+	callback(data);
+}
+function getTags(data,src,callback){
+	data=[];
+	tags.forEach(function(c){
+		data.push({title:c.title,count:c.count});
+	});
+	callback(data);
+}
 function getBookmarks(data,src,callback){
-	var data=[{
+	var col=collections[data];
+	if(col) callback(col.children);
+}
+
+var collections,tags=[];
+!function(){
+	var bookmarks=[{
 		id:1,
 		name:'悟了个空',
 		url:'http://geraldl.net',
@@ -40,14 +60,35 @@ function getBookmarks(data,src,callback){
 		desc:'谷歌知天下',
 		tags:['ghi'],
 		collection:'常用书签',
-	}],data2=data;
-	//for(var i=0;i<4;i++) data2.forEach(function(o){data.push(o);});
-	callback(data)
-}
-
+	}];
+	collections=[{id:0,title:'所有书签',count:bookmarks.length,children:bookmarks}];
+	//var data=bookmarks;for(var i=0;i<4;i++) data.forEach(function(o){bookmarks.push(o);});
+	var cat={},htags={};
+	bookmarks.forEach(function(b){
+		var c=b.collection;
+		var ca=cat[c];
+		if(!ca) {
+			cat[c]=ca={id:collections.length,title:c,count:0,children:[]};
+			collections.push(ca);
+		}
+		ca.children.push(b);
+		ca.count++;
+		b.tags.forEach(function(t){
+			var ta=htags[t];
+			if(!ta) {
+				htags[t]=ta={title:t,count:0,children:[]};
+				tags.push(ta);
+			}
+			ta.children.push(b);
+			ta.count++;
+		});
+	});
+}();
 chrome.runtime.onMessage.addListener(function(req,src,callback){
 	var mappings={
 		GetSearchEngines:getSearchEngines,
+		GetCollections:getCollections,
+		GetTags:getTags,
 		GetBookmarks:getBookmarks,
 	},f=mappings[req.cmd];
 	if(f) return f(req.data,src,callback);

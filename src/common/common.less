@@ -15,6 +15,9 @@ body {
 	font-family: "Microsoft YaHei";
 	font-size: 62.5%;
 }
+h3 {
+	margin: 1rem 0 .5rem;
+}
 .clear {
 	clear: both;
 }
@@ -24,7 +27,7 @@ body {
 @collection-font-size: 1rem;
 @collection-height: 2rem;
 @collection-icon-width: @collection-height;
-@collection-number-width: 0;
+@collection-number-width: 1rem;
 @collection-hover-background: darken(@collections-background,10%);
 @screenshot-width: 130px;
 @screenshot-height: 130px;
@@ -120,10 +123,9 @@ li.collection {
 	.number {
 		width: @collection-number-width;
 		position: absolute;
-		right: 0;
 		top: 0;
 		text-align: right;
-		padding-right: 1em;
+		right: 1em;
 	}
 	&:hover {
 		background: @collection-hover-background;

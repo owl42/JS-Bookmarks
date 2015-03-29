@@ -7,7 +7,7 @@ angular.module('app',['ui.router'])
 				url:'/login',
 				views:{
 					left:{
-						templateUrl:'templates/user.html',
+						templateUrl:'templates/login.html',
 						controller:LogIn,
 					},
 					main:{
@@ -36,7 +36,6 @@ angular.module('app',['ui.router'])
 		;
 	})
 	.run(function($rootScope,$state){
-		$rootScope.collections={};
 		$rootScope.user={id:0};
 		$rootScope.engines={items:[],def:0};
 		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
@@ -44,44 +43,42 @@ angular.module('app',['ui.router'])
 				$rootScope.engines=data;
 			});
 		});
-		// TODO: 以后改成点击后再查询
-		var colAll={title:'所有书签',count:0,children:[]};
-		$rootScope.data={map:{},cols:[colAll],tags:[]};
-		chrome.runtime.sendMessage({cmd:'GetBookmarks'},function(data){
+		$rootScope.collections=[];
+		$rootScope.tags=[];
+		$rootScope.bookmarks=[];
+		$rootScope.dict_bookmarks={};
+		chrome.runtime.sendMessage({cmd:'GetCollections'},function(data){
 			$rootScope.$apply(function(){
-				var cat={},htags={};
-				colAll.children=data;
-				colAll.count=data.length;
-				data.forEach(function(b){
-					$rootScope.data.map[b.id]=b;
-					var c=b.collection||'Default';
-					var ca=cat[c];
-					if(!ca) {
-						cat[c]=ca={title:c,count:0,children:[]};
-						$rootScope.data.cols.push(ca);
-					}
-					ca.children.push(b);
-					ca.count++;
-					b.tags.forEach(function(t){
-						if(!t) return;
-						var ta=htags[t];
-						if(!ta) {
-							htags[t]=ta={title:t,count:0};
-							$rootScope.data.tags.push(ta);
-						}
-						ta.count++;
-					});
-				});
+				$rootScope.collections=data;
+				$rootScope.conditions.col=data[0];
+				$rootScope.updateBookmarks();
+			});
+		});
+		chrome.runtime.sendMessage({cmd:'GetTags'},function(data){
+			$rootScope.$apply(function(){
+				$rootScope.tags=data;
 			});
 		});
 		$rootScope.$state=$state;
 		$rootScope.conditions={
-			col:colAll,
+			col:null,
 			tags:[],
 		};
 		$rootScope.limitTag=function(tag){
 			var i=$rootScope.conditions.tags.indexOf(tag);
 			if(i<0) $rootScope.conditions.tags.push(tag);
+		};
+		$rootScope.updateBookmarks=function(){
+			$rootScope.bookmarks=[];
+			$rootScope.dict_bookmarks={};
+			chrome.runtime.sendMessage({cmd:'GetBookmarks',data:$rootScope.conditions.col.id},function(data){
+				$rootScope.$apply(function(){
+					$rootScope.bookmarks=data;
+					data.forEach(function(b){
+						$rootScope.dict_bookmarks[b.id]=b;
+					});
+				});
+			});
 		};
 	})
 	.run(function($rootScope,$state){
@@ -114,21 +111,22 @@ var LogIn=function($scope,$rootScope,$state){
 var SidePanel=function($scope,$rootScope,$state){
 	if(!$rootScope.user.id) $state.go('login');
 	$scope.menuitems=[{
-		key:'user',
-		icon:'user',
-	},{
 		key:'groups',
 		icon:'list',
 	},{
 		key:'settings',
 		icon:'cog',
 	}];
-	$scope.key='user';
+	$scope.key='groups';
 	$scope.show=function(key){
 		$scope.key=key;
 	};
-	$scope.cols=$rootScope.data.cols;
-	$scope.tags=$rootScope.data.tags;
+	$scope.cols=$rootScope.collections;
+	$scope.tags=$rootScope.tags;
+	$scope.limitCol=function(c){
+		$rootScope.conditions.col=c;
+		$rootScope.updateBookmarks();
+	};
 };
 var Bookmarks=function($scope,$rootScope,$state){
 	$scope.edit=function(data){
@@ -143,10 +141,14 @@ var Bookmarks=function($scope,$rootScope,$state){
 			return item.tags.indexOf(tag)>=0;
 		});
 	};
+	$scope.current={
+		bid:null,
+	};
 };
 var EditBookmark=function($scope,$rootScope,$stateParams,$state){
-	var data=$rootScope.data.map[$stateParams.bid];
-	$scope.current=data?JSON.parse(JSON.stringify(data)):null;
+	$scope.current.bid=$stateParams.bid;
+	var data=$rootScope.dict_bookmarks[$scope.current.bid];
+	$scope.current.item=data?JSON.parse(JSON.stringify(data)):null;
 	$scope.close=function(){
 		$state.go('bookmarks');
 	};

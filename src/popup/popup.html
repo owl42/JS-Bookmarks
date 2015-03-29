@@ -32,24 +32,9 @@
 						</div>
 					</div>
 					<div class="content">
-						<section>
-							<ul class="items">
-								<li class="collection">
-									<span class="icon"></span>
-									<span class="title">所有书签</span>
-									<span class="number">{{config.count}}</span>
-								</li>
-							</ul>
-						</section>
-						<section class="group" ng-repeat="group in groups">
-							<div class="label" ng-click="group.collapse=!group.collapse">
-								<span class="title">{{group.title}}</span>
-								<i class="fa" ng-class="{true:'fa-caret-right',false:'fa-caret-down'}[group.collapse]"></i>
-							</div>
-							<ul class="items" ng-hide="group.collapse">
-								<collection ng-repeat="item in group.items" data="item"></collection>
-							</ul>
-						</section>
+						<ul class="items">
+							<collection ng-repeat="item in collections" data="item"></collection>
+						</ul>
 					</div>
 					<div class="footer">
 						&copy; <a href="http://geraldl.net" target=_blank>Sunshine</a>

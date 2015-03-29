@@ -33,24 +33,10 @@ angular.module('app',['ui.router'])
 		$rootScope.showSettings=function(){
 			chrome.tabs.create({url:chrome.extension.getURL('/options/options.html')});
 		};
-		$rootScope.groups=[{
-			id:1,
-			title:'default',
-			items:[{
-				id:1,
-				title:'test1',
-				number:0,
-			},{
-				id:2,
-				title:'test2',
-				number:0,
-			}],
-			collapse:false,
-		}];
-		$rootScope.collections={};
-		$rootScope.groups.forEach(function(group){
-			group.items.forEach(function(coll){
-				$rootScope.collections[coll.id]=coll;
+		$rootScope.collections=[];
+		chrome.runtime.sendMessage({cmd:'GetCollections'},function(data){
+			$rootScope.$apply(function(){
+				$rootScope.collections=data;
 			});
 		});
 

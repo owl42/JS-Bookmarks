@@ -11,10 +11,7 @@
 		<script src="../lib/angular-ui-router.js"></script>
 	</head>
 	<body data-controller="{{$state.current.name}}">
-		<div class="left side">
-			<h1>Sunshine</h1>
-			<div ui-view="left"></div>
-		</div>
+		<div ui-view="left" class="left side"></div>
 		<div ui-view="main" class="main"></div>
 		<script src="options.js"></script>
 		<script src="utils.js"></script>

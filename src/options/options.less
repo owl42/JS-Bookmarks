@@ -12,7 +12,6 @@
 @body-background: darken(white,10%);
 @search-engine-width: 3rem;
 @search-submit-width: 2rem;
-@nav-height: 3rem;
 @left-side-background: #567;
 @left-side-width: 300px;
 @right-side-background: #89a;
@@ -30,10 +29,8 @@ body {
 .menu {
 	@color: white;
 	font-size: 1.5rem;
-	height: @nav-height;
 	cursor: pointer;
 	display: inline-block;
-	margin: 0 1rem;
 	color: darken(@color,20%);
 	&:hover,&.active {
 		color: @color;
@@ -117,7 +114,6 @@ body {
 	color: white;
 	top: 0;
 	bottom: 0;
-	padding: 1rem 2rem;
 	font-size: 1rem;
 	position: fixed;
 	overflow: auto;
@@ -157,14 +153,13 @@ body {
 		.circleButton(2rem,white,brown);
 	}
 }
+.padded {
+	padding: 1rem 2rem;
+}
 .login>* {
 	margin-bottom: .5rem;
 }
 .left.side {
-	h1 {
-		text-align: center;
-		color: yellow;
-	}
 	.header {
 		line-height: @field-height;
 		.mode {
@@ -176,17 +171,40 @@ body {
 				padding-right: 2px;
 			}
 		}
-		.avatar {
-			text-align: center;
-			margin: 2rem 0 1rem;
-			img {
-				width: 80px;
-				height: 80px;
-				border-radius: 50%;
+	}
+	.avatar {
+		float: left;
+		margin: 20px;
+		img {
+			width: 80px;
+			height: 80px;
+			border-radius: 50%;
+		}
+	}
+	.user {
+		padding: .5rem;
+		background: darken(@left-side-background,10%);
+		.row-wrap {
+			background: @left-side-background;
+		}
+		.info {
+			line-height: 2rem;
+			padding: 20px 20px 20px 100px;
+			a {
+				color: dodgerblue;
 			}
 		}
-		.name {
-			text-align: center;
+		.level {
+			color: orange;
+		}
+	}
+	.menuitem {
+		&.active {
+			background: @left-side-background;
+		}
+		.menu {
+			display: block;
+			padding: .5rem 1rem;
 		}
 	}
 	.footer {
@@ -263,13 +281,13 @@ button {
 	}
 	.url {
 		color: gray;
-		margin-left: 4em;
+		margin: 0 2em;
 		max-width: 300px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 	.desc {
-		display: none;
+		color: gray;
 	}
 	.tags {
 		display: block;
@@ -314,8 +332,11 @@ button {
 		}
 	}
 }
-body[data-controller='bookmarks.edit'] .bookmark .panel {
-	right: @right-side-width+1rem;
+body[data-controller='bookmarks.edit'] .bookmarks {
+	padding-right: @right-side-width;
+	.desc {
+		display: none;
+	}
 }
 .conditions {
 	font-size: 1rem;
@@ -335,9 +356,11 @@ body[data-controller='bookmarks.edit'] .bookmark .panel {
 		float: right;
 	}
 }
-.collection.active {
-	font-weight: bold;
-	color: yellow;
+.collection {
+	.active {
+		font-weight: bold;
+		color: yellow;
+	}
 }
 .tags.list {
 	.tag {
@@ -373,4 +396,7 @@ body[data-controller='bookmarks.edit'] .bookmark .panel {
 .hor-wrap {
 	width: 100%;
 	text-align: center;
+}
+table {
+	border-collapse: collapse;
 }

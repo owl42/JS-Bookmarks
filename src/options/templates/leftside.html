@@ -1,36 +1,55 @@
-<table class="hor-wrap">
+<table class="fill-wrap user">
 	<tr>
-		<td ng-repeat="item in menuitems">
-			<a class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
-		</td>
-	</tr>
-</table>
-<div ng-switch="key">
-	<div ng-switch-when="user">
-		<div class="header">
+		<td>
 			<div class="avatar">
 				<img ng-src="{{user.avatar}}">
 			</div>
-			<div class="name">{{user.name}}</div>
-		</div>
-		<div class="buttons">
-			<button type=submit class="sign" ng-click="logout()">测试登出</button>
-		</div>
-	</div>
-	<div ng-switch-when="groups">
-		<h3>分组</h3>
-		<collection ng-repeat="item in cols" data="item" ng-class="{'active':item===conditions.col}" ng-click="conditions.col=item"></collection>
-		<h3>标签</h3>
-		<div class="tags list">
-			<div ng-repeat="tag in tags" class="tag" ng-click="limitTag(tag.title)">
-				<i class="fa fa-tag"></i>
-				<span class="title">{{tag.title}}</span>
-				<span class="count">{{tag.count}}</span>
+			<div class="info">
+				<span class="name">{{user.name}}</span>
+				<span class="level">Lv.1</span>
+				<div class="cmd">
+					<a href=# ng-click="logout()">退出账号</a>
+				</div>
 			</div>
 			<div class="clear"></div>
-		</div>
-	</div>
-	<div ng-switch-when="settings">
-		这里列出设置项目，右边再显示详细的设置
-	</div>
-</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table class="hor-wrap">
+				<tr>
+					<td ng-repeat="item in menuitems" class="menuitem" ng-class="{active:key==item.key}">
+						<a class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr class="expand">
+		<td>
+			<div class="padded row-wrap" ng-switch="key">
+				<div ng-switch-when="groups">
+					<div class="right">
+						<a class="menu">
+							<i class="fa fa-plus"></i>
+						</a>
+					</div>
+					<h3>分组</h3>
+					<collection ng-repeat="item in cols" data="item" ng-class="{'active':item===conditions.col}" ng-click="limitCol(item)"></collection>
+					<h3>标签</h3>
+					<div class="tags list">
+						<div ng-repeat="tag in tags" class="tag" ng-click="limitTag(tag.title)">
+							<i class="fa fa-tag"></i>
+							<span class="title">{{tag.title}}</span>
+							<span class="count">{{tag.count}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div ng-switch-when="settings">
+					这里列出设置项目，右边再显示详细的设置
+				</div>
+			</div>
+		</td>
+	</tr>
+</table>
