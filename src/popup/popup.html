@@ -9,6 +9,7 @@
 		<script src="../lib/less.min.js"></script>
 		<script src="../lib/angular.js"></script>
 		<script src="../lib/angular-ui-router.js"></script>
+		<script src="../common/common.js"></script>
 	</head>
 	<body data-controller="{{$state.current.name}}">
 		<div class="view">
@@ -32,9 +33,7 @@
 						</div>
 					</div>
 					<div class="content">
-						<ul class="items">
-							<collection ng-repeat="item in collections" data="item"></collection>
-						</ul>
+						<collections list="true" col-all="true"></collections>
 					</div>
 					<div class="footer">
 						&copy; <a href="http://geraldl.net" target=_blank>Sunshine</a>

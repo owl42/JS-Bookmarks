@@ -35,10 +35,10 @@
 						</a>
 					</div>
 					<h3>分组</h3>
-					<collection ng-repeat="item in cols" data="item" ng-class="{'active':item===conditions.col}" ng-click="limitCol(item)"></collection>
+					<collections list="true" col-all="true" current="conditions.col"></collections>
 					<h3>标签</h3>
 					<div class="tags list">
-						<div ng-repeat="tag in tags" class="tag" ng-click="limitTag(tag.title)">
+						<div ng-repeat="tag in data.tags" class="tag" ng-click="limitTag(tag.title)">
 							<i class="fa fa-tag"></i>
 							<span class="title">{{tag.title}}</span>
 							<span class="count">{{tag.count}}</span>

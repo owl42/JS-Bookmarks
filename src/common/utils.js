@@ -37,10 +37,18 @@ angular.module('app')
 			replace: true,
 			restrict: 'E',
 			scope: {
-				data: '=',
+				current: '=',
+				colAll: '@',
 			},
 			link: function(scope, element, attrs) {
-				scope.current=$rootScope.collections[scope.data];
+				scope.data=$rootScope.data;
+				scope.key=attrs.list?'select':'current';
+				scope.select=function(item){
+					if(item) {
+						scope.current=item;
+						if(!attrs.list) scope.key='current';
+					} else scope.key='select';
+				};
 			},
 		};
 	})
@@ -56,15 +64,33 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('bookmarkinfo',function(paths){
+	.directive('bookmarkinfo',function(paths,$rootScope){
 		return {
 			restrict:'E',
 			replace:true,
 			scope:{
-				data:'=',
+				current:'=',
+				save:'&',
 			},
 			templateUrl:paths.common+'templates/bookmarkinfo.html',
 			link:function(scope,element,attrs){
+				function revert(){
+					scope.edit=JSON.parse(JSON.stringify(scope.current));
+					scope.collection=$rootScope.data.d_cols[scope.edit.collection];
+				}
+				scope.revert=revert;
+				scope._save=function(){
+					for(var i in scope.edit) {
+						var d=scope.edit[i];
+						if(Array.isArray(d)) d=d.slice();
+						scope.current[i]=d;
+					}
+					scope.save();
+				};
+				revert();
+				scope.$watch('collection',function(){
+					scope.edit.collection=scope.collection.id;
+				},false);
 			},
 		};
 	})

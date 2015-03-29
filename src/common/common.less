@@ -22,7 +22,7 @@ h3 {
 	clear: both;
 }
 
-@collections-background: #567;
+@collections-background: #456;
 @collection-color: white;
 @collection-font-size: 1rem;
 @collection-height: 2rem;
@@ -125,14 +125,17 @@ li.collection {
 		position: absolute;
 		top: 0;
 		text-align: right;
-		right: 1em;
+		right: 0;
 	}
 	&:hover {
 		background: @collection-hover-background;
 	}
 }
+.collection.active {
+	font-weight: bold;
+	color: yellow;
+}
 .collections {
-	background: @collections-background;
 	border-radius: .3rem;
 	overflow: hidden;
 }
@@ -146,6 +149,7 @@ li.collection {
 	}
 	.field {
 		width: 260px;
+		margin-bottom: .5rem;
 		&>input {
 			line-height: 1.5rem;
 			width: 100%;
@@ -157,13 +161,18 @@ li.collection {
 			border: none;
 			resize: none;
 		}
-		margin-bottom: .5rem;
+		.number {
+			display: none;
+		}
 	}
 	.buttons {
 		button {
 			width: 48%;
 			display: inline;
 		}
+	}
+	.collections {
+		background: #456;
 	}
 }
 .field .tags {

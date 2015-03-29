@@ -33,11 +33,9 @@ angular.module('app',['ui.router'])
 		$rootScope.showSettings=function(){
 			chrome.tabs.create({url:chrome.extension.getURL('/options/options.html')});
 		};
-		$rootScope.collections=[];
-		chrome.runtime.sendMessage({cmd:'GetCollections'},function(data){
-			$rootScope.$apply(function(){
-				$rootScope.collections=data;
-			});
+		$rootScope.data={};
+		getCollections($rootScope.data,function(){
+			$rootScope.$apply();
 		});
 
 		$rootScope.back=function(){
@@ -56,10 +54,9 @@ var Bookmark=function($scope,$rootScope,$location){
 		url:$rootScope.config.tab.url,
 		title:$rootScope.config.tab.title,
 		desc:'',
-		collection:2,
+		collection:-1,
 		tags:['abc','def'],
 	};
-	$scope.groups=$rootScope.groups;
 	$scope.save=function(){
 		alert('Not supported yet.');
 	};

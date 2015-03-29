@@ -43,43 +43,43 @@ angular.module('app',['ui.router'])
 				$rootScope.engines=data;
 			});
 		});
-		$rootScope.collections=[];
-		$rootScope.tags=[];
-		$rootScope.bookmarks=[];
-		$rootScope.dict_bookmarks={};
-		chrome.runtime.sendMessage({cmd:'GetCollections'},function(data){
-			$rootScope.$apply(function(){
-				$rootScope.collections=data;
-				$rootScope.conditions.col=data[0];
-				$rootScope.updateBookmarks();
-			});
-		});
-		chrome.runtime.sendMessage({cmd:'GetTags'},function(data){
-			$rootScope.$apply(function(){
-				$rootScope.tags=data;
-			});
-		});
-		$rootScope.$state=$state;
+		$rootScope.data={
+			tags:[],
+			bookmarks:[],
+			d_bookmarks:{},
+		};
 		$rootScope.conditions={
 			col:null,
 			tags:[],
 		};
+		getCollections($rootScope.data,function(){
+			$rootScope.$apply(function(){
+				$rootScope.conditions.col=$rootScope.data.colAll;
+			});
+		});
+		chrome.runtime.sendMessage({cmd:'GetTags'},function(data){
+			$rootScope.$apply(function(){
+				$rootScope.data.tags=data;
+			});
+		});
+		$rootScope.$state=$state;
 		$rootScope.limitTag=function(tag){
 			var i=$rootScope.conditions.tags.indexOf(tag);
 			if(i<0) $rootScope.conditions.tags.push(tag);
 		};
-		$rootScope.updateBookmarks=function(){
-			$rootScope.bookmarks=[];
-			$rootScope.dict_bookmarks={};
-			chrome.runtime.sendMessage({cmd:'GetBookmarks',data:$rootScope.conditions.col.id},function(data){
-				$rootScope.$apply(function(){
-					$rootScope.bookmarks=data;
-					data.forEach(function(b){
-						$rootScope.dict_bookmarks[b.id]=b;
+		$rootScope.$watch('conditions.col',function(){
+			$rootScope.data.bookmarks=[];
+			$rootScope.data.d_bookmarks={};
+			if($rootScope.conditions.col)
+				chrome.runtime.sendMessage({cmd:'GetBookmarks',data:$rootScope.conditions.col.id},function(data){
+					$rootScope.$apply(function(){
+						$rootScope.data.bookmarks=data;
+						data.forEach(function(b){
+							$rootScope.data.d_bookmarks[b.id]=b;
+						});
 					});
 				});
-			});
-		};
+		},false);
 	})
 	.run(function($rootScope,$state){
 		// test
@@ -121,11 +121,9 @@ var SidePanel=function($scope,$rootScope,$state){
 	$scope.show=function(key){
 		$scope.key=key;
 	};
-	$scope.cols=$rootScope.collections;
-	$scope.tags=$rootScope.tags;
+	$scope.data=$rootScope.data;
 	$scope.limitCol=function(c){
 		$rootScope.conditions.col=c;
-		$rootScope.updateBookmarks();
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state){
@@ -141,15 +139,18 @@ var Bookmarks=function($scope,$rootScope,$state){
 			return item.tags.indexOf(tag)>=0;
 		});
 	};
+	// 为了突出显示正在编辑的项目
 	$scope.current={
 		bid:null,
 	};
 };
 var EditBookmark=function($scope,$rootScope,$stateParams,$state){
 	$scope.current.bid=$stateParams.bid;
-	var data=$rootScope.dict_bookmarks[$scope.current.bid];
-	$scope.current.item=data?JSON.parse(JSON.stringify(data)):null;
+	$scope.current.item=$rootScope.data.d_bookmarks[$scope.current.bid];
 	$scope.close=function(){
 		$state.go('bookmarks');
+	};
+	$scope.save=function(){
+		alert('modified.');
 	};
 };

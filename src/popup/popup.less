@@ -107,6 +107,27 @@ body {
 		padding: 1rem;
 		height: @footer-height;
 	}
+	.collection {
+		@size: 3rem;
+		@right: 1rem;
+		height: @size;
+		padding-right: @right;
+		&>* {
+			line-height: @size;
+		}
+		.icon {
+			width: @size;
+		}
+		.title {
+			padding-left: @size;
+		}
+		.number {
+			right: @right;
+		}
+	}
+	.collections {
+		background: transparent;
+	}
 }
 .contentCol {
 	background: @groups-background;
@@ -153,18 +174,5 @@ body {
 		left: @left+.3rem;
 		top: 0;
 		line-height: @menu-height;
-	}
-}
-li.collection {
-	@size: 3rem;
-	height: @size;
-	&>* {
-		line-height: @size;
-	}
-	.icon {
-		width: @size;
-	}
-	.title {
-		padding-left: @size;
 	}
 }

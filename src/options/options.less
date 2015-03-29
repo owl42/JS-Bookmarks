@@ -14,7 +14,7 @@
 @search-submit-width: 2rem;
 @left-side-background: #567;
 @left-side-width: 300px;
-@right-side-background: #89a;
+@right-side-background: #567;
 @right-side-width: 380px;
 @bookmark-background: white;
 @bookmark-height: 3rem;
@@ -182,7 +182,6 @@ body {
 		}
 	}
 	.user {
-		padding: .5rem;
 		background: darken(@left-side-background,10%);
 		.row-wrap {
 			background: @left-side-background;
@@ -276,7 +275,7 @@ button {
 		height: @bookmark-icon-size;
 		margin-right: .5em;
 	}
-	.name {
+	.title {
 		font-size: 1.2rem;
 	}
 	.url {
@@ -354,12 +353,6 @@ body[data-controller='bookmarks.edit'] .bookmarks {
 	}
 	.right {
 		float: right;
-	}
-}
-.collection {
-	.active {
-		font-weight: bold;
-		color: yellow;
 	}
 }
 .tags.list {
