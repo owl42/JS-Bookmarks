@@ -47,7 +47,9 @@ h3 {
 	}
 	li.tag {
 		list-style: none;
-		padding-right: 1rem;
+		&:not(.input) {
+			padding-right: 1rem;
+		}
 		.fa-tag {
 			color: yellow;
 		}
@@ -91,6 +93,7 @@ h3 {
 		span {
 			opacity: 0;
 			white-space: nowrap;
+			padding: 1px;
 		}
 	}
 	&:not(.focused) .input {
