@@ -94,8 +94,7 @@ function getTags(data,src,callback){
 	return true;
 }
 function getBookmarks(data,src,callback){
-	var bm=[];
-	var o=db.transaction('bookmarks').objectStore('bookmarks');
+	var bm=[],o=db.transaction('bookmarks').objectStore('bookmarks');
 	if(!data) data=IDBKeyRange.lowerBound(-1);
 	o.index('col').openCursor(data).onsuccess=function(e){
 		var r=e.target.result;
@@ -142,7 +141,23 @@ function removeBookmark(data,src,callback){
 	callback();
 }
 
-var db;
+function getUserInfo(data,src,callback){
+	callback(user);
+}
+function logIn(data,src,callback){
+	user={
+		id:1,
+		name:'Gerald',
+		avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
+	};
+	callback(user);
+}
+function logOut(data,src,callback){
+	user={id:0};
+	callback(user);
+}
+
+var db,user={id:0};
 initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
@@ -153,6 +168,9 @@ initDb(function(){
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,
 			RemoveBookmark:removeBookmark,
+			GetUserInfo:getUserInfo,
+			LogIn:logIn,
+			LogOut:logOut,
 		},f=mappings[req.cmd];
 		if(f) return f(req.data,src,callback);
 	});

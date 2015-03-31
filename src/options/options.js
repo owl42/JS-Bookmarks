@@ -58,18 +58,13 @@ angular.module('app',['ui.router'])
 		};
 	})
 	.run(function($rootScope,$state){
-		$rootScope.user={id:0};
 		$rootScope.engines={items:[],def:0};
 		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
 			$rootScope.$apply(function(){
 				$rootScope.engines=data;
 			});
 		});
-		$rootScope.data={
-			d_tags:{},
-			bookmarks:[],
-			d_bookmarks:{},
-		};
+		$rootScope.data={};
 		$rootScope.conditions={
 			col:null,
 			tags:[],
@@ -79,41 +74,34 @@ angular.module('app',['ui.router'])
 				$rootScope.conditions.col=$rootScope.data.colAll;
 			});
 		});
-		chrome.runtime.sendMessage({cmd:'GetTags'},function(data){
-			$rootScope.$apply(function(){
-				$rootScope.data.d_tags=data;
-			});
+		getTags($rootScope.data,function(){
+			$rootScope.$apply();
 		});
+		getBookmarks($rootScope.data);
 		$rootScope.$state=$state;
 		$rootScope.limitTag=function(tag){
 			var i=$rootScope.conditions.tags.indexOf(tag);
 			if(i<0) $rootScope.conditions.tags.push(tag);
 		};
 		$rootScope.$watch('conditions.col',function(){
-			$rootScope.data.bookmarks=[];
-			$rootScope.data.d_bookmarks={};
 			if($rootScope.conditions.col)
-				chrome.runtime.sendMessage({cmd:'GetBookmarks',data:$rootScope.conditions.col.id},function(data){
-					$rootScope.$apply(function(){
-						$rootScope.data.bookmarks=data;
-						data.forEach(function(b){
-							$rootScope.data.d_bookmarks[b.id]=b;
-						});
-					});
+				getBookmarks($rootScope.data,$rootScope.conditions.col.id,function(){
+					$rootScope.$apply();
 				});
 		},false);
 	})
 	.run(function($rootScope,$state){
 		// test
-		$rootScope.logout=function(){
-			$rootScope.user={id:0};
-			$state.go('login');
-		};
 	})
 ;
 
 var LogIn=function($scope,$rootScope,$state){
-	if($rootScope.user.id) $state.go('bookmarks');
+	getUserInfo(function(data){
+		$rootScope.user=data;
+		$rootScope.$apply(function(){
+			if(data.id) $state.go('bookmarks');
+		});
+	});
 	$scope.mode='login';
 	$scope.switchMode=function(){
 		$scope.mode=$scope.mode=='login'?'signin':'login';
@@ -121,18 +109,23 @@ var LogIn=function($scope,$rootScope,$state){
 	$scope.name='';
 	$scope.email='';
 	$scope.pwd='';
-	$scope.login=function(){
-		$rootScope.user={
-			id:1,
-			name:'Gerald',
-			avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
-		};
-		$state.go('bookmarks');
+	$scope.sign=function(){
+		if($scope.mode=='signin') alert('Not supported yet.');
+		else logIn($scope.email,$scope.pwd,function(data){
+			$rootScope.user=data;
+			$scope.$apply(function(){
+				$state.go('bookmarks');
+			});
+		});
 	};
-	$scope.login();
 };
 var SidePanel=function($scope,$rootScope,$state){
-	if(!$rootScope.user.id) $state.go('login');
+	getUserInfo(function(data){
+		$rootScope.user=data;
+		$rootScope.$apply(function(){
+			if(!data.id) $state.go('login');
+		});
+	});
 	$scope.menuitems=[{
 		key:'groups',
 		icon:'list',
@@ -150,6 +143,14 @@ var SidePanel=function($scope,$rootScope,$state){
 	};
 	$scope.editCol=function(){
 		$rootScope.modal={type:'editCol'};
+	};
+	$scope.logout=function(){
+		logOut(function(data){
+			$rootScope.user=data;
+			$rootScope.$apply(function(){
+				$state.go('login');
+			});
+		});
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state){

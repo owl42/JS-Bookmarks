@@ -13,7 +13,25 @@ function getCollections(data,cb){
 				data.cols.push(col);
 			data.d_cols[col.id]=col;
 		});
-		cb();
+		if(cb) cb();
+	});
+}
+function getTags(data,cb){
+	data.d_tags={};
+	chrome.runtime.sendMessage({cmd:'GetTags'},function(tags){
+		data.d_tags=tags;
+		if(cb) cb();
+	});
+}
+function getBookmarks(data,col,cb){
+	data.bookmarks=[];
+	data.d_bookmarks={};
+	if(col!=undefined) chrome.runtime.sendMessage({cmd:'GetBookmarks',data:col},function(bms){
+		data.bookmarks=bms;
+		bms.forEach(function(b){
+			data.d_bookmarks[b.id]=b;
+		});
+		if(cb) cb();
 	});
 }
 function saveBookmark(olditem,item,root,cb){
@@ -27,7 +45,7 @@ function saveBookmark(olditem,item,root,cb){
 			root.colAll.count++;
 			root.d_cols[item.col].count++;
 		}
-		cb(item);
+		if(cb) cb(item);
 	});
 }
 function removeBookmark(item,root,cb){
@@ -37,6 +55,21 @@ function removeBookmark(item,root,cb){
 		delete root.d_bookmarks[item.id];
 		root.colAll.count--;
 		root.d_cols[item.col].count--;
-		cb();
+		if(cb) cb();
+	});
+}
+function logIn(user,pwd,cb){
+	chrome.runtime.sendMessage({cmd:'LogIn',data:{user:user,pwd:pwd}},function(data){
+		if(cb) cb(data);
+	});
+}
+function logOut(cb){
+	chrome.runtime.sendMessage({cmd:'LogOut'},function(data){
+		if(cb) cb(data);
+	});
+}
+function getUserInfo(cb){
+	chrome.runtime.sendMessage({cmd:'GetUserInfo'},function(data){
+		if(cb) cb(data);
 	});
 }

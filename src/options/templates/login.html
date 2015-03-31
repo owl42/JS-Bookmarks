@@ -19,8 +19,7 @@
 		<i class="fa fa-lock"></i>
 	</div>
 	<div class="buttons">
-		<button type=submit class="sign">{{mode=='login'?'登录':'注册'}}</button>
-		<button type=submit class="sign" ng-click="login()">测试登录</button>
+		<button type=submit class="sign" ng-click="sign()">{{mode=='login'?'登录':'注册'}}</button>
 	</div>
 	<div ng-if="mode=='login'">
 		<a>忘记密码</a>
