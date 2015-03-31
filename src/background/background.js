@@ -1,3 +1,19 @@
+function initDb(callback){
+	var request=indexedDB.open('sunshine',1);
+	request.onsuccess=function(e){db=request.result;if(callback) callback();};
+	request.onerror=function(e){console.log('IndexedDB error: '+e.target.error.message);};
+	request.onupgradeneeded=function(e){
+		var r=e.currentTarget.result,o;
+		// collections: id title pos
+		o=r.createObjectStore('collections',{keyPath:'id',autoIncrement:true});
+		o.createIndex('pos','pos',{unique:false});	// should be unique at last
+		// bookmarks: id title url desc tags col
+		o=r.createObjectStore('bookmarks',{keyPath:'id',autoIncrement:true});
+		o.createIndex('col','col',{unique:false});
+		o.createIndex('tag','tags',{multiEntry:true});
+	};
+}
+
 function getSearchEngines(data,src,callback){
 	callback({
 		items:[{
@@ -11,105 +27,133 @@ function getSearchEngines(data,src,callback){
 	});
 }
 
+function collectionData(data){
+	return {
+		id:data.id,
+		title:data.title,
+		count:data.count||0,
+	};
+}
 function getCollections(data,src,callback){
-	data=[];
-	collections.forEach(function(c){
-		data.push({id:c.id,title:c.title,count:c.count});
-	});
-	callback(data);
+	data=[{
+		id:-1,
+		title:'未分组书签',
+		count: 0,
+	},{
+		id:0,
+		title:'所有书签',
+		count: 0,
+	}];
+	var h={'-1':data[0],0:data[1]};
+	function getCollectionList(){
+		var o=db.transaction('collections').objectStore('collections');
+		o.index('pos').openCursor().onsuccess=function(e){
+			var r=e.target.result,v;
+			if(r) {
+				v=r.value;
+				if(v.id>0) {
+					v.count=0;
+					h[v.id]=v=collectionData(v);
+					data.push(v);
+				}
+				r.continue();
+			} else getCollectionData();
+		};
+	}
+	function getCollectionData(){
+		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+		o.index('col').openCursor().onsuccess=function(e){
+			var r=e.target.result,v,c;
+			if(r) {
+				v=r.value;
+				c=h[v.col];
+				if(!v.col&&!c) {
+					v.col=-1;
+					r.update(v);
+					c=h[-1];
+				}
+				c.count++;
+				h[0].count++;
+				r.continue();
+			} else callback(data);
+		};
+	}
+	getCollectionList();
+	return true;
 }
 function getTags(data,src,callback){
-	data=[];
-	tags.forEach(function(c){
-		data.push({title:c.title,count:c.count});
-	});
-	callback(data);
+	data={};
+	var o=db.transaction('bookmarks').objectStore('bookmarks');
+	o.index('tag').openCursor().onsuccess=function(e){
+		var r=e.target.result,t;
+		if(r) {
+			data[r.key]=(data[r.key]||0)+1;
+			r.continue();
+		} else callback(data);
+	};
+	return true;
 }
 function getBookmarks(data,src,callback){
-	var col=d_collections[data];
-	if(col) callback(col.children);
+	var bm=[];
+	var o=db.transaction('bookmarks').objectStore('bookmarks');
+	if(!data) data=IDBKeyRange.lowerBound(-1);
+	o.index('col').openCursor(data).onsuccess=function(e){
+		var r=e.target.result;
+		if(r) {
+			bm.push(r.value);
+			r.continue();
+		} else callback(bm);
+	};
+	return true;
+}
+function saveCollection(data,src,callback){
+	var col={
+		title:data.title||'未命名',
+		icon:data.icon||'',
+		pos:0,	// FIXME
+	};
+	if(data.id) col.id=data.id;
+	var o=db.transaction('collections','readwrite').objectStore('collections');
+	o.put(col).onsuccess=function(e){
+		col.id=e.target.result;
+		callback(collectionData(col));
+	};
+	return true;
+}
+function saveBookmark(data,src,callback){
+	var bm={
+		title:data.title||'未命名',
+		url:data.url||'',
+		desc:data.desc||'',
+		tags:data.tags||[],
+		col:data.col||-1,
+	};
+	if(data.id) bm.id=data.id;
+	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+	o.put(bm).onsuccess=function(e){
+		bm.id=e.target.result;
+		callback(bm);
+	};
+	return true;
+}
+function removeBookmark(data,src,callback){
+	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+	o.delete(data);
+	callback();
 }
 
-var collections=[{
-	id:-1,
-	title:'未分组书签',
-},{
-	id:0,
-	title:'所有书签',
-},{
-	id:1,
-	title:'哥的书签',
-},{
-	id:2,
-	title:'常用书签',
-}];
-var d_collections={},tags=[];
-!function(){
-	var bookmarks=[{
-		id:1,
-		title:'悟了个空',
-		url:'http://geraldl.net',
-		desc:'天下第一帅',
-		tags:['abc'],
-		collection:1,
-	},{
-		id:2,
-		title:'咫尺天涯',
-		url:'http://fboat.net',
-		desc:'咫尺天涯',
-		tags:['abc'],
-		collection:1,
-	},{
-		id:3,
-		title:'百度',
-		url:'http://www.baidu.com/',
-		desc:'百度一下，你就知道',
-		tags:['def'],
-		collection:2,
-	},{
-		id:4,
-		title:'Google',
-		url:'http://www.google.com',
-		desc:'谷歌知天下',
-		tags:['ghi'],
-		collection:2,
-	}];
-	//var data=bookmarks;for(var i=0;i<4;i++) data.forEach(function(o){bookmarks.push(o);});
-	var htags={};
-	collections.forEach(function(c){
-		d_collections[c.id]=c;
-		c.count=0;
-		c.children=[];
+var db;
+initDb(function(){
+	chrome.runtime.onMessage.addListener(function(req,src,callback){
+		var mappings={
+			GetSearchEngines:getSearchEngines,
+			GetCollections:getCollections,
+			GetTags:getTags,
+			GetBookmarks:getBookmarks,
+			SaveCollection:saveCollection,
+			SaveBookmark:saveBookmark,
+			RemoveBookmark:removeBookmark,
+		},f=mappings[req.cmd];
+		if(f) return f(req.data,src,callback);
 	});
-	bookmarks.forEach(function(b){
-		var c=d_collections[b.collection||-1];
-		c.count++;
-		c.children.push(b);
-		d_collections[0].count++;
-		d_collections[0].children.push(b);
-		b.tags.forEach(function(t){
-			var ta=htags[t];
-			if(!ta) {
-				htags[t]=ta={title:t,count:0,children:[]};
-				tags.push(ta);
-			}
-			ta.children.push(b);
-			ta.count++;
-		});
-	});
-}();
-chrome.runtime.onMessage.addListener(function(req,src,callback){
-	var mappings={
-		GetSearchEngines:getSearchEngines,
-		GetCollections:getCollections,
-		GetTags:getTags,
-		GetBookmarks:getBookmarks,
-	},f=mappings[req.cmd];
-	if(f) return f(req.data,src,callback);
-});
-
-chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
-	if(/^(https?|ftps?):/.test(tab.url)) {
-		//chrome.pageAction.show(tabId);
-	}
 });

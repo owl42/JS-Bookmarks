@@ -36,7 +36,7 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('bookmark',function($rootScope){
+	.directive('bookmark',function($rootScope,$state){
 		function shortUrl(url){
 			return url.replace(/^https?:\/\//i,'');
 		}
@@ -50,6 +50,9 @@ angular.module('app')
 			event.preventDefault();
 			event.stopPropagation();
 		}
+		function edit(data){
+			$state.go('bookmarks.edit',{bid:data.id});
+		}
 		return {
 			restrict:'E',
 			replace:true,
@@ -62,7 +65,8 @@ angular.module('app')
 				scope.getIcon=getIcon;
 				scope.open=open;
 				scope.stop=stop;
-				scope.edit=scope.$parent.edit;
+				scope.edit=edit;
+				scope.remove=scope.$parent.remove;
 				scope.limitTag=$rootScope.limitTag;
 			},
 		};

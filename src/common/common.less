@@ -110,6 +110,7 @@ h3 {
 		height: @collection-height;
 		vertical-align: middle;
 		position: relative;
+		white-space: nowrap;
 		&.expand {
 			width: 100%;
 		}
@@ -129,9 +130,19 @@ h3 {
 		font-size: .8rem;
 		padding: .1rem .2rem;
 		border: 1px solid #abc;
+		display: inline-block;
+	}
+	.edit {
+		display: none;
 	}
 	&:hover {
 		background: @collection-hover-background;
+		.edit {
+			display: inline-block;
+			&:hover {
+				color: yellow;
+			}
+		}
 	}
 	&.active {
 		.title {
@@ -167,24 +178,8 @@ h3 {
 .bminfo {
 	width: 100%;
 	text-align: left;
-	label {
-		font-size: .8rem;
-		display: block;
-	}
 	.field {
 		width: 260px;
-		margin-bottom: .5rem;
-		&>input {
-			line-height: 1.5rem;
-			width: 100%;
-			border: none;
-		}
-		&>textarea {
-			height: 5em;
-			width: 100%;
-			border: none;
-			resize: none;
-		}
 		.number {
 			display: none;
 		}
@@ -200,14 +195,32 @@ h3 {
 		background: #456;
 	}
 }
-.field .tags {
-	border-radius: .3rem;
-	padding: .3rem;
-	cursor: text;
-	@bgcolor: #456;
-	background: @bgcolor;
-	.tag:not(.input) {
-		background: lighten(@bgcolor,10%);
+.field {
+	margin-bottom: .5rem;
+	label {
+		font-size: .8rem;
+		display: block;
+	}
+	&>input {
+		line-height: 1.5rem;
+		width: 100%;
+		border: none;
+	}
+	&>textarea {
+		height: 5em;
+		width: 100%;
+		border: none;
+		resize: none;
+	}
+	.tags {
+		border-radius: .3rem;
+		padding: .3rem;
+		cursor: text;
+		@bgcolor: #456;
+		background: @bgcolor;
+		.tag:not(.input) {
+			background: lighten(@bgcolor,10%);
+		}
 	}
 }
 .buttons {
@@ -228,7 +241,7 @@ button {
 	&.save {
 		.colorButton(green);
 	}
-	&.revert {
+	&.revert,&.cancel {
 		.colorButton(brown);
 	}
 }

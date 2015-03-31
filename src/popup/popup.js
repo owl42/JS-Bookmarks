@@ -54,11 +54,15 @@ var Bookmark=function($scope,$rootScope,$location){
 		url:$rootScope.config.tab.url,
 		title:$rootScope.config.tab.title,
 		desc:'',
-		collection:-1,
-		tags:['abc','def'],
+		col:-1,
+		tags:[],
 	};
-	$scope.save=function(){
-		alert('Not supported yet.');
+	$scope.save=function(item){
+		saveBookmark($scope.bookmark,item,$rootScope.data,function(data){
+			$scope.$apply(function(){
+				$scope.back();
+			});
+		});
 	};
 	$scope.back=$rootScope.back;
 };

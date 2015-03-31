@@ -30,18 +30,18 @@
 			<div class="padded row-wrap" ng-switch="key">
 				<div ng-switch-when="groups">
 					<div class="right">
-						<a class="menu">
+						<a class="menu" ng-click="editCol()">
 							<i class="fa fa-plus"></i>
 						</a>
 					</div>
 					<h3>分组</h3>
-					<collections list="true" col-all="true" current="conditions.col"></collections>
+					<collections list="true" edit="true" col-all="true" current="conditions.col"></collections>
 					<h3>标签</h3>
 					<div class="tags list">
-						<div ng-repeat="tag in data.tags" class="tag" ng-click="limitTag(tag.title)">
+						<div ng-repeat="(tag,count) in data.d_tags" class="tag" ng-click="limitTag(tag)">
 							<i class="fa fa-tag"></i>
-							<span class="title">{{tag.title}}</span>
-							<span class="count">{{tag.count}}</span>
+							<span class="title">{{tag}}</span>
+							<span class="count">{{count}}</span>
 						</div>
 						<div class="clear"></div>
 					</div>

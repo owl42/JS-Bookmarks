@@ -42,6 +42,7 @@ angular.module('app')
 			scope: {
 				current: '=',
 				colAll: '@',
+				edit: '@',
 			},
 			link: function(scope, element, attrs) {
 				scope.data=$rootScope.data;
@@ -55,15 +56,20 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('collection',function(paths){
+	.directive('collection',function(paths,$rootScope){
 		return {
 			templateUrl: paths.common+'templates/collection.html',
 			replace: true,
 			restrict: 'E',
 			scope: {
 				data: '=',
+				edit: '@',
 			},
 			link: function(scope, element, attrs) {
+				scope.editCol=function(e){
+					e.stopPropagation();
+					$rootScope.modal={type:'editCol',data:scope.data};
+				};
 			},
 		};
 	})
@@ -78,21 +84,17 @@ angular.module('app')
 			templateUrl:paths.common+'templates/bookmarkinfo.html',
 			link:function(scope,element,attrs){
 				function revert(){
-					scope.edit=JSON.parse(JSON.stringify(scope.current));
-					scope.collection=$rootScope.data.d_cols[scope.edit.collection];
+					angular.copy(scope.current,scope.edit);
+					scope.collection=$rootScope.data.d_cols[scope.edit.col];
 				}
+				scope.edit={};
 				scope.revert=revert;
 				scope._save=function(){
-					for(var i in scope.edit) {
-						var d=scope.edit[i];
-						if(Array.isArray(d)) d=d.slice();
-						scope.current[i]=d;
-					}
-					scope.save();
+					scope.save({item:scope.edit});
 				};
 				revert();
 				scope.$watch('collection',function(){
-					scope.edit.collection=scope.collection.id;
+					scope.edit.col=scope.collection.id;
 				},false);
 			},
 		};

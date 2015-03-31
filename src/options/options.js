@@ -28,11 +28,34 @@ angular.module('app',['ui.router'])
 				},
 			})
 			.state('bookmarks.edit',{
-				url:'/:bid',
+				url:'/edit/:bid',
 				templateUrl:'templates/edit.html',
 				controller: EditBookmark,
 			})
 		;
+	})
+	.controller('editColController',function($scope,$rootScope){
+		var data=$rootScope.modal.data||{};
+		$scope.col={
+			id:data.id||0,
+			title:data.title||'新分组',
+			icon:data.icon,
+		};
+		$scope.save=function(){
+			chrome.runtime.sendMessage({cmd:'SaveCollection',data:$scope.col},function(data){
+				$scope.$apply(function(){
+					var col=$rootScope.data.d_cols[data.id];
+					if(!col)
+						$rootScope.data.cols.push(data);
+					else
+						angular.extend(col,data);
+					$rootScope.modal=null;
+				});
+			});
+		};
+		$scope.close=function(){
+			$rootScope.modal=null;
+		};
 	})
 	.run(function($rootScope,$state){
 		$rootScope.user={id:0};
@@ -43,7 +66,7 @@ angular.module('app',['ui.router'])
 			});
 		});
 		$rootScope.data={
-			tags:[],
+			d_tags:{},
 			bookmarks:[],
 			d_bookmarks:{},
 		};
@@ -58,7 +81,7 @@ angular.module('app',['ui.router'])
 		});
 		chrome.runtime.sendMessage({cmd:'GetTags'},function(data){
 			$rootScope.$apply(function(){
-				$rootScope.data.tags=data;
+				$rootScope.data.d_tags=data;
 			});
 		});
 		$rootScope.$state=$state;
@@ -106,6 +129,7 @@ var LogIn=function($scope,$rootScope,$state){
 		};
 		$state.go('bookmarks');
 	};
+	$scope.login();
 };
 var SidePanel=function($scope,$rootScope,$state){
 	if(!$rootScope.user.id) $state.go('login');
@@ -124,13 +148,20 @@ var SidePanel=function($scope,$rootScope,$state){
 	$scope.limitCol=function(c){
 		$rootScope.conditions.col=c;
 	};
+	$scope.editCol=function(){
+		$rootScope.modal={type:'editCol'};
+	};
 };
 var Bookmarks=function($scope,$rootScope,$state){
-	$scope.edit=function(data){
-		$state.go('bookmarks.edit',{bid:data.id});
+	$scope.remove=function(data){
+		removeBookmark(data,$rootScope.data,function(){
+			$scope.$apply(function(){
+				if(data===$scope.current.item) $state.go('bookmarks');
+			});
+		});
 	};
 	$scope.conditions=$rootScope.conditions;
-	$scope.remove=function(i){
+	$scope.removeTag=function(i){
 		$scope.conditions.tags.splice(i,1);
 	};
 	$scope.checkCondition=function(item){
@@ -145,11 +176,35 @@ var Bookmarks=function($scope,$rootScope,$state){
 };
 var EditBookmark=function($scope,$rootScope,$stateParams,$state){
 	$scope.current.bid=$stateParams.bid;
-	$scope.current.item=$rootScope.data.d_bookmarks[$scope.current.bid];
+	if($scope.current.bid>0)
+		$scope.current.item=$rootScope.data.d_bookmarks[$scope.current.bid];
+	else
+		$scope.current.item={
+			title:'新书签',
+			col:$rootScope.conditions.col.id||-1,
+			tags:[],
+		};
 	$scope.close=function(){
 		$state.go('bookmarks');
 	};
-	$scope.save=function(){
-		alert('modified.');
+	$scope.save=function(item){
+		saveBookmark($scope.current.item,item,$rootScope.data,function(data){
+			var item=$scope.current.item,
+					root=$rootScope.data,
+					ccol=$rootScope.conditions.col;
+			$scope.$apply(function(){
+				if(data.id) {
+					if(item.col!=data.col&&item.col==ccol.id) {
+						var i=root.bookmarks.indexOf(item);
+						root.bookmarks.splice(i,1);
+						delete root.d_bookmarks[item.id];
+					} else
+						angular.extend(item,data);
+				} else if(data.col==ccol.id||ccol===root.colAll) {
+					root.d_bookmarks[data.id]=data;
+					root.bookmarks.push(data);
+				}
+			});
+		});
 	};
 };

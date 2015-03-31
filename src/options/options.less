@@ -255,6 +255,9 @@ button {
 	left: 0;
 	bottom: 0;
 	right: 0;
+	a {
+		color: blue;
+	}
 }
 .bookmark {
 	cursor: pointer;
@@ -284,12 +287,12 @@ button {
 		max-width: 300px;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.desc {
 		color: gray;
 	}
 	.tags {
-		display: block;
 		margin-left: @bookmark-icon-size;
 		a {
 			color: #456;
@@ -311,6 +314,8 @@ button {
 		top: 0;
 		right: @bookmark-snapshot-width+1rem;
 		line-height: @bookmark-height;
+		background: inherit;
+		padding: 0 1rem;
 		&>* {
 			font-size: @bookmark-button-size/2;
 			border-radius: 50%;
@@ -392,4 +397,30 @@ body[data-controller='bookmarks.edit'] .bookmarks {
 }
 table {
 	border-collapse: collapse;
+}
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	background: rgba(0,0,0,.7);
+	text-align: center;
+	&>* {
+		text-align: left;
+		display: inline-block;
+		background: #567;
+		border-radius: 1rem;
+		padding: 1rem;
+		font-size: 1rem;
+		color: white;
+	}
+}
+.editCol {
+	width: 30%;
+	min-width: 300px;
+	button {
+		width: 40%;
+	}
 }

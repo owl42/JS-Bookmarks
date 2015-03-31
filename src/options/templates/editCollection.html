@@ -1,0 +1,17 @@
+<div ng-controller="editColController">
+	<h3>新建分组</h3>
+	<form>
+		<div class="field">
+			<label>分组名</label>
+			<input type=text ng-model="col.title">
+		</div>
+		<!--<div class="field">
+			<label>图标</label>
+			<div>不能改</div>
+		</div>-->
+		<div class="buttons">
+			<button class="save" ng-click="save()">保存</button>
+			<button class="cancel" ng-click="close()">取消</button>
+		</div>
+	</form>
+</div>
