@@ -1,6 +1,5 @@
 angular.module('app',['ui.router'])
-	.config(function($compileProvider,$stateProvider,$urlRouterProvider){
-		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
+	.config(function($stateProvider,$urlRouterProvider){
 		$urlRouterProvider.otherwise('/login');
 		$stateProvider
 			.state('login',{

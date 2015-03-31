@@ -27,7 +27,6 @@ h3 {
 @collection-font-size: 1rem;
 @collection-height: 2rem;
 @collection-icon-width: @collection-height;
-@collection-number-width: 1rem;
 @collection-hover-background: darken(@collections-background,10%);
 @screenshot-width: 130px;
 @screenshot-height: 130px;
@@ -101,46 +100,68 @@ h3 {
 		overflow: hidden;
 	}
 }
-li.collection {
+.collection {
 	color: @collection-color;
 	font-size: @collection-font-size;
 	list-style: none;
 	cursor: pointer;
-	position: relative;
-	height: @collection-height;
-	&>* {
+	.cell {
+		display: table-cell;
 		height: @collection-height;
-		line-height: @collection-height;
-		display: block;
+		vertical-align: middle;
+		position: relative;
+		&.expand {
+			width: 100%;
+		}
 	}
 	.icon {
 		width: @collection-icon-width;
-		position: absolute;
-		left: 0;
-		top: 0;
 	}
 	.title {
+		// font-size must be reset in .mid-wrap
+		font-size: @collection-font-size;
 		width: 100%;
-		padding: 0 @collection-number-width 0 @collection-icon-width;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.number {
-		width: @collection-number-width;
-		position: absolute;
-		top: 0;
-		text-align: right;
-		right: 0;
+		font-size: .8rem;
+		padding: .1rem .2rem;
+		border: 1px solid #abc;
 	}
 	&:hover {
 		background: @collection-hover-background;
 	}
-}
-.collection.active {
-	font-weight: bold;
-	color: yellow;
+	&.active {
+		.title {
+			font-weight: bold;
+			color: yellow;
+		}
+	}
 }
 .collections {
-	border-radius: .3rem;
 	overflow: hidden;
+}
+.mid-wrap {
+	position: absolute;
+	font-size: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	&>* {
+		display: inline-block;
+		vertical-align: middle;
+	}
+	&::after {
+		content: '.';
+		display: inline-block;
+		width: 0;
+		height: 100%;
+		vertical-align: middle;
+		//overflow: hidden;
+	}
 }
 
 .bminfo {
@@ -175,6 +196,7 @@ li.collection {
 		}
 	}
 	.collections {
+		border-radius: .3rem;
 		background: #456;
 	}
 }

@@ -1,4 +1,7 @@
 angular.module('app')
+	.config(function($compileProvider){
+		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
+	})
 	.directive('tags',function(paths){
 		return {
 			templateUrl: paths.common+'templates/tags.html',

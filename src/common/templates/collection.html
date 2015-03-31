@@ -1,5 +1,13 @@
 <li class="collection">
-	<span class="icon"></span>
-	<span class="title">{{data.title}}</span>
-	<span class="number">{{data.count}}</span>
+	<div class="cell">
+		<img class="icon" ng-src="{{data.icon||'/img/icon48.png'}}">
+	</div>
+	<div class="cell expand">
+		<div class="mid-wrap">
+			<div class="title">{{data.title}}</div>
+		</div>
+	</div>
+	<div class="cell">
+		<div class="number">{{data.count}}</div>
+	</div>
 </li>

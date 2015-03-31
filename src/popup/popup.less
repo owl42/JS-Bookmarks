@@ -110,19 +110,16 @@ body {
 	.collection {
 		@size: 3rem;
 		@right: 1rem;
-		height: @size;
-		padding-right: @right;
-		&>* {
-			line-height: @size;
+		.cell {
+			height: @size;
 		}
 		.icon {
 			width: @size;
 		}
 		.title {
-			padding-left: @size;
 		}
 		.number {
-			right: @right;
+			margin-right: 1rem;
 		}
 	}
 	.collections {
