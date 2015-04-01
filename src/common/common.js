@@ -16,6 +16,11 @@ function getCollections(data,cb){
 		if(cb) cb();
 	});
 }
+function removeCollection(data,cb){
+	chrome.runtime.sendMessage({cmd:'RemoveCollection',data:data},function(ret){
+		if(cb) cb(ret||{});
+	});
+}
 function getTags(data,cb){
 	data.d_tags={};
 	chrome.runtime.sendMessage({cmd:'GetTags'},function(tags){

@@ -46,10 +46,6 @@ angular.module('app')
 		function open(data){
 			if(data.url) window.open(data.url);
 		}
-		function stop(event){
-			event.preventDefault();
-			event.stopPropagation();
-		}
 		function edit(data){
 			$state.go('bookmarks.edit',{bid:data.id});
 		}
@@ -64,7 +60,7 @@ angular.module('app')
 				scope.shortUrl=shortUrl;
 				scope.getIcon=getIcon;
 				scope.open=open;
-				scope.stop=stop;
+				scope.stop=$rootScope.stop;
 				scope.edit=edit;
 				scope.remove=scope.$parent.remove;
 				scope.limitTag=$rootScope.limitTag;

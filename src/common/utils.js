@@ -66,9 +66,19 @@ angular.module('app')
 				edit: '@',
 			},
 			link: function(scope, element, attrs) {
-				scope.editCol=function(e){
-					e.stopPropagation();
+				scope.stop=$rootScope.stop;
+				scope.editCol=function(){
 					$rootScope.modal={type:'editCol',data:scope.data};
+				};
+				scope.removeCol=function(){
+					removeCollection(scope.data.id,function(ret){
+						if(ret.err) alert(ret.msg);
+						else scope.$apply(function(){
+							var i=$rootScope.data.cols.indexOf(scope.data);
+							$rootScope.data.cols.splice(i,1);
+							delete $rootScope.data.d_cols[scope.data.id];
+						});
+					});
 				};
 			},
 		};

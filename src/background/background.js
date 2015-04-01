@@ -81,6 +81,23 @@ function getCollections(data,src,callback){
 	getCollectionList();
 	return true;
 }
+function removeCollection(id,src,callback){
+	function remove(){
+		var o=db.transaction('collections','readwrite').objectStore('collections');
+		o.delete(id);
+		callback();
+	}
+	function check(){
+		var o=db.transaction('bookmarks').objectStore('bookmarks');
+		o.index('col').get(id).onsuccess=function(e){
+			var r=e.target.result;
+			if(r) callback({err:1,msg:'分组内有书签无法删除！'});
+			else remove();
+		};
+	}
+	check();
+	return true;
+}
 function getTags(data,src,callback){
 	data={};
 	var o=db.transaction('bookmarks').objectStore('bookmarks');
@@ -168,6 +185,7 @@ initDb(function(){
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,
 			RemoveBookmark:removeBookmark,
+			RemoveCollection:removeCollection,
 			GetUserInfo:getUserInfo,
 			LogIn:logIn,
 			LogOut:logOut,
