@@ -1,14 +1,16 @@
-<div class="bookmark" title="{{data.desc}}" ng-click="open(data)">
+<div class="bookmark" title="{{data.url}}" ng-click="open(data)">
 	<img class="icon" ng-src="{{getIcon(data)}}">
-	<div class="title">{{data.title}}</div>
-	<div class="url" title="{{data.url}}">{{shortUrl(data.url)}}</div>
-	<div class="desc">{{data.desc}}</div>
+	<div class="title" title="{{data.desc}}">
+		{{data.title}}
+	</div>
+	<div class="url" ng-if="detail">{{shortUrl(data.url)}}</div>
+	<div class="desc" ng-if="detail">{{data.desc}}</div>
 	<br>
 	<div class="tags" ng-click="stop($event)">
 		<a ng-repeat="tag in data.tags" ng-click="limitTag(tag)">#{{tag}}</a>
 	</div>
-	<div class="snapshot"></div>
-	<div class="panel" ng-click="stop($event)">
+	<div class="snapshot" ng-if="detail"></div>
+	<div class="panel" ng-if="detail" ng-click="stop($event)">
 		<a class="edit" title="修改" ng-click="edit(data)"><i class="fa fa-pencil"></i></a>
 		<a class="del" title="删除" ng-click="remove(data)"><i class="fa fa-trash"></i></a>
 	</div>

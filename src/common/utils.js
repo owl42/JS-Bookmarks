@@ -109,4 +109,40 @@ angular.module('app')
 			},
 		};
 	})
+	.directive('bookmark',function($rootScope,$state,paths){
+		function shortUrl(url){
+			return url.replace(/^https?:\/\//i,'');
+		}
+		function open(data){
+			if(data.url) window.open(data.url);
+		}
+		function getIcon(data){
+			return data.icon||'/img/icon16.png';
+		}
+		function stop(e){
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		function edit(data){
+			$state.go('bookmarks.edit',{bid:data.id});
+		}
+		return {
+			restrict:'E',
+			replace:true,
+			scope:{
+				data:'=',
+				detail:'@',
+			},
+			templateUrl:paths.common+'templates/bookmark.html',
+			link:function(scope,element,attrs){
+				scope.shortUrl=shortUrl;
+				scope.getIcon=getIcon;
+				scope.open=open;
+				scope.stop=stop;
+				scope.edit=edit;
+				scope.remove=scope.$parent.remove;
+				scope.limitTag=$rootScope.limitTag;
+			},
+		};
+	})
 ;

@@ -58,10 +58,6 @@ angular.module('app',['ui.router'])
 		};
 	})
 	.run(function($rootScope,$state){
-		$rootScope.stop=function(event){
-			event.preventDefault();
-			event.stopPropagation();
-		};
 		$rootScope.engines={items:[],def:0};
 		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
 			$rootScope.$apply(function(){

@@ -5,45 +5,16 @@
 		<title>Sunshine</title>
 		<link rel="stylesheet" type="text/css" href="../lib/angular-csp.css" />
 		<link rel="stylesheet" type="text/css" href="../lib/font-awesome/font-awesome.min.css" />
-		<link rel="stylesheet/less" type="text/css" href="popup.less" />
+		<link rel="stylesheet/less" type="text/css" href="../common/style.less" />
 		<script src="../lib/less.min.js"></script>
 		<script src="../lib/angular.js"></script>
 		<script src="../lib/angular-ui-router.js"></script>
 		<script src="../common/common.js"></script>
 	</head>
 	<body data-controller="{{$state.current.name}}">
-		<div class="view">
-			<div class="homeCol col" ng-class="{'index':$state.current.name=='index'}"><div class="wrap">
-					<div class="menu">
-						<div class="wrap">
-							<div class="left">
-								<a class="logo item" href="http://geraldl.net"></a>
-								<a class="item" ui-sref="search">
-									<i class="fa fa-search"></i>
-								</a>
-							</div>
-							<div class="right">
-								<a class="item" ng-show="config.urlValid" ui-sref="bookmark({cid:0})">
-									<i class="fa fa-plus"></i>
-								</a>
-								<a class="item" ng-click="showSettings()">
-									<i class="fa fa-cog"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="content">
-						<collections list="true" col-all="true"></collections>
-					</div>
-					<div class="footer">
-						&copy; <a href="http://geraldl.net" target=_blank>Sunshine</a>
-					</div>
-			</div></div>
-			<div class="contentCol col">
-					<div ui-view class="wrap"></div>
-			</div>
-		</div>
+		<div ui-view class="view"></div>
 		<script src="popup.js"></script>
+		<script src="utils.js"></script>
 		<script src="../common/utils.js"></script>
 	</body>
 </html>

@@ -36,35 +36,4 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('bookmark',function($rootScope,$state){
-		function shortUrl(url){
-			return url.replace(/^https?:\/\//i,'');
-		}
-		function getIcon(data){
-			return data.icon||'/img/icon16.png';
-		}
-		function open(data){
-			if(data.url) window.open(data.url);
-		}
-		function edit(data){
-			$state.go('bookmarks.edit',{bid:data.id});
-		}
-		return {
-			restrict:'E',
-			replace:true,
-			scope:{
-				data:'=',
-			},
-			templateUrl:'templates/bookmark.html',
-			link:function(scope,element,attrs){
-				scope.shortUrl=shortUrl;
-				scope.getIcon=getIcon;
-				scope.open=open;
-				scope.stop=$rootScope.stop;
-				scope.edit=edit;
-				scope.remove=scope.$parent.remove;
-				scope.limitTag=$rootScope.limitTag;
-			},
-		};
-	})
 ;
