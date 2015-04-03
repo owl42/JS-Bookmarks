@@ -267,12 +267,6 @@ a,a:visited {
 	}
 	.tags {
 		margin-left: @icon-size;
-		a {
-			color: #456;
-			&:hover {
-				color: #89f;
-			}
-		}
 	}
 }
 
@@ -554,6 +548,14 @@ button {
 		.desc {
 			color: gray;
 		}
+		.tags {
+			a {
+				color: #456;
+				&:hover {
+					color: #89f;
+				}
+			}
+		}
 		.snapshot {
 			width: @bookmark-snapshot-width;
 			height: 100%;
@@ -824,6 +826,15 @@ body {
 	.bookmark {
 		&:hover {
 			background: darken(@groups-background,5%);
+		}
+		.tags {
+			@color: #abc;
+			a {
+				color: darken(@color,10%);
+				&:hover {
+					color: @color;
+				}
+			}
 		}
 	}
 }

@@ -34,7 +34,7 @@ angular.module('app',['ui.router'])
 			})
 		;
 	})
-	.controller('editColController',function($scope,$rootScope){
+	.controller('editColController',function($scope,$rootScope,apis){
 		var data=$rootScope.modal.data||{};
 		$scope.col={
 			id:data.id||0,
@@ -42,22 +42,15 @@ angular.module('app',['ui.router'])
 			icon:data.icon,
 		};
 		$scope.save=function(){
-			chrome.runtime.sendMessage({cmd:'SaveCollection',data:$scope.col},function(data){
-				$scope.$apply(function(){
-					var col=$rootScope.data.d_cols[data.id];
-					if(!col)
-						$rootScope.data.cols.push(data);
-					else
-						angular.extend(col,data);
-					$rootScope.modal=null;
-				});
+			apis.saveCollection($scope.col).then(function(){
+				$rootScope.modal=null;
 			});
 		};
 		$scope.close=function(){
 			$rootScope.modal=null;
 		};
 	})
-	.run(function($rootScope,$state){
+	.run(function($rootScope,$state,apis){
 		$rootScope.engines={items:[],def:0};
 		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
 			$rootScope.$apply(function(){
@@ -66,28 +59,21 @@ angular.module('app',['ui.router'])
 		});
 		$rootScope.data={};
 		$rootScope.conditions={
-			col:null,
+			col:0,
 			tags:[],
 		};
-		getCollections($rootScope.data,function(){
-			$rootScope.$apply(function(){
-				$rootScope.conditions.col=$rootScope.data.colAll;
-			});
+		$rootScope._collections=apis.getCollections().then(function(){
+			$rootScope.conditions.col=$rootScope.data.colAll.id;
 		});
-		getTags($rootScope.data,function(){
-			$rootScope.$apply();
-		});
-		getBookmarks($rootScope.data);
+		$rootScope._tags=apis.getTags();
+		$rootScope._bookmarks=apis.getBookmarks();
 		$rootScope.$state=$state;
 		$rootScope.limitTag=function(tag){
 			var i=$rootScope.conditions.tags.indexOf(tag);
 			if(i<0) $rootScope.conditions.tags.push(tag);
 		};
 		$rootScope.$watch('conditions.col',function(){
-			if($rootScope.conditions.col)
-				getBookmarks($rootScope.data,$rootScope.conditions.col.id,function(){
-					$rootScope.$apply();
-				});
+			$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
 		},false);
 	})
 	.run(function($rootScope,$state){
@@ -95,12 +81,9 @@ angular.module('app',['ui.router'])
 	})
 ;
 
-var LogIn=function($scope,$rootScope,$state){
-	getUserInfo(function(data){
-		$rootScope.user=data;
-		$rootScope.$apply(function(){
-			if(data.id) $state.go('bookmarks');
-		});
+var LogIn=function($scope,$rootScope,$state,apis){
+	apis.getUserInfo().then(function(){
+		if($rootScope.user.id) $state.go('bookmarks');
 	});
 	$scope.mode='login';
 	$scope.switchMode=function(){
@@ -111,20 +94,15 @@ var LogIn=function($scope,$rootScope,$state){
 	$scope.pwd='';
 	$scope.sign=function(){
 		if($scope.mode=='signin') alert('Not supported yet.');
-		else logIn($scope.email,$scope.pwd,function(data){
-			$rootScope.user=data;
-			$scope.$apply(function(){
-				$state.go('bookmarks');
-			});
+		else apis.logIn($scope.email,$scope.pwd,function(){
+			if($rootScope.user.id) $state.go('bookmarks');
+			// TODO: failed log in
 		});
 	};
 };
-var SidePanel=function($scope,$rootScope,$state){
-	getUserInfo(function(data){
-		$rootScope.user=data;
-		$rootScope.$apply(function(){
-			if(!data.id) $state.go('login');
-		});
+var SidePanel=function($scope,$rootScope,$state,apis){
+	apis.getUserInfo().then(function(){
+		if(!$rootScope.user.id) $state.go('login');
 	});
 	$scope.menuitems=[{
 		key:'groups',
@@ -139,26 +117,21 @@ var SidePanel=function($scope,$rootScope,$state){
 	};
 	$scope.data=$rootScope.data;
 	$scope.limitCol=function(c){
-		$rootScope.conditions.col=c;
+		$rootScope.conditions.col=c.id;
 	};
 	$scope.editCol=function(){
 		$rootScope.modal={type:'editCol'};
 	};
 	$scope.logout=function(){
-		logOut(function(data){
-			$rootScope.user=data;
-			$rootScope.$apply(function(){
-				$state.go('login');
-			});
+		apis.logOut(function(){
+			$state.go('login');
 		});
 	};
 };
-var Bookmarks=function($scope,$rootScope,$state){
+var Bookmarks=function($scope,$rootScope,$state,apis){
 	$scope.remove=function(data){
-		removeBookmark(data,$rootScope.data,function(){
-			$scope.$apply(function(){
-				if(data===$scope.current.item) $state.go('bookmarks');
-			});
+		apis.removeBookmark(data).then(function(){
+			if(data===$scope.current.item) $state.go('bookmarks');
 		});
 	};
 	$scope.conditions=$rootScope.conditions;
@@ -175,37 +148,46 @@ var Bookmarks=function($scope,$rootScope,$state){
 		bid:null,
 	};
 };
-var EditBookmark=function($scope,$rootScope,$stateParams,$state){
+var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 	$scope.current.bid=$stateParams.bid;
-	if($scope.current.bid>0)
-		$scope.current.item=$rootScope.data.d_bookmarks[$scope.current.bid];
-	else
-		$scope.current.item={
-			title:'新书签',
-			col:$rootScope.conditions.col.id||-1,
-			tags:[],
-		};
+	$rootScope._collections.then(function(){
+		if($scope.current.bid>0)
+			$scope.current.item=$rootScope.data.d_bookmarks[$scope.current.bid];
+		else
+			$scope.current.item={
+				title:'新书签',
+				col:$rootScope.conditions.col||-1,
+				tags:[],
+			};
+		$scope.revert();
+	});
 	$scope.close=function(){
 		$state.go('bookmarks');
 	};
-	$scope.save=function(item){
-		saveBookmark($scope.current.item,item,$rootScope.data,function(data){
-			var item=$scope.current.item,
+	$scope.revert=function(){
+		$scope.current.edit={};
+		angular.copy($scope.current.item,$scope.current.edit);
+		$scope.current.collection=$rootScope.data.d_cols[$scope.current.edit.col];
+	};
+	$scope.save=function(){
+		apis.saveBookmark($scope.current.item,$scope.current.edit).then(function(data){
+			var old=$scope.current.item,
 					root=$rootScope.data,
 					ccol=$rootScope.conditions.col;
-			$scope.$apply(function(){
-				if(data.id) {
-					if(item.col!=data.col&&item.col==ccol.id) {
-						var i=root.bookmarks.indexOf(item);
-						root.bookmarks.splice(i,1);
-						delete root.d_bookmarks[item.id];
-					} else
-						angular.extend(item,data);
-				} else if(data.col==ccol.id||ccol===root.colAll) {
+			if(old.id) {
+				if(old.col!=data.col&&old.col==ccol) {
+					var i=root.bookmarks.indexOf(old);
+					root.bookmarks.splice(i,1);
+					delete root.d_bookmarks[old.id];
+				} else
+					angular.extend(old,data);
+			} else {
+				if(data.col==ccol||ccol===root.colAll.id) {
 					root.d_bookmarks[data.id]=data;
 					root.bookmarks.push(data);
 				}
-			});
+				$state.go('bookmarks.edit',{bid:data.id});
+			}
 		});
 	};
 };

@@ -2,6 +2,153 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
 	})
+	.factory('apis',function($q,$rootScope){
+		return {
+			stop: function(e){
+				e.preventDefault();
+				e.stopPropagation();
+			},
+			getCollections: function(){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				data.colAll={};
+				data.colUnd={};
+				data.cols=[];
+				data.d_cols={};
+				chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
+					cols.forEach(function(col){
+						if(col.id==-1) // 未分组
+							data.colUnd=col;
+						else if(col.id==0) // 所有
+							data.colAll=col;
+						else
+							data.cols.push(col);
+						data.d_cols[col.id]=col;
+					});
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			saveCollection: function(col){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				chrome.runtime.sendMessage({cmd:'SaveCollection',data:col},function(ret){
+					var col=data.d_cols[ret.id];
+					if(!col)
+						data.cols.push(ret);
+					else
+						angular.extend(col,ret);
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			removeCollection: function(id){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:id},function(ret){
+					$rootScope.$apply(function(){
+						deferred.resolve(ret||{});
+					});
+				});
+				return deferred.promise;
+			},
+			getTags: function(){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				data.d_tags={};
+				chrome.runtime.sendMessage({cmd:'GetTags'},function(tags){
+					data.d_tags=tags;
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			getBookmarks: function(col){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				data.bookmarks=[];
+				data.d_bookmarks={};
+				if(col!=undefined) chrome.runtime.sendMessage({cmd:'GetBookmarks',data:col},function(bms){
+					data.bookmarks=bms;
+					bms.forEach(function(b){
+						data.d_bookmarks[b.id]=b;
+					});
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				}); else deferred.resolve();
+				return deferred.promise;
+			},
+			saveBookmark: function(olditem,item){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(item){
+					if(olditem.id) {
+						if(olditem.col!=item.col) {
+							data.d_cols[olditem.col].count--;
+							data.d_cols[item.col].count++;
+						}
+					} else {
+						data.colAll.count++;
+						data.d_cols[item.col].count++;
+					}
+					$rootScope.$apply(function(){
+						deferred.resolve(item);
+					});
+				});
+				return deferred.promise;
+			},
+			removeBookmark: function(item){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				chrome.runtime.sendMessage({cmd:'RemoveBookmark',data:item.id},function(){
+					var i=data.bookmarks.indexOf(item);
+					data.bookmarks.splice(i,1);
+					delete data.d_bookmarks[item.id];
+					data.colAll.count--;
+					data.d_cols[item.col].count--;
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			logIn: function(user,pwd){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({cmd:'LogIn',data:{user:user,pwd:pwd}},function(data){
+					$rootScope.user=data;
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			logOut: function(){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({cmd:'LogOut'},function(data){
+					$rootScope.user=data;
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+			getUserInfo: function(){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({cmd:'GetUserInfo'},function(data){
+					$rootScope.user=data;
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
+		};
+	})
 	.directive('tags',function(paths){
 		return {
 			templateUrl: paths.common+'templates/tags.html',
@@ -40,24 +187,30 @@ angular.module('app')
 			replace: true,
 			restrict: 'E',
 			scope: {
-				current: '=',
+				cid: '=',
 				colAll: '@',
 				edit: '@',
+				list: '@',
 			},
-			link: function(scope, element, attrs) {
-				scope.data=$rootScope.data;
-				scope.key=attrs.list?'select':'current';
-				scope.select=function(item){
-					if(item) {
-						scope.current=item;
-						if(!attrs.list) scope.key='current';
-					} else scope.key='select';
+			controller: function($scope){
+				$scope.data=$rootScope.data;
+				$scope.key=$scope.list?'select':'current';
+				$scope.select=function(){
+					$scope.key='select';
+				};
+				this.select=function(item){
+					$scope.cid=item.id;
+					if(!$scope.list) $scope.key='current';
+				};
+				this.isActive=function(item){
+					return item&&$scope.cid==item.id;
 				};
 			},
 		};
 	})
-	.directive('collection',function(paths,$rootScope){
+	.directive('collection',function(paths,$rootScope,apis){
 		return {
+			require: '^collections',
 			templateUrl: paths.common+'templates/collection.html',
 			replace: true,
 			restrict: 'E',
@@ -65,11 +218,19 @@ angular.module('app')
 				data: '=',
 				edit: '@',
 			},
-			link: function(scope, element, attrs) {
-				scope.stop=$rootScope.stop;
+			link: function(scope, element, attrs, colsCtrl) {
+				scope.stop=apis.stop;
+				scope.isActive=function(){
+					return colsCtrl.isActive(scope.data);
+				};
 				scope.editCol=function(){
 					$rootScope.modal={type:'editCol',data:scope.data};
 				};
+				if(attrs.select) element.on('click',function(){
+					scope.$apply(function(){
+						colsCtrl.select(scope.data);
+					});
+				});
 				scope.removeCol=function(){
 					removeCollection(scope.data.id,function(ret){
 						if(ret.err) alert(ret.msg);
@@ -88,28 +249,14 @@ angular.module('app')
 			restrict:'E',
 			replace:true,
 			scope:{
-				current:'=',
+				revert:'&',
 				save:'&',
+				data:'=',
 			},
 			templateUrl:paths.common+'templates/bookmarkinfo.html',
-			link:function(scope,element,attrs){
-				function revert(){
-					angular.copy(scope.current,scope.edit);
-					scope.collection=$rootScope.data.d_cols[scope.edit.col];
-				}
-				scope.edit={};
-				scope.revert=revert;
-				scope._save=function(){
-					scope.save({item:scope.edit});
-				};
-				revert();
-				scope.$watch('collection',function(){
-					scope.edit.col=scope.collection.id;
-				},false);
-			},
 		};
 	})
-	.directive('bookmark',function($rootScope,$state,paths){
+	.directive('bookmark',function($rootScope,$state,paths,apis){
 		function shortUrl(url){
 			return url.replace(/^https?:\/\//i,'');
 		}
@@ -118,10 +265,6 @@ angular.module('app')
 		}
 		function getIcon(data){
 			return data.icon||'/img/icon16.png';
-		}
-		function stop(e){
-			e.preventDefault();
-			e.stopPropagation();
 		}
 		function edit(data){
 			$state.go('bookmarks.edit',{bid:data.id});
@@ -138,7 +281,7 @@ angular.module('app')
 				scope.shortUrl=shortUrl;
 				scope.getIcon=getIcon;
 				scope.open=open;
-				scope.stop=stop;
+				scope.stop=apis.stop;
 				scope.edit=edit;
 				scope.remove=scope.$parent.remove;
 				scope.limitTag=$rootScope.limitTag;

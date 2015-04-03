@@ -19,7 +19,7 @@ angular.module('app',['ui.router'])
 			})
 		;
 	})
-	.run(function($rootScope,$state){
+	.run(function($rootScope,$state,apis){
 		var config=$rootScope.config={count:0};
 		chrome.tabs.query({active:true},function(tab){
 			config.tab=tab[0];
@@ -29,9 +29,7 @@ angular.module('app',['ui.router'])
 		});
 		$rootScope.$state=$state;
 		$rootScope.data={};
-		getCollections($rootScope.data,function(){
-			$rootScope.$apply();
-		});
+		$rootScope._collections=apis.getCollections();
 	})
 ;
 
@@ -41,16 +39,14 @@ var Home=function($scope,$state){
 	};
 	$scope.current={col:null};
 	$scope.$watch('current.col',function(){
-		if($scope.current.col) $state.go('bookmarks',{cid:$scope.current.col.id});
+		if($scope.current.col!=null) $state.go('bookmarks',{cid:$scope.current.col});
 	});
 };
-var Bookmarks=function($scope,$rootScope,$stateParams,$state){
+var Bookmarks=function($scope,$rootScope,$stateParams,$state,apis){
 	var col=$rootScope.data.d_cols[$stateParams.cid];
 	if(!col) $state.go('home');
 	$scope.data=$rootScope.data;
-	getBookmarks($rootScope.data,col.id,function(){
-		$scope.$apply();
-	});
+	apis.getBookmarks(col.id);
 	$scope.back=function(){
 		$state.go('home');
 	};
@@ -64,10 +60,8 @@ var Bookmark=function($scope,$rootScope,$state){
 		tags:[],
 	};
 	$scope.save=function(item){
-		saveBookmark($scope.bookmark,item,$rootScope.data,function(data){
-			$scope.$apply(function(){
-				$scope.back();
-			});
+		apis.saveBookmark($scope.bookmark,item).then(function(){
+			$scope.back();
 		});
 	};
 	$scope.back=function(){

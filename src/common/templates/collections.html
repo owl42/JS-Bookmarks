@@ -1,10 +1,10 @@
 <ul class="collections" ng-switch="key">
 	<div ng-switch-default class="current" ng-click="select()">
-		<collection data="current" class="active"></collection>
+		<collection data="data.d_cols[cid]" class="active"></collection>
 	</div>
 	<div ng-switch-when="select">
-		<collection ng-if="colAll" data="data.colAll" ng-click="select(data.colAll)" ng-class="{active:data.colAll===current}"></collection>
-		<collection ng-repeat="item in data.cols" data="item" ng-click="select(item)" ng-class="{active:item===current}" edit="{{edit}}"></collection>
-		<collection data="data.colUnd" ng-click="select(data.colUnd)" ng-class="{active:data.colUnd===current}"></collection>
+		<collection ng-if="colAll" data="data.colAll" select="true"></collection>
+		<collection ng-repeat="item in data.cols" data="item" select="true" edit="{{edit}}"></collection>
+		<collection data="data.colUnd" select="true"></collection>
 	</div>
 </ul>
