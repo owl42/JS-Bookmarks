@@ -147,8 +147,7 @@ function saveBookmark(data,src,callback){
 	if(data.id) bm.id=data.id;
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 	o.put(bm).onsuccess=function(e){
-		bm.id=e.target.result;
-		callback(bm);
+		callback(e.target.result);
 	};
 	return true;
 }

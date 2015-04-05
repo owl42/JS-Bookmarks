@@ -94,7 +94,7 @@ var LogIn=function($scope,$rootScope,$state,apis){
 	$scope.pwd='';
 	$scope.sign=function(){
 		if($scope.mode=='signin') alert('Not supported yet.');
-		else apis.logIn($scope.email,$scope.pwd,function(){
+		else apis.logIn($scope.email,$scope.pwd).then(function(){
 			if($rootScope.user.id) $state.go('bookmarks');
 			// TODO: failed log in
 		});
@@ -123,7 +123,7 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 		$rootScope.modal={type:'editCol'};
 	};
 	$scope.logout=function(){
-		apis.logOut(function(){
+		apis.logOut().then(function(){
 			$state.go('login');
 		});
 	};
@@ -173,7 +173,8 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		apis.saveBookmark($scope.current.item,$scope.current.edit).then(function(data){
 			var old=$scope.current.item,
 					root=$rootScope.data,
-					ccol=$rootScope.conditions.col;
+					ccol=$rootScope.conditions.col,
+					otags=old.tags;
 			if(old.id) {
 				if(old.col!=data.col&&old.col==ccol) {
 					var i=root.bookmarks.indexOf(old);
@@ -182,12 +183,26 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 				} else
 					angular.extend(old,data);
 			} else {
+				otags=[];
 				if(data.col==ccol||ccol===root.colAll.id) {
 					root.d_bookmarks[data.id]=data;
 					root.bookmarks.push(data);
 				}
 				$state.go('bookmarks.edit',{bid:data.id});
 			}
+			data.tags.forEach(function(tag){
+				var i=otags.indexOf(tag);
+				if(i<0) {
+					root.d_tags[tag]=(root.d_tags[tag]||0)+1;
+				} else
+					otags[i]=null;
+			});
+			otags.forEach(function(tag){
+				if(tag) {
+					if(!--root.d_tags[tag]) delete root.d_tags[tag];
+				}
+			});
+			$scope.revert();
 		});
 	};
 };

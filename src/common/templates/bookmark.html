@@ -7,7 +7,7 @@
 	<div class="desc" ng-if="detail">{{data.desc}}</div>
 	<br>
 	<div class="tags" ng-click="stop($event)">
-		<a ng-repeat="tag in data.tags" ng-click="limitTag(tag)">#{{tag}}</a>
+		<a class="tag" ng-repeat="tag in data.tags" ng-click="limitTag(tag)">#{{tag}}</a>
 	</div>
 	<div class="snapshot" ng-if="detail"></div>
 	<div class="panel" ng-if="detail" ng-click="stop($event)">

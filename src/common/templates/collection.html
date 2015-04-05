@@ -7,9 +7,9 @@
 			<div class="title">{{data.title}}</div>
 		</div>
 	</div>
-	<div class="cell" ng-click="stop($event)">
-		<div class="edit" ng-if="edit" ng-click="editCol()"><i class="fa fa-edit"></i></div>
-		<div class="edit" ng-if="edit" ng-click="removeCol()"><i class="fa fa-trash"></i></div>
+	<div class="cell">
+		<div class="edit" ng-if="edit" ng-click="editCol();stop($event)"><i class="fa fa-edit"></i></div>
+		<div class="edit" ng-if="edit" ng-click="removeCol();stop($event)"><i class="fa fa-trash"></i></div>
 		<div class="number">{{data.count}}</div>
 	</div>
 </li>

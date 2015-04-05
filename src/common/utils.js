@@ -86,13 +86,14 @@ angular.module('app')
 			saveBookmark: function(olditem,item){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(item){
+				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(id){
 					if(olditem.id) {
 						if(olditem.col!=item.col) {
 							data.d_cols[olditem.col].count--;
 							data.d_cols[item.col].count++;
 						}
 					} else {
+						item.id=id;
 						data.colAll.count++;
 						data.d_cols[item.col].count++;
 					}
