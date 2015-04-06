@@ -9,8 +9,8 @@ angular.module('app',['ui.router'])
 						templateUrl:'templates/login.html',
 						controller:LogIn,
 					},
-					main:{
-						template:'<h1 align=center>这里可以放幅画</h1>',
+					center:{
+						templateUrl:'templates/main.html',
 					},
 				}
 			})
@@ -21,7 +21,7 @@ angular.module('app',['ui.router'])
 						templateUrl:'templates/leftside.html',
 						controller:SidePanel,
 					},
-					main:{
+					center:{
 						templateUrl:'templates/bookmarks.html',
 						controller: Bookmarks,
 					},
@@ -104,17 +104,7 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	apis.getUserInfo().then(function(){
 		if(!$rootScope.user.id) $state.go('login');
 	});
-	$scope.menuitems=[{
-		key:'groups',
-		icon:'list',
-	},{
-		key:'settings',
-		icon:'cog',
-	}];
 	$scope.key='groups';
-	$scope.show=function(key){
-		$scope.key=key;
-	};
 	$scope.data=$rootScope.data;
 	$scope.limitCol=function(c){
 		$rootScope.conditions.col=c.id;

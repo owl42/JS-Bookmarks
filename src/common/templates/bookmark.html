@@ -10,8 +10,10 @@
 		<a class="tag" ng-repeat="tag in data.tags" ng-click="limitTag(tag)">#{{tag}}</a>
 	</div>
 	<div class="snapshot" ng-if="detail"></div>
-	<div class="panel" ng-if="detail" ng-click="stop($event)">
-		<a class="edit" title="修改" ng-click="edit(data)"><i class="fa fa-pencil"></i></a>
-		<a class="del" title="删除" ng-click="remove(data)"><i class="fa fa-trash"></i></a>
+	<div class="hpanel" ng-if="detail" ng-click="stop($event)">
+		<div class="rel-mid-wrap">
+			<div class="edit" ng-click="edit(data)">编辑</div>
+			<div class="remove" ng-click="remove(data)">删除</div>
+		</div>
 	</div>
 </div>

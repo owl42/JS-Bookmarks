@@ -1,26 +1,20 @@
 <div class="bminfo">
-	<div class="screenshot"></div>
-	<div class="field">
-		<label>地址</label>
-		<input type=text ng-model="data.url">
+	<div class="padded field">
+		<input type=text placeholder="名称" ng-model="data.title">
 	</div>
-	<div class="field">
-		<label>名字</label>
-		<input type=text ng-model="data.title">
+	<div class="padded field">
+		<input type=text placeholder="网址" ng-model="data.url">
 	</div>
-	<div class="field">
-		<label>描述</label>
-		<textarea ng-model="data.desc"></textarea>
+	<div class="padded field">
+		<textarea placeholder="描述" ng-model="data.desc"></textarea>
 	</div>
-	<div class="field">
-		<label>分组</label>
+	<div class="padded field">
 		<collections cid="data.col"></collections>
 	</div>
-	<div class="field">
-		<label>标签</label>
-		<tags data="data.tags" edit="true"></tags>
+	<div class="padded field">
+		<tags placeholder="在此输入标签" data="data.tags" edit="true"></tags>
 	</div>
-	<div class="buttons">
+	<div class="padded buttons">
 		<button class="save" ng-click="save()">保存</button>
 		<button class="revert" ng-click="revert()">重置</button>
 	</div>

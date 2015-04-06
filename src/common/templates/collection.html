@@ -1,15 +1,19 @@
-<li class="collection" ng-class="{active:isActive()}">
+<div class="collection" ng-class="{active:isActive()}">
 	<div class="cell">
-		<img class="icon" ng-src="{{data.icon||'/img/icon48.png'}}">
+		<img class="icon" ng-src="{{data.icon||'/img/collection.png'}}">
 	</div>
 	<div class="cell expand">
-		<div class="mid-wrap">
+		<div class="abs-mid-wrap">
 			<div class="title">{{data.title}}</div>
 		</div>
 	</div>
 	<div class="cell">
-		<div class="edit" ng-if="edit" ng-click="editCol();stop($event)"><i class="fa fa-edit"></i></div>
-		<div class="edit" ng-if="edit" ng-click="removeCol();stop($event)"><i class="fa fa-trash"></i></div>
 		<div class="number">{{data.count}}</div>
 	</div>
-</li>
+	<div class="hpanel" ng-if="edit" ng-click="stop($event)">
+		<div class="rel-mid-wrap">
+			<div class="edit" ng-click="editCol()">编辑</div>
+			<div class="remove" ng-click="removeCol()">删除</div>
+		</div>
+	</div>
+</div>

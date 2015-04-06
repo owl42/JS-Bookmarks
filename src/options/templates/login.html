@@ -1,27 +1,24 @@
-<form class="padded login">
-	<div class="header">
+<form class="login">
+	<div class="padded header">
 		<div class="right" ng-click="switchMode()">
-			<span>{{'我要'+(mode=='login'?'注册':'登录')}}</span>
-			<i class="fa fa-arrow-circle-o-right"></i>
+			<span>{{mode=='login'?'注册':'登录'}}</span>
+			<i class="fa fa-arrow-right"></i>
 		</div>
-		<span class="mode">{{mode=='login'?'登录':'注册'}}</span>
+		<span class="mode">{{(mode=='login'?'登录':'注册')+'账号'}}</span>
 	</div>
-	<div class="field" ng-if="mode!='login'">
-		<input type=text placeholder="昵称" ng-model="name">
-		<i class="fa fa-cloud"></i>
+	<div class="padded field" ng-if="mode!='login'">
+		<input type=text placeholder="姓　名" ng-model="name">
 	</div>
-	<div class="field">
-		<input type=email placeholder="邮箱" ng-model="email">
-		<i class="fa fa-user"></i>
+	<div class="padded field">
+		<input type=email placeholder="邮　箱" ng-model="email">
 	</div>
-	<div class="field">
-		<input type=password placeholder="密码" ng-model="pwd">
-		<i class="fa fa-lock"></i>
+	<div class="padded field">
+		<input type=password placeholder="密　码" ng-model="pwd">
 	</div>
 	<div class="buttons">
-		<button type=submit class="sign" ng-click="sign()">{{mode=='login'?'登录':'注册'}}</button>
+		<button type=submit class="sign" ng-click="sign()">{{mode=='login'?'登　录':'注　册'}}</button>
 	</div>
-	<div ng-if="mode=='login'">
+	<div class="padded" ng-if="mode=='login'">
 		<a>忘记密码</a>
 	</div>
 </form>

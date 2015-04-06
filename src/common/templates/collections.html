@@ -1,4 +1,4 @@
-<ul class="collections" ng-switch="key">
+<div class="collections" ng-switch="key">
 	<div ng-switch-default class="current" ng-click="select()">
 		<collection data="data.d_cols[cid]" class="active"></collection>
 	</div>
@@ -7,4 +7,4 @@
 		<collection ng-repeat="item in data.cols" data="item" select="true" edit="{{edit}}"></collection>
 		<collection data="data.colUnd" select="true"></collection>
 	</div>
-</ul>
+</div>

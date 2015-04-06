@@ -1,14 +1,12 @@
 <table class="fill-wrap">
 	<tr>
 		<td>
-			<div class="conditions">
+			<div class="header">
 				<div class="right">
-					<searchbox data="engines"></searchbox>
+					<a>批量删除</a>
 				</div>
 				<div class="left">
-					<i class="fa fa-chevron-right"></i>
-					{{conditions.col.title}}
-					<a ui-sref="bookmarks.edit({bid:0})">新建书签</a>
+					<searchbox data="engines"></searchbox>
 				</div>
 				<div class="tags">
 					<li ng-repeat="tag in conditions.tags" class="tag">
@@ -24,10 +22,8 @@
 		</td>
 	</tr>
 	<tr class="expand">
-		<td>
-			<div class="bookmarks row-wrap">
-				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" ng-show="checkCondition(bookmark)"></bookmark>
-			</div>
+		<td class="bookmarks">
+			<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" ng-show="checkCondition(bookmark)"></bookmark>
 		</td>
 	</tr>
 </table>

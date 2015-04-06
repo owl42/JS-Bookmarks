@@ -159,15 +159,21 @@ angular.module('app')
 				data: '=',
 			},
 			link: function(scope, element, attrs) {
+				function nullPlaceholder(){
+					return scope.data.length?'':(attrs.placeholder||'');
+				}
 				scope.tag='';
 				scope.focused=false;
-				scope.placeholder="新标签";
+				scope.placeholder=nullPlaceholder();
 				scope.add=function(next){
 					var v=scope.tag,i=scope.data.indexOf(v);
 					if(v&&i<0) scope.data.push(v);
 					scope.tag='';
 					if(next) input.focus();
-					else scope.focused=false;
+					else {
+						scope.focused=false;
+						scope.placeholder=nullPlaceholder();
+					}
 				};
 				scope.remove=function(i){
 					scope.data.splice(i,1);
@@ -176,6 +182,7 @@ angular.module('app')
 				element.on('click',function(e){
 					scope.$apply(function(){
 						scope.focused=true;
+						scope.placeholder="新标签";
 						input.focus();
 					});
 				});

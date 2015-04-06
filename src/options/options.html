@@ -12,8 +12,8 @@
 	</head>
 	<body data-controller="{{$state.current.name}}">
 		<div ui-view="left" class="left side"></div>
-		<div ui-view="main" class="main"></div>
-		<div class="modal mid-wrap" ng-switch="modal.type" ng-show="modal">
+		<div ui-view="center" class="center"></div>
+		<div class="modal abs-mid-wrap" ng-switch="modal.type" ng-show="modal">
 			<div ng-switch-when="editCol" class="{{modal.type}}">
 				<div ng-include="'templates/editCollection.html'"></div>
 			</div>

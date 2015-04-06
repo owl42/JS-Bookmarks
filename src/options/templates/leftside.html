@@ -1,55 +1,32 @@
-<table class="fill-wrap user">
-	<tr>
-		<td>
-			<div class="avatar">
-				<img ng-src="{{user.avatar}}">
-			</div>
-			<div class="info">
-				<span class="name">{{user.name}}</span>
-				<span class="level">Lv.1</span>
-				<div class="cmd">
-					<a href=# ng-click="logout()">退出账号</a>
-				</div>
-			</div>
-			<div class="clear"></div>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<table class="hor-wrap">
-				<tr>
-					<td ng-repeat="item in menuitems" class="menuitem" ng-class="{active:key==item.key}">
-						<a class="menu" ng-class="{active:key==item.key}" ng-click="show(item.key)"><i class="fa fa-{{item.icon}}"></i></a>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr class="expand">
-		<td>
-			<div class="padded row-wrap" ng-switch="key">
-				<div ng-switch-when="groups">
-					<div class="right">
-						<a class="menu" ng-click="editCol()">
-							<i class="fa fa-plus"></i>
-						</a>
-					</div>
-					<h3>分组</h3>
-					<collections list="true" edit="true" col-all="true" cid="conditions.col"></collections>
-					<h3>标签</h3>
-					<div class="tags list">
-						<div ng-repeat="(tag,count) in data.d_tags" class="tag" ng-click="limitTag(tag)">
-							<i class="fa fa-tag"></i>
-							<span class="title">{{tag}}</span>
-							<span class="count">{{count}}</span>
-						</div>
-						<div class="clear"></div>
-					</div>
-				</div>
-				<div ng-switch-when="settings">
-					这里列出设置项目，右边再显示详细的设置
-				</div>
-			</div>
-		</td>
-	</tr>
-</table>
+<div class="fill-wrap user">
+	<div class="nav">
+		<div class="cell avatar">
+			<img ng-src="{{user.avatar}}">
+		</div>
+		<div class="cell expand">
+			<a><i class="fa fa-cog"></i></a>
+		</div>
+		<div class="cell">
+			<a ui-sref="bookmarks.edit({bid:0})"><i class="fa fa-plus"></i></a>
+		</div>
+	</div>
+	<div class="buttons">
+		<button class="newcol" ng-click="editCol()">添加书签分组</button>
+	</div>
+	<div ng-switch="key">
+		<div ng-switch-when="groups">
+			<div ng-include="'templates/collist.html'"></div>
+		</div>
+		<div ng-switch-when="settings">
+			<div ng-include="'templates/settings.html'"></div>
+		</div>
+	</div>
+</div>
+<div class="footer">
+	<div class="left">
+		<a><i class="fa fa-home"></i></a>
+	</div>
+	<div class="right">
+		<a href=# ng-click="logout()">退出</a>
+	</div>
+</div>

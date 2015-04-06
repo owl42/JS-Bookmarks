@@ -1,6 +1,5 @@
 .colorButton(@color) {
 	background: @color;
-	border-color: desaturate(@color,100%);
 	&:active {
 		background: darken(@color,10%);
 	}
@@ -11,35 +10,23 @@
 	padding: 0;
 	box-sizing: border-box;
 }
-body {
+html,body {
 	font-family: "Microsoft YaHei";
 	font-size: 62.5%;
 }
 h3 {
 	margin: 1rem 0 .5rem;
 }
+table {
+	border-collapse: collapse;
+}
 .clear {
 	clear: both;
 }
 
-@collections-background: #456;
-@collection-color: white;
-@collection-font-size: 1rem;
-@collection-height: 2rem;
-@collection-icon-width: @collection-height;
-@collection-hover-background: darken(@collections-background,10%);
-@screenshot-width: 130px;
-@screenshot-height: 130px;
-@field-icon-width: 1.5rem;
 @field-height: 2rem;
-@field-radius: .3rem;
+@font-color: rgb(138,138,138);
 
-.screenshot {
-	border: 2px ridge silver;
-	margin: 0 auto 1em;
-	width: @screenshot-width;
-	height: @screenshot-height;
-}
 .tags {
 	ul {
 		overflow-y: visible;
@@ -83,7 +70,6 @@ h3 {
 			top: 0;
 			left: 0;
 			width: 100%;
-			color: white;
 			font-size: .8rem;
 			background: transparent;
 			border: none;
@@ -95,32 +81,51 @@ h3 {
 			padding: 1px;
 		}
 	}
-	&:not(.focused) .input {
+	/*&:not(.focused) .input {
 		width: 0;
 		overflow: hidden;
+	}*/
+}
+.cell {
+	display: table-cell;
+	vertical-align: middle;
+	position: relative;
+	white-space: nowrap;
+	&.expand {
+		width: 100%;
+	}
+}
+.hpanel {
+	color: white;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	div>* {
+		padding: 0 1rem;
+	}
+	.edit {
+		background: rgb(102,153,153);
+	}
+	.remove {
+		background: rgb(255,153,153);
 	}
 }
 .collection {
-	color: @collection-color;
-	font-size: @collection-font-size;
-	list-style: none;
+	@height: 35px;
+	color: rgb(115,115,115);
 	cursor: pointer;
+	position: relative;
 	.cell {
-		display: table-cell;
-		height: @collection-height;
-		vertical-align: middle;
-		position: relative;
-		white-space: nowrap;
-		&.expand {
-			width: 100%;
-		}
+		height: @height;
 	}
 	.icon {
-		width: @collection-icon-width;
+		width: 24px;
+		margin: 0 15px;
 	}
 	.title {
-		// font-size must be reset in .mid-wrap
-		font-size: @collection-font-size;
+		// font-size must be reset in .abs-mid-wrap
+		font-size: 1rem;
 		width: 100%;
 		white-space: nowrap;
 		overflow: hidden;
@@ -128,39 +133,40 @@ h3 {
 	}
 	.number {
 		font-size: .8rem;
-		padding: .1rem .2rem;
-		border: 1px solid #abc;
-		display: inline-block;
+		padding-right: 50px;
 	}
-	.edit {
-		display: none;
-	}
-	&:hover {
-		background: @collection-hover-background;
-		.edit {
-			display: inline-block;
-			&:hover {
-				color: yellow;
-			}
+	&:not(:hover) {
+		.hpanel {
+			display: none;
 		}
 	}
 	&.active {
 		.title {
 			font-weight: bold;
-			color: yellow;
 		}
 	}
 }
 .collections {
 	overflow: hidden;
 }
-.mid-wrap {
+.rel-mid-wrap {
+	// simpler than .abs-mid-wrap but width will be affected by children
+	display: table;
+	height: 100%;
+	&>* {
+		display: table-cell;
+		vertical-align: middle;
+	}
+}
+.abs-mid-wrap {
+	// width will be fixed and not affected by children
+	// font-size must be reset in children
 	position: absolute;
-	font-size: 0;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	font-size: 0;
 	&>* {
 		display: inline-block;
 		vertical-align: middle;
@@ -176,10 +182,10 @@ h3 {
 }
 
 .bminfo {
+	padding-top: 60px;
 	width: 100%;
 	text-align: left;
 	.field {
-		width: 260px;
 		.number {
 			display: none;
 		}
@@ -192,48 +198,22 @@ h3 {
 	}
 	.collections {
 		border-radius: .3rem;
-		background: #456;
-	}
-}
-.field {
-	margin-bottom: .5rem;
-	label {
-		font-size: .8rem;
-		display: block;
-	}
-	&>input {
-		line-height: 1.5rem;
-		width: 100%;
-		border: none;
-	}
-	&>textarea {
-		height: 5em;
-		width: 100%;
-		border: none;
-		resize: none;
-	}
-	.tags {
-		border-radius: .3rem;
-		padding: .3rem;
-		cursor: text;
-		@bgcolor: #456;
-		background: @bgcolor;
-		.tag:not(.input) {
-			background: lighten(@bgcolor,10%);
+		background: white;
+		.collection {
+			color: gray;
+			&.active {
+				color: black;
+			}
 		}
 	}
 }
 .buttons {
 	text-align: center;
 	button {
-		border-radius: .3rem;
 		font-size: 1rem;
 		cursor: pointer;
-		color: white;
 		height: @field-height;
-		border: 1px solid;
-		border-radius: @field-radius;
-		outline: none;
+		border: none;
 		margin-bottom: .5rem;
 	}
 }
@@ -245,13 +225,10 @@ button {
 		.colorButton(brown);
 	}
 }
-a,a:visited {
-	color: cyan;
-}
 .bookmark {
 	@icon-size: 16px;
 	cursor: pointer;
-	height: 3rem;
+	height: 50px;
 	position: relative;
 	&>* {
 		display: inline-block;
@@ -263,7 +240,7 @@ a,a:visited {
 		margin-right: .5em;
 	}
 	.title {
-		font-size: 1.2rem;
+		font-size: 20px;
 	}
 	.tags {
 		margin-left: @icon-size;
@@ -283,20 +260,13 @@ a,a:visited {
 	}
 }
 
-@body-background: darken(white,10%);
 @search-engine-width: 3rem;
 @search-submit-width: 2rem;
-@left-side-background: #567;
-@left-side-width: 300px;
-@right-side-background: #567;
-@right-side-width: 380px;
-@bookmark-background: white;
-@bookmark-height: 3rem;
-@bookmark-snapshot-width: 100px;
+@side-width: 300px;
 @bookmark-button-size: 2rem;
 
 body {
-	background: @body-background;
+	background: white;
 }
 .menu {
 	@color: white;
@@ -309,6 +279,7 @@ body {
 	}
 }
 .searchbox {
+	display: inline-block;
 	@font-size: 1rem;
 	.fillY() {
 		height: 2rem;
@@ -318,7 +289,6 @@ body {
 	font-size: @font-size;
 	width: 300px;
 	position: relative;
-	margin: .5rem 1rem;
 	input.search {
 		padding: 0 @search-submit-width 0 @search-engine-width+1rem;
 		width: 100%;
@@ -383,30 +353,52 @@ body {
 }
 .side {
 	z-index: 1;
-	color: white;
+	color: @font-color;
 	top: 0;
 	bottom: 0;
 	font-size: 1rem;
 	position: fixed;
 	overflow: auto;
+	a {
+		color: @font-color;
+	}
+	.padded {
+		padding: 0 40px;
+	}
+	.left {
+		float: left;
+	}
 	.right {
 		float: right;
-		margin-left: 1em;
 	}
 	&.left {
-		background: @left-side-background;
-		width: @left-side-width;
+		background: rgb(228,228,228);
+		width: @side-width;
 		left: 0;
-		&:not(.ng-hide)~.main {
-			padding-left: @left-side-width;
+		&:not(.ng-hide)~.center {
+			padding-left: @side-width;
+		}
+		.footer {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			padding: 1rem;
+			&>* {
+				vertical-align: middle;
+			}
+			.fa {
+				font-size: 2rem;
+			}
 		}
 	}
 	&.right {
-		background: @right-side-background;
-		width: @right-side-width;
+		background: rgb(204,204,204);
+		width: @side-width;
 		right: 0;
-		&:not(.ng-hide)~.main {
-			padding-right: @right-side-width;
+		&:not(.ng-hide)~.center {
+			padding-right: @side-width;
 		}
 	}
 	&:not(.ng-hide) {
@@ -425,118 +417,100 @@ body {
 		.circleButton(2rem,white,brown);
 	}
 }
-.padded {
-	padding: 1rem 2rem;
-}
-.login>* {
-	margin-bottom: .5rem;
-}
-.left.side {
-	.header {
-		line-height: @field-height;
-		.mode {
-			font-weight: bold;
-		}
-		.right {
-			cursor: pointer;
-			&:hover {
-				padding-right: 2px;
-			}
-		}
-	}
-	.avatar {
-		float: left;
-		margin: 20px;
-		img {
-			width: 80px;
-			height: 80px;
-			border-radius: 50%;
-		}
-	}
-	.user {
-		background: darken(@left-side-background,10%);
-		.row-wrap {
-			background: @left-side-background;
-		}
-		.info {
-			line-height: 2rem;
-			padding: 20px 20px 20px 100px;
-			a {
-				color: dodgerblue;
-			}
-		}
-		.level {
-			color: orange;
-		}
-	}
-	.menuitem {
-		&.active {
-			background: @left-side-background;
-		}
-		.menu {
-			display: block;
-			padding: .5rem 1rem;
-		}
-	}
-	.footer {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		text-align: center;
-		padding: 1rem;
-		&>* {
-			vertical-align: middle;
-		}
+.login {
+	padding-top: 50px;
+	&>* {
+		margin-bottom: .5rem;
 	}
 	.field {
 		&>input {
-			line-height: @field-height;
-			width: 100%;
-			outline: none;
-			border: 1px solid gray;
-			border-radius: @field-radius;
-			padding: 0 .5rem 0 @field-icon-width;
-			&:focus {
-				&~.fa {
-					color: darken(#ccc,20%);
-				}
-				border-color: dodgerblue;
-			}
-		}
-		&>.fa {
-			color: #ccc;
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: @field-icon-width;
-			line-height: @field-height;
 			text-align: center;
+		}
+	}
+}
+.field {
+	margin-bottom: .5rem;
+	&>textarea {
+		height: 5em;
+		width: 100%;
+		border: none;
+		resize: none;
+	}
+	.tags {
+		border-radius: .3rem;
+		padding: .3rem;
+		cursor: text;
+		background: white;
+		.tag:not(.input) {
+			color: white;
+			background: gray;
+		}
+	}
+	&>input {
+		line-height: @field-height;
+		width: 100%;
+		outline: none;
+		border: none;
+		&:focus {
+			&~.fa {
+				color: darken(#ccc,20%);
+			}
+			border-color: dodgerblue;
+		}
+	}
+}
+.user {
+	background: rgb(242,242,242);
+	border-right: 1px solid rgb(228,228,228);
+	.avatar {
+		img {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			display: block;
+		}
+	}
+	.nav {
+		height: 70px;
+		color: rgb(39,38,54);
+		padding: 15px 20px;
+		font-size: 3rem;
+		text-align: center;
+	}
+	.collections {
+		padding-left: 35px;
+		margin-top: 15px;
+		.collection {
+			background: rgb(204,204,204);
+			margin-bottom: 5px;
 		}
 	}
 }
 button {
 	&.sign {
-		.colorButton(dodgerblue);
+		.colorButton(rgb(78,125,166));
+		color: white;
 		width: 100%;
 	}
+	&.newcol {
+		.colorButton(white);
+		width: 100%;
+		height: 3rem;
+	}
 }
-.main {
+.center {
 	position: fixed;
 	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
-	a {
-		color: blue;
+	.main {
+		background: rgb(204,204,204);
 	}
 	.bookmark {
-		background: @bookmark-background;
-		margin: .5rem 0;
+		background: rgb(242,242,242);
+		margin: 2px 60px;
 		padding-left: .5rem;
-		&:hover {
-			background: darken(white,5%);
-		}
 		.url {
 			color: gray;
 			margin: 0 2em;
@@ -556,67 +530,42 @@ button {
 				}
 			}
 		}
-		.snapshot {
-			width: @bookmark-snapshot-width;
-			height: 100%;
+		&:not(:hover) {
+			.hpanel {
+				display: none;
+			}
+		}
+	}
+	.header {
+		background: rgb(174,174,174);
+		line-height: 4rem;
+		padding: 0 60px;
+		margin: 8px 0;
+		.tags {
+			padding: 0 .5rem;
+		}
+		.tag {
+			color: white;
+			background: #789;
+		}
+		.left>.fa {
+			width: 2rem;
+			text-align: center;
+		}
+		.right {
+			color: white;
 			float: right;
-		}
-		&:not(:hover) .panel {
-			display: none;
-		}
-		.panel {
-			position: absolute;
-			top: 0;
-			right: @bookmark-snapshot-width+1rem;
-			line-height: @bookmark-height;
-			background: inherit;
-			padding: 0 1rem;
-			&>* {
-				font-size: @bookmark-button-size/2;
-				border-radius: 50%;
-				box-shadow: 0 0 1px gray;
-				display: inline-block;
-				margin-right: 1rem;
-				.circleButton(@bookmark-button-size,gray,#456);
-				&:hover {
-					color: white;
-				}
-			}
-			.del {
-				color: red;
-				&:hover {
-					color: white;
-					background: red;
-				}
-			}
 		}
 	}
 }
 body[data-controller='bookmarks.edit'] .bookmarks {
-	padding-right: @right-side-width;
+	padding-right: @side-width;
 	.desc {
 		display: none;
 	}
 }
-.conditions {
-	font-size: 1rem;
-	line-height: 2rem;
-	.tags {
-		padding: 0 .5rem;
-	}
-	.tag {
-		color: white;
-		background: #789;
-	}
-	.left>.fa {
-		width: 2rem;
-		text-align: center;
-	}
-	.right {
-		float: right;
-	}
-}
 .tags.list {
+	margin-top: 10px;
 	.tag {
 		color: #234;
 		cursor: pointer;
@@ -635,24 +584,11 @@ body[data-controller='bookmarks.edit'] .bookmarks {
 	tr:not(.expand) {
 		height: 1px;
 	}
-	td {
-		position: relative;
-		.row-wrap {
-			position: absolute;
-			left: 0;
-			top: 0;
-			bottom: 0;
-			right: 0;
-			overflow: auto;
+	tr.expand {
+		td {
+			vertical-align: top;
 		}
 	}
-}
-.hor-wrap {
-	width: 100%;
-	text-align: center;
-}
-table {
-	border-collapse: collapse;
 }
 .modal {
 	position: fixed;
@@ -666,11 +602,10 @@ table {
 	&>* {
 		text-align: left;
 		display: inline-block;
-		background: #567;
+		background: rgb(204,204,204);
 		border-radius: 1rem;
 		padding: 1rem;
 		font-size: 1rem;
-		color: white;
 	}
 }
 .editCol {
@@ -683,21 +618,22 @@ table {
 
 // Popup page
 
-@menu-height: 3rem;
+@menu-height: 4rem;
 @logo-size: 48px;
-@menu-background: #234;
+@menu-background: rgb(174,174,174);
 @footer-background: #446;
 @footer-height: 3rem;
-@groups-background: #567;
-@group-hover-background: darken(@groups-background,5%);
 
 .fill() {
 	width: 100%;
 	height: 100%;
 }
-body {
-	width: 380px;
+#popup {
+	width: 300px;
 	height: 600px;
+	&[data-controller='edit'] .second {
+		background: rgb(204,204,204);
+	}
 }
 .view {
 	.fill;
@@ -748,15 +684,13 @@ body {
 		height: @logo-size;
 		padding-left: @logo-size;
 		margin-left: 0;
-		color: yellow;
 		text-decoration: none;
 	}
 }
 .home {
 	left: 0;
 	.content {
-		color: white;
-		background: @groups-background;
+		background: white;
 		overflow-y: auto;
 		position: absolute;
 		top: 0;
@@ -766,14 +700,10 @@ body {
 		padding: @menu-height 0 @footer-height;
 		.group {
 			cursor: pointer;
-			color: darken(white,20%);
 			.label {
 				padding: .2em 1em;
 				.title {
 					margin-right: .5em;
-				}
-				&:hover {
-					background: @group-hover-background;
 				}
 			}
 		}
@@ -787,6 +717,9 @@ body {
 		background: @footer-background;
 		padding: 1rem;
 		height: @footer-height;
+		a {
+			color: gold;
+		}
 	}
 	.collection {
 		@size: 3rem;
@@ -797,19 +730,12 @@ body {
 		.icon {
 			width: @size;
 		}
-		.title {
-		}
 		.number {
 			margin-right: 1rem;
 		}
 	}
-	.collections {
-		background: transparent;
-	}
 }
 .second {
-	background: @groups-background;
-	color: white;
 	left: 0;
 	.content {
 		padding-top: @menu-height;
@@ -824,16 +750,10 @@ body {
 		margin-bottom: 1em;
 	}
 	.bookmark {
-		&:hover {
-			background: darken(@groups-background,5%);
-		}
 		.tags {
 			@color: #abc;
 			a {
-				color: darken(@color,10%);
-				&:hover {
-					color: @color;
-				}
+				color: @color;
 			}
 		}
 	}
