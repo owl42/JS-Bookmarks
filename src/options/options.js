@@ -120,6 +120,7 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
 	$scope.remove=function(data){
+		if(confirm('确定删除以下书签？\n\n'+data.title))
 		apis.removeBookmark(data).then(function(){
 			if(data===$scope.current.item) $state.go('bookmarks');
 		});

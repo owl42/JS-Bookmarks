@@ -240,7 +240,8 @@ angular.module('app')
 					});
 				});
 				scope.removeCol=function(){
-					removeCollection(scope.data.id,function(ret){
+					if(confirm('确定删除分组【'+scope.data.title+'】吗？'))
+					apis.removeCollection(scope.data.id,function(ret){
 						if(ret.err) alert(ret.msg);
 						else scope.$apply(function(){
 							var i=$rootScope.data.cols.indexOf(scope.data);
