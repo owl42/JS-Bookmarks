@@ -51,7 +51,7 @@ var Bookmarks=function($scope,$rootScope,$stateParams,$state,apis){
 		$state.go('home');
 	};
 };
-var Bookmark=function($scope,$rootScope,$state){
+var Bookmark=function($scope,$rootScope,$state,apis){
 	$scope.bookmark={
 		url:$rootScope.config.tab.url,
 		title:$rootScope.config.tab.title,
@@ -59,8 +59,8 @@ var Bookmark=function($scope,$rootScope,$state){
 		col:-1,
 		tags:[],
 	};
-	$scope.save=function(item){
-		apis.saveBookmark($scope.bookmark,item).then(function(){
+	$scope.save=function(){
+		apis.saveBookmark({},$scope.bookmark).then(function(){
 			$scope.back();
 		});
 	};
