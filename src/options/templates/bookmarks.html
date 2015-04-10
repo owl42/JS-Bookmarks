@@ -1,13 +1,25 @@
-<table class="fill-wrap">
+<table class="fill-wrap bmlist">
+	<tr ng-if="user.id">
+		<td class="nav-wrap">
+			<div class="nav"><div>
+				<div class="cell">
+					<searchbox data="engines"></searchbox>
+				</div>
+				<div class="cell expand">
+					<a class="menu add" ui-sref="bookmarks.edit({bid:0})"><i class="fa fa-plus-circle"></i></a>
+				</div>
+				<div class="cell">
+					<a class="menu" ng-class="{warn:multi}" ng-click="multiRemove()"><i class="fa fa-trash"></i></a>
+				</div>
+				<div class="cell">
+					<a class="menu" ng-click="logout()"><i class="fa fa-sign-out"></i></a>
+				</div>
+			</div></div>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<div class="header">
-				<div class="right">
-					<a>批量删除</a>
-				</div>
-				<div class="left">
-					<searchbox data="engines"></searchbox>
-				</div>
 				<div class="tags">
 					<li ng-repeat="tag in conditions.tags" class="tag">
 						<a ng-click="removeTag($index)" class="remove">

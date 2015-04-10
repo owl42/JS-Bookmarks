@@ -9,8 +9,8 @@
 		</li>
 		<li class="input tag">
 			<form ng-submit="add(true)">
-				<span class="spacer">{{tag||placeholder}}</span>
-				<input type="text" ng-model="tag" ng-blur="add()" placeholder="{{placeholder}}">
+				<span class="spacer">{{tag||getPlaceholder()}}</span>
+				<input type="text" ng-model="tag" ng-blur="add()" placeholder="{{getPlaceholder()}}">
 			</form>
 		</li>
 	</ul>

@@ -1,22 +1,22 @@
-<form class="login">
+<form class="fill-wrap login">
 	<div class="padded header">
-		<div class="right" ng-click="switchMode()">
+		<div class="right pointer" ng-click="switchMode()">
 			<span>{{mode=='login'?'注册':'登录'}}</span>
 			<i class="fa fa-arrow-right"></i>
 		</div>
 		<span class="mode">{{(mode=='login'?'登录':'注册')+'账号'}}</span>
 	</div>
-	<div class="padded field" ng-if="mode!='login'">
+	<div class="padded buttons">
+		<button type=submit class="sign" ng-click="sign()">{{mode=='login'?'登　录':'注　册'}}</button>
+	</div>
+	<div class="field" ng-if="mode!='login'">
 		<input type=text placeholder="姓　名" ng-model="name">
 	</div>
-	<div class="padded field">
+	<div class="field">
 		<input type=email placeholder="邮　箱" ng-model="email">
 	</div>
-	<div class="padded field">
+	<div class="field">
 		<input type=password placeholder="密　码" ng-model="pwd">
-	</div>
-	<div class="buttons">
-		<button type=submit class="sign" ng-click="sign()">{{mode=='login'?'登　录':'注　册'}}</button>
 	</div>
 	<div class="padded" ng-if="mode=='login'">
 		<a>忘记密码</a>

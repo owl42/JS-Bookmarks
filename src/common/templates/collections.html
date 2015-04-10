@@ -3,8 +3,8 @@
 		<collection data="data.d_cols[cid]" class="active"></collection>
 	</div>
 	<div ng-switch-when="select">
-		<collection ng-if="colAll" data="data.colAll" select="true"></collection>
+		<collection class="sys" ng-if="colAll" data="data.colAll" select="true"></collection>
 		<collection ng-repeat="item in data.cols" data="item" select="true" edit="{{edit}}"></collection>
-		<collection data="data.colUnd" select="true"></collection>
+		<collection class="sys" data="data.colUnd" select="true"></collection>
 	</div>
 </div>

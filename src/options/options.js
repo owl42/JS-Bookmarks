@@ -104,7 +104,7 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	apis.getUserInfo().then(function(){
 		if(!$rootScope.user.id) $state.go('login');
 	});
-	$scope.key='groups';
+	$scope.config={key:'groups'};
 	$scope.data=$rootScope.data;
 	$scope.limitCol=function(c){
 		$rootScope.conditions.col=c.id;
@@ -112,13 +112,16 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	$scope.editCol=function(){
 		$rootScope.modal={type:'editCol'};
 	};
-	$scope.logout=function(){
+	$rootScope.logout=function(){
 		apis.logOut().then(function(){
 			$state.go('login');
 		});
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
+	$scope.multiRemove=function(){
+		$scope.multi=!$scope.multi;
+	};
 	$scope.remove=function(data){
 		if(confirm('确定删除以下书签？\n\n'+data.title))
 		apis.removeBookmark(data).then(function(){

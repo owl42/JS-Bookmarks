@@ -159,12 +159,14 @@ angular.module('app')
 				data: '=',
 			},
 			link: function(scope, element, attrs) {
-				function nullPlaceholder(){
-					return scope.data.length?'':(attrs.placeholder||'');
-				}
+				var placeholder=null;
 				scope.tag='';
 				scope.focused=false;
-				scope.placeholder=nullPlaceholder();
+				scope.getPlaceholder=function(){
+					return placeholder
+						||(scope.data&&scope.data.length?'':attrs.placeholder)
+						||'';
+				};
 				scope.add=function(next){
 					var v=scope.tag,i=scope.data.indexOf(v);
 					if(v&&i<0) scope.data.push(v);
@@ -172,7 +174,7 @@ angular.module('app')
 					if(next) input.focus();
 					else {
 						scope.focused=false;
-						scope.placeholder=nullPlaceholder();
+						placeholder=null;
 					}
 				};
 				scope.remove=function(i){
@@ -182,7 +184,7 @@ angular.module('app')
 				element.on('click',function(e){
 					scope.$apply(function(){
 						scope.focused=true;
-						scope.placeholder="新标签";
+						placeholder="新标签";
 						input.focus();
 					});
 				});
@@ -273,7 +275,7 @@ angular.module('app')
 			if(data.url) window.open(data.url);
 		}
 		function getIcon(data){
-			return data.icon||'/img/icon16.png';
+			return data.icon||'/img/icon48.png';
 		}
 		function edit(data){
 			$state.go('bookmarks.edit',{bid:data.id});

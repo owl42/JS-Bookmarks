@@ -1,7 +1,15 @@
+.darken() {
+	-webkit-filter: brightness(.9);
+	filter: brightness(.9);
+}
+.clearDarken() {
+	-webkit-filter: none;
+	filter: none;
+}
 .colorButton(@color) {
 	background: @color;
 	&:active {
-		background: darken(@color,10%);
+		.darken;
 	}
 }
 
@@ -25,7 +33,6 @@ table {
 }
 
 @field-height: 2rem;
-@font-color: rgb(138,138,138);
 
 .tags {
 	ul {
@@ -93,36 +100,27 @@ table {
 	white-space: nowrap;
 	&.expand {
 		width: 100%;
+		text-align: center;
 	}
 }
 .hpanel {
-	color: white;
+	color: rgb(78,125,166);
+	.darken;
 	height: 100%;
 	position: absolute;
 	right: 0;
 	top: 0;
+	font-size: 20px;
 	div>* {
-		padding: 0 1rem;
-	}
-	.edit {
-		background: rgb(102,153,153);
-	}
-	.remove {
-		background: rgb(255,153,153);
+		margin-right: 10px;
+		&:hover {
+			.clearDarken;
+		}
 	}
 }
 .collection {
-	@height: 35px;
-	color: rgb(115,115,115);
 	cursor: pointer;
 	position: relative;
-	.cell {
-		height: @height;
-	}
-	.icon {
-		width: 24px;
-		margin: 0 15px;
-	}
 	.title {
 		// font-size must be reset in .abs-mid-wrap
 		font-size: 1rem;
@@ -130,20 +128,8 @@ table {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-	.number {
-		font-size: .8rem;
-		padding-right: 50px;
-	}
-	&:not(:hover) {
-		.hpanel {
-			display: none;
-		}
-	}
-	&.active {
-		.title {
-			font-weight: bold;
-		}
+		text-align: left;
+		padding-left: 20px;
 	}
 }
 .collections {
@@ -199,11 +185,15 @@ table {
 	.collections {
 		border-radius: .3rem;
 		background: white;
-		.collection {
-			color: gray;
-			&.active {
-				color: black;
-			}
+	}
+	.collection {
+		@height: 35px;
+		color: gray;
+		.cell {
+			height: @height;
+		}
+		&:hover,&.active {
+			color: black;
 		}
 	}
 }
@@ -219,14 +209,16 @@ table {
 }
 button {
 	&.save {
+		color: white;
 		.colorButton(green);
 	}
-	&.revert,&.cancel {
+	&.revert {
+		color: white;
 		.colorButton(brown);
 	}
 }
 .bookmark {
-	@icon-size: 16px;
+	@icon-size: 32px;
 	cursor: pointer;
 	height: 50px;
 	position: relative;
@@ -245,6 +237,9 @@ button {
 	.tags {
 		margin-left: @icon-size;
 	}
+	&:hover {
+		box-shadow: 4px 4px 2px gray;
+	}
 }
 
 // Options page
@@ -260,26 +255,35 @@ button {
 	}
 }
 
-@search-engine-width: 3rem;
-@search-submit-width: 2rem;
 @side-width: 300px;
 @bookmark-button-size: 2rem;
+@nav-height: 50px;
 
 body {
 	background: white;
 }
+.nav {
+	position: absolute;
+	top: 10px;
+	left: 0;
+	right: 0;
+	height: 30px;
+	background: rgb(78,125,166);
+	vertical-align: middle;
+}
 .menu {
-	@color: white;
-	font-size: 1.5rem;
+	color: white;
+	font-size: 25px;
 	cursor: pointer;
 	display: inline-block;
-	color: darken(@color,20%);
+	.darken;
 	&:hover,&.active {
-		color: @color;
+		.clearDarken;
 	}
 }
 .searchbox {
-	display: inline-block;
+	@search-engine-width: 3rem;
+	@search-submit-width: 2rem;
 	@font-size: 1rem;
 	.fillY() {
 		height: 2rem;
@@ -288,7 +292,10 @@ body {
 	.fillY;
 	font-size: @font-size;
 	width: 300px;
-	position: relative;
+	display: inline-block;
+	&>form {
+		position: relative;
+	}
 	input.search {
 		padding: 0 @search-submit-width 0 @search-engine-width+1rem;
 		width: 100%;
@@ -353,15 +360,11 @@ body {
 }
 .side {
 	z-index: 1;
-	color: @font-color;
 	top: 0;
 	bottom: 0;
 	font-size: 1rem;
 	position: fixed;
 	overflow: auto;
-	a {
-		color: @font-color;
-	}
 	.padded {
 		padding: 0 40px;
 	}
@@ -372,7 +375,6 @@ body {
 		float: right;
 	}
 	&.left {
-		background: rgb(228,228,228);
 		width: @side-width;
 		left: 0;
 		&:not(.ng-hide)~.center {
@@ -394,7 +396,7 @@ body {
 		}
 	}
 	&.right {
-		background: rgb(204,204,204);
+		background: rgb(78,125,166);
 		width: @side-width;
 		right: 0;
 		&:not(.ng-hide)~.center {
@@ -417,13 +419,22 @@ body {
 		.circleButton(2rem,white,brown);
 	}
 }
+.pointer {
+	cursor: pointer;
+}
 .login {
+	color: white;
 	padding-top: 50px;
+	background: rgb(78,125,166);
 	&>* {
 		margin-bottom: .5rem;
 	}
+	.header {
+		margin-bottom: 1rem;
+	}
 	.field {
 		&>input {
+			background: rgb(221,240,237);
 			text-align: center;
 		}
 	}
@@ -451,17 +462,18 @@ body {
 		width: 100%;
 		outline: none;
 		border: none;
-		&:focus {
-			&~.fa {
-				color: darken(#ccc,20%);
-			}
-			border-color: dodgerblue;
-		}
 	}
 }
-.user {
+.toc {
+	padding-top: @nav-height;
 	background: rgb(242,242,242);
 	border-right: 1px solid rgb(228,228,228);
+	.nav {
+		padding-left: 35px;
+		&>* {
+			margin-top: -5px;
+		}
+	}
 	.avatar {
 		img {
 			width: 40px;
@@ -470,25 +482,85 @@ body {
 			display: block;
 		}
 	}
-	.nav {
-		height: 70px;
-		color: rgb(39,38,54);
-		padding: 15px 20px;
-		font-size: 3rem;
-		text-align: center;
-	}
 	.collections {
 		padding-left: 35px;
 		margin-top: 15px;
-		.collection {
-			background: rgb(204,204,204);
-			margin-bottom: 5px;
+	}
+	.collection {
+		@height: 35px;
+		color: rgb(221,240,237);
+		background: currentColor;
+		margin-bottom: 5px;
+		margin-right: 5px;
+		.cell {
+			color: rgb(115,115,115);
+			height: @height;
+		}
+		.icon {
+			position: absolute;
+			left: -12px;
+			top: 0;
+			border-right: 12px solid;
+			border-top: @height/2 solid transparent;
+			border-bottom: @height/2 solid transparent;
+		}
+		.number {
+			font-size: .8rem;
+			padding-right: 70px;
+		}
+		&:not(:hover) {
+			.hpanel {
+				display: none;
+			}
+		}
+		&:hover,&.active {
+			box-shadow: 4px 4px 2px gray;
+		}
+		&.sys {
+			color: rgb(34,143,189);
+			background: currentColor;
+			.cell {
+				color: white;
+			}
+		}
+	}
+}
+.bmlist {
+	.nav-wrap {
+		position: relative;
+		height: @nav-height;
+	}
+	.nav>* {
+		margin-top: -10px;
+		padding: 0 60px;
+	}
+	.menu {
+		margin-left: 20px;
+		&.warn {
+			color: red;
+		}
+		&.add {
+			color: rgb(0,187,156);
+			font-size: 50px;
+			line-height: @nav-height;
+			height: @nav-height;
+		}
+	}
+	.header {
+		line-height: 4rem;
+		padding: 8px 60px;
+		.tags {
+			padding: 0 .5rem;
+		}
+		.tag {
+			color: white;
+			background: #789;
 		}
 	}
 }
 button {
 	&.sign {
-		.colorButton(rgb(78,125,166));
+		.colorButton(rgb(34,143,189));
 		color: white;
 		width: 100%;
 	}
@@ -509,7 +581,7 @@ button {
 	}
 	.bookmark {
 		background: rgb(242,242,242);
-		margin: 2px 60px;
+		margin: 5px 60px;
 		padding-left: .5rem;
 		.url {
 			color: gray;
@@ -534,27 +606,6 @@ button {
 			.hpanel {
 				display: none;
 			}
-		}
-	}
-	.header {
-		background: rgb(174,174,174);
-		line-height: 4rem;
-		padding: 0 60px;
-		margin: 8px 0;
-		.tags {
-			padding: 0 .5rem;
-		}
-		.tag {
-			color: white;
-			background: #789;
-		}
-		.left>.fa {
-			width: 2rem;
-			text-align: center;
-		}
-		.right {
-			color: white;
-			float: right;
 		}
 	}
 }
@@ -674,9 +725,9 @@ body[data-controller='bookmarks.edit'] .bookmarks {
 		float: left;
 		height: @menu-height;
 		line-height: @menu-height;
-		color: darken(white,20%);
+		.darken;
 		&:hover {
-			color: white;
+			.clearDarken;
 		}
 	}
 	.logo {

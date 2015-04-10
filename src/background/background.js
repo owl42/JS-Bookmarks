@@ -41,7 +41,7 @@ function getCollections(data,src,callback){
 		count: 0,
 	},{
 		id:0,
-		title:'所有书签',
+		title:'全部书签',
 		count: 0,
 	}];
 	var h={'-1':data[0],0:data[1]};
