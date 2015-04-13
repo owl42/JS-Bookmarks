@@ -35,7 +35,9 @@
 	</tr>
 	<tr class="expand">
 		<td class="bookmarks">
-			<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" ng-show="checkCondition(bookmark)"></bookmark>
+			<div class="abs-fill-wrap">
+				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" ng-show="checkCondition(bookmark)"></bookmark>
+			</div>
 		</td>
 	</tr>
 </table>

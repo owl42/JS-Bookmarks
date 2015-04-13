@@ -109,16 +109,20 @@ table {
 }
 .hpanel {
 	color: rgb(78,125,166);
-	.darken;
 	height: 100%;
 	position: absolute;
 	right: 0;
 	top: 0;
 	font-size: 20px;
-	div>* {
-		margin-right: 10px;
-		&:hover {
-			.clearDarken;
+	background: inherit;
+	padding-left: 10px;
+	.rel-mid-wrap>div {
+		padding-right: 10px;
+		&>* {
+			.darken;
+			&:hover {
+				.clearDarken;
+			}
 		}
 	}
 }
@@ -600,6 +604,8 @@ button {
 		background: rgb(242,242,242);
 		margin: 5px 60px;
 		padding-left: .5rem;
+		white-space: nowrap;
+		overflow: hidden;
 		.url {
 			color: gray;
 			margin: 0 2em;
@@ -626,10 +632,15 @@ button {
 		}
 	}
 }
-body[data-controller='bookmarks.edit'] .bookmarks {
-	padding-right: @side-width;
-	.desc {
-		display: none;
+.bookmarks {
+	position: relative;
+	body[data-controller='bookmarks.edit'] & {
+		.abs-fill-wrap {
+			padding-right: @side-width;
+		}
+		.desc {
+			display: none;
+		}
 	}
 }
 .tags.list {
@@ -657,6 +668,13 @@ body[data-controller='bookmarks.edit'] .bookmarks {
 			vertical-align: top;
 		}
 	}
+}
+.abs-fill-wrap {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 .modal {
 	position: fixed;
