@@ -36,9 +36,10 @@ angular.module('app')
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'SaveCollection',data:col},function(ret){
 					var col=data.d_cols[ret.id];
-					if(!col)
+					if(!col) {
 						data.cols.push(ret);
-					else
+						data.d_cols[ret.id]=ret;
+					} else
 						angular.extend(col,ret);
 					$rootScope.$apply(function(){
 						deferred.resolve();
