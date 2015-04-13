@@ -1,5 +1,15 @@
 <div class="buttons">
-	<button class="newcol" ng-click="editCol()">添加书签分组</button>
+	<form class="newcol field" ng-submit="newCol()">
+		<input type=text placeholder="添加书签分组" ng-model="colData.title">
+		<div class="abs-mid-wrap" ng-show="colData.title">
+			<span class="button" ng-click="colData.title=''">
+				<i class="fa fa-times-circle"></i>
+			</span>
+			<span class="button" ng-click="newCol()">
+				<i class="fa fa-check-circle"></i>
+			</span>
+		</div>
+	</form>
 </div>
 <collections list="true" edit="true" col-all="true" cid="conditions.col"></collections>
 <div class="padded tags list">

@@ -117,6 +117,18 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 			$state.go('login');
 		});
 	};
+	$scope.colData={
+		id:0,
+		title:'',
+		icon:null,
+	};
+	$scope.newCol=function(){
+		if($scope.colData.title) {
+			apis.saveCollection($scope.colData).then(function(){
+				$scope.colData.title='';
+			});
+		}
+	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
 	$scope.multiRemove=function(){

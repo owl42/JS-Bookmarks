@@ -243,13 +243,13 @@ angular.module('app')
 				});
 				scope.removeCol=function(){
 					if(confirm('确定删除分组【'+scope.data.title+'】吗？'))
-					apis.removeCollection(scope.data.id,function(ret){
+					apis.removeCollection(scope.data.id).then(function(ret){
 						if(ret.err) alert(ret.msg);
-						else scope.$apply(function(){
+						else {
 							var i=$rootScope.data.cols.indexOf(scope.data);
 							$rootScope.data.cols.splice(i,1);
 							delete $rootScope.data.d_cols[scope.data.id];
-						});
+						}
 					});
 				};
 			},
