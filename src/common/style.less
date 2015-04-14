@@ -241,9 +241,6 @@ button {
 	.tags {
 		margin-left: @icon-size;
 	}
-	&:hover {
-		box-shadow: 4px 4px 2px gray;
-	}
 }
 
 // Options page
@@ -625,6 +622,9 @@ button {
 				}
 			}
 		}
+		&:hover {
+			box-shadow: 4px 4px 2px gray;
+		}
 		&:not(:hover) {
 			.hpanel {
 				display: none;
@@ -719,6 +719,23 @@ button {
 	height: 600px;
 	&[data-controller='edit'] .second {
 		background: rgb(204,204,204);
+	}
+	.bookmark {
+		.title {
+			max-width: 250px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+		.tags {
+			@color: #abc;
+			a {
+				color: @color;
+			}
+		}
+		&:hover {
+			background: darken(white,10%);
+		}
 	}
 }
 .view {
@@ -819,6 +836,9 @@ button {
 		.number {
 			margin-right: 1rem;
 		}
+		&:hover {
+			background: darken(white,10%);
+		}
 	}
 }
 .second {
@@ -834,14 +854,6 @@ button {
 	}
 	.field {
 		margin-bottom: 1em;
-	}
-	.bookmark {
-		.tags {
-			@color: #abc;
-			a {
-				color: @color;
-			}
-		}
 	}
 }
 .search {
