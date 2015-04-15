@@ -9,10 +9,10 @@
 					<a class="menu add" ui-sref="bookmarks.edit({bid:0})"><i class="fa fa-plus-circle"></i></a>
 				</div>
 				<div class="cell">
-					<a class="menu" ng-class="{warn:multi}" ng-click="multiRemove()"><i class="fa fa-trash"></i></a>
+					<a class="menu" ng-click="conditions.col=-2" ng-class="{active:conditions.col==-2}" title="回收站"><i class="fa fa-trash"></i></a>
 				</div>
 				<div class="cell">
-					<a class="menu" ng-click="logout()"><i class="fa fa-sign-out"></i></a>
+					<a class="menu" ng-click="logout()" title="退出账号"><i class="fa fa-sign-out"></i></a>
 				</div>
 			</div></div>
 		</td>

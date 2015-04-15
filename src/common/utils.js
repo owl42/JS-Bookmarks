@@ -261,7 +261,6 @@ angular.module('app')
 			restrict:'E',
 			replace:true,
 			scope:{
-				revert:'&',
 				save:'&',
 				data:'=',
 			},

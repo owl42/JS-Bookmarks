@@ -34,65 +34,6 @@ table {
 
 @field-height: 2rem;
 
-.tags {
-	ul {
-		overflow-y: visible;
-	}
-	li.tag {
-		list-style: none;
-		&:not(.input) {
-			padding-right: 1rem;
-		}
-		.fa-tag {
-			color: yellow;
-		}
-	}
-	.tag {
-		float: left;
-		position: relative;
-		padding: .2rem;
-		border-radius: .2rem;
-		line-height: 1rem;
-		margin: 0 .5rem .5rem 0;
-	}
-	.remove {
-		cursor: pointer;
-		position: absolute;
-		top: 0;
-		right: .2rem;
-		font-size: .4rem;
-		color: #ccc;
-		&:hover {
-			color: yellow;
-		}
-	}
-	.input {
-		padding-left: 0;
-		padding-right: 0;
-		form {
-			position: relative;
-		}
-		input {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			font-size: .8rem;
-			background: transparent;
-			border: none;
-			outline: none;
-		}
-		span {
-			opacity: 0;
-			white-space: nowrap;
-			padding: 1px;
-		}
-	}
-	/*&:not(.focused) .input {
-		width: 0;
-		overflow: hidden;
-	}*/
-}
 .cell {
 	display: table-cell;
 	vertical-align: middle;
@@ -126,20 +67,6 @@ table {
 		}
 	}
 }
-.collection {
-	cursor: pointer;
-	position: relative;
-	.title {
-		// font-size must be reset in .abs-mid-wrap
-		font-size: 1rem;
-		width: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		text-align: left;
-		padding-left: 20px;
-	}
-}
 .collections {
 	overflow: hidden;
 }
@@ -171,36 +98,11 @@ table {
 	}
 }
 
-.bminfo {
-	padding-top: 60px;
-	width: 100%;
-	text-align: left;
-	.field {
-		.number {
-			display: none;
-		}
-	}
-	.buttons {
-		button {
-			width: 48%;
-			display: inline;
-		}
-	}
-	.collections {
-		border-radius: .3rem;
-		background: white;
-	}
-	.collection {
-		@height: 35px;
-		color: gray;
-		.cell {
-			height: @height;
-		}
-		&:hover,&.active {
-			color: black;
-		}
-	}
-}
+@import 'styles/bookmarkinfo.less';
+@import 'styles/bookmark.less';
+@import 'styles/tags.less';
+@import 'styles/collection.less';
+
 .buttons {
 	text-align: center;
 	button {
@@ -214,32 +116,7 @@ table {
 button {
 	&.save {
 		color: white;
-		.colorButton(green);
-	}
-	&.revert {
-		color: white;
-		.colorButton(brown);
-	}
-}
-.bookmark {
-	@icon-size: 32px;
-	cursor: pointer;
-	height: 50px;
-	position: relative;
-	&>* {
-		display: inline-block;
-		vertical-align: middle;
-	}
-	img.icon {
-		width: @icon-size;
-		height: @icon-size;
-		margin-right: .5em;
-	}
-	.title {
-		font-size: 20px;
-	}
-	.tags {
-		margin-left: @icon-size;
+		.colorButton(rgb(34,143,189));
 	}
 }
 
@@ -282,83 +159,7 @@ body {
 		.clearDarken;
 	}
 }
-.searchbox {
-	@search-engine-width: 3rem;
-	@search-submit-width: 2rem;
-	@font-size: 1rem;
-	.fillY() {
-		height: 2rem;
-		line-height: 2rem;
-	}
-	.fillY;
-	font-size: @font-size;
-	width: 300px;
-	display: inline-block;
-	&>form {
-		position: relative;
-	}
-	input.search {
-		padding: 0 @search-submit-width 0 @search-engine-width+1rem;
-		width: 100%;
-		border: 1px solid gray;
-		outline: none;
-		border-radius: .5rem;
-		.fillY;
-	}
-	input[type=submit] {
-		display: none;
-	}
-	.engine,.engines {
-		text-align: center;
-		position: absolute;
-		left: 0;
-		cursor: pointer;
-	}
-	.engine {
-		top: 0;
-		.fillY;
-		font-size: 0;
-		&>* {
-			vertical-align: middle;
-			font-size: @font-size;
-		}
-		label {
-			cursor: inherit;
-			display: inline-block;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-			width: @search-engine-width;
-		}
-	}
-	.engines {
-		top: 2.5rem;
-		border: 1px solid silver;
-		z-index: 100;
-		box-shadow: 2px 5px 5px black;
-		border-radius: .3rem;
-		overflow: hidden;
-		.option {
-			padding: 0 .5rem;
-			height: 2rem;
-			line-height: 2rem;
-			background: white;
-			&:hover {
-				color: white;
-				background: gray;
-			}
-		}
-	}
-	.submit {
-		text-align: center;
-		cursor: pointer;
-		position: absolute;
-		width: @search-submit-width;
-		top: 0;
-		right: 0;
-		.fillY;
-	}
-}
+@import 'styles/searchbox.less';
 .side {
 	z-index: 1;
 	top: 0;
@@ -556,12 +357,12 @@ body {
 	.nav>* {
 		margin-top: -10px;
 		padding: 0 60px;
+		.active>.fa-trash {
+			text-shadow: 0 0 10px gray;
+		}
 	}
 	.menu {
 		margin-left: 20px;
-		&.warn {
-			color: red;
-		}
 		&.add {
 			color: rgb(0,187,156);
 			font-size: 50px;

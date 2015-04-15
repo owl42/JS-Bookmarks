@@ -1,0 +1,29 @@
+.bminfo {
+	padding-top: 60px;
+	width: 100%;
+	text-align: left;
+	.field {
+		.number {
+			display: none;
+		}
+	}
+	.buttons {
+		button {
+			width: 100%;
+		}
+	}
+	.collections {
+		border-radius: .3rem;
+		background: white;
+	}
+	.collection {
+		@height: 35px;
+		color: gray;
+		.cell {
+			height: @height;
+		}
+		&:hover,&.active {
+			color: black;
+		}
+	}
+}

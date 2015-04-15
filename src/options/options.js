@@ -131,9 +131,6 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
-	$scope.multiRemove=function(){
-		$scope.multi=!$scope.multi;
-	};
 	$scope.remove=function(data){
 		if(confirm('确定删除以下书签？\n\n'+data.title))
 		apis.removeBookmark(data).then(function(){

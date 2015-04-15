@@ -1,0 +1,77 @@
+.searchbox {
+	@search-engine-width: 3rem;
+	@search-submit-width: 2rem;
+	@font-size: 1rem;
+	.fillY() {
+		height: 2rem;
+		line-height: 2rem;
+	}
+	.fillY;
+	font-size: @font-size;
+	width: 300px;
+	display: inline-block;
+	&>form {
+		position: relative;
+	}
+	input.search {
+		padding: 0 @search-submit-width 0 @search-engine-width+1rem;
+		width: 100%;
+		border: 1px solid gray;
+		outline: none;
+		border-radius: .5rem;
+		.fillY;
+	}
+	input[type=submit] {
+		display: none;
+	}
+	.engine,.engines {
+		text-align: center;
+		position: absolute;
+		left: 0;
+		cursor: pointer;
+	}
+	.engine {
+		top: 0;
+		.fillY;
+		font-size: 0;
+		&>* {
+			vertical-align: middle;
+			font-size: @font-size;
+		}
+		label {
+			cursor: inherit;
+			display: inline-block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: @search-engine-width;
+		}
+	}
+	.engines {
+		top: 2.5rem;
+		border: 1px solid silver;
+		z-index: 100;
+		box-shadow: 2px 5px 5px black;
+		border-radius: .3rem;
+		overflow: hidden;
+		.option {
+			padding: 0 .5rem;
+			height: 2rem;
+			line-height: 2rem;
+			background: white;
+			&:hover {
+				color: white;
+				background: gray;
+			}
+		}
+	}
+	.submit {
+		text-align: center;
+		cursor: pointer;
+		position: absolute;
+		width: @search-submit-width;
+		top: 0;
+		right: 0;
+		.fillY;
+	}
+}

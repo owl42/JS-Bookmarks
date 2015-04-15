@@ -28,14 +28,19 @@ function getSearchEngines(data,src,callback){
 }
 
 function collectionData(data){
-	return {
+	var col={
 		id:data.id,
 		title:data.title,
-		count:data.count||0,
 	};
+	if('count' in data) col.count=data.count||0;
+	return col;
 }
 function getCollections(data,src,callback){
 	data=[{
+		id:-2,
+		title:'回收站',
+		count:0,
+	},{
 		id:-1,
 		title:'未分组书签',
 		count: 0,

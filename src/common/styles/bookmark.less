@@ -1,0 +1,21 @@
+.bookmark {
+	@icon-size: 32px;
+	cursor: pointer;
+	height: 50px;
+	position: relative;
+	&>* {
+		display: inline-block;
+		vertical-align: middle;
+	}
+	img.icon {
+		width: @icon-size;
+		height: @icon-size;
+		margin-right: .5em;
+	}
+	.title {
+		font-size: 20px;
+	}
+	.tags {
+		margin-left: @icon-size;
+	}
+}
