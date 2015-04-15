@@ -59,7 +59,7 @@ angular.module('app',['ui.router'])
 		});
 		$rootScope.data={};
 		$rootScope.conditions={
-			col:0,
+			col:apis.ALL,
 			tags:[],
 		};
 		$rootScope._collections=apis.getCollections().then(function(){
@@ -75,9 +75,6 @@ angular.module('app',['ui.router'])
 		$rootScope.$watch('conditions.col',function(){
 			$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
 		},false);
-	})
-	.run(function($rootScope,$state){
-		// test
 	})
 ;
 
@@ -131,13 +128,20 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
+	$scope.conditions=$rootScope.conditions;
 	$scope.remove=function(data){
-		if(confirm('确定删除以下书签？\n\n'+data.title))
-		apis.removeBookmark(data).then(function(){
+		var def;
+		if($scope.conditions.col==apis.TRASH)
+			def=apis.removeBookmark(data);
+		else
+			def=apis.moveToCollection(data,apis.TRASH);
+		def.then(function(){
 			if(data===$scope.current.item) $state.go('bookmarks');
 		});
 	};
-	$scope.conditions=$rootScope.conditions;
+	$scope.revert=function(data){
+		apis.moveToCollection(data,apis.UNDEF);
+	};
 	$scope.removeTag=function(i){
 		$scope.conditions.tags.splice(i,1);
 	};
@@ -159,7 +163,7 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		else
 			$scope.current.item={
 				title:'新书签',
-				col:$rootScope.conditions.col||-1,
+				col:$rootScope.conditions.col||apis.UNDEF,
 				tags:[],
 			};
 		$scope.revert();
@@ -205,7 +209,8 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 					if(!--root.d_tags[tag]) delete root.d_tags[tag];
 				}
 			});
-			$scope.revert();
+			//$scope.revert();
+			$state.go('bookmarks');
 		});
 	};
 };

@@ -3,7 +3,10 @@ angular.module('app')
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
 	})
 	.factory('apis',function($q,$rootScope){
-		return {
+		var apis={
+			ALL: 0,
+			UNDEF: -1,
+			TRASH: -2,
 			stop: function(e){
 				e.preventDefault();
 				e.stopPropagation();
@@ -13,14 +16,17 @@ angular.module('app')
 				var data=$rootScope.data;
 				data.colAll={};
 				data.colUnd={};
+				data.colTrash={};
 				data.cols=[];
 				data.d_cols={};
 				chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
 					cols.forEach(function(col){
-						if(col.id==-1) // 未分组
+						if(col.id==apis.UNDEF)
 							data.colUnd=col;
-						else if(col.id==0) // 所有
+						else if(col.id==apis.ALL)
 							data.colAll=col;
+						else if(col.id==apis.TRASH)
+							data.colTrash=col;
 						else
 							data.cols.push(col);
 						data.d_cols[col.id]=col;
@@ -104,15 +110,40 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
+			moveToCollection: function(item, col){
+				var deferred=$q.defer();
+				var data=$rootScope.data;
+				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{id:item.id,col:col}},function(id){
+					if(id===item.id) {
+						var i=data.bookmarks.indexOf(item);
+						if(i>=0) {
+							if(item.col===apis.TRASH) data.colAll.count++;
+							else if(col===apis.TRASH) data.colAll.count--;
+							data.d_cols[item.col].count--;
+							data.d_cols[item.col=col].count++;
+							data.bookmarks.splice(i,1);
+							delete data.d_bookmarks[item.id];
+						}
+					}
+					$rootScope.$apply(function(){
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
 			removeBookmark: function(item){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				chrome.runtime.sendMessage({cmd:'RemoveBookmark',data:item.id},function(){
-					var i=data.bookmarks.indexOf(item);
-					data.bookmarks.splice(i,1);
-					delete data.d_bookmarks[item.id];
-					data.colAll.count--;
-					data.d_cols[item.col].count--;
+				chrome.runtime.sendMessage({cmd:'RemoveBookmark',data:item.id},function(id){
+					if(id===item.id) {
+						var i=data.bookmarks.indexOf(item);
+						if(i>=0) {
+							if(item.col!==apis.TRASH) data.colAll.count--;
+							data.d_cols[item.col].count--;
+							data.bookmarks.splice(i,1);
+							delete data.d_bookmarks[item.id];
+						}
+					}
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -150,6 +181,7 @@ angular.module('app')
 				return deferred.promise;
 			},
 		};
+		return apis;
 	})
 	.directive('tags',function(paths){
 		return {
@@ -286,6 +318,8 @@ angular.module('app')
 			scope:{
 				data:'=',
 				detail:'@',
+				remove:'&',
+				revert:'&',
 			},
 			templateUrl:paths.common+'templates/bookmark.html',
 			link:function(scope,element,attrs){
@@ -294,8 +328,8 @@ angular.module('app')
 				scope.open=open;
 				scope.stop=apis.stop;
 				scope.edit=edit;
-				scope.remove=scope.$parent.remove;
 				scope.limitTag=$rootScope.limitTag;
+				scope.conditions=$rootScope.conditions;
 			},
 		};
 	})

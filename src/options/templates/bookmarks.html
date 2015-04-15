@@ -9,9 +9,6 @@
 					<a class="menu add" ui-sref="bookmarks.edit({bid:0})"><i class="fa fa-plus-circle"></i></a>
 				</div>
 				<div class="cell">
-					<a class="menu" ng-click="conditions.col=-2" ng-class="{active:conditions.col==-2}" title="回收站"><i class="fa fa-trash"></i></a>
-				</div>
-				<div class="cell">
 					<a class="menu" ng-click="logout()" title="退出账号"><i class="fa fa-sign-out"></i></a>
 				</div>
 			</div></div>
@@ -36,7 +33,7 @@
 	<tr class="expand">
 		<td class="bookmarks">
 			<div class="abs-fill-wrap">
-				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" ng-show="checkCondition(bookmark)"></bookmark>
+				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" remove="remove(data)" revert="revert(data)" ng-show="checkCondition(bookmark)"></bookmark>
 			</div>
 		</td>
 	</tr>

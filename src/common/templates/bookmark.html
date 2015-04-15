@@ -12,8 +12,9 @@
 	<div class="snapshot" ng-if="detail"></div>
 	<div class="hpanel" ng-if="detail" ng-click="stop($event)">
 		<div class="rel-mid-wrap">
-			<div class="edit" ng-click="edit(data)"><i class="fa fa-edit"></i></div>
-			<div class="remove" ng-click="remove(data)"><i class="fa fa-trash"></i></div>
+			<div class="revert" ng-if="conditions.col==-2" ng-click="revert({data:data})" title="还原"><i class="fa fa-undo"></i></div>
+			<div class="edit" ng-if="conditions.col!=-2" ng-click="edit(data)" title="编辑"><i class="fa fa-edit"></i></div>
+			<div class="remove" ng-click="remove({data:data})" title="{{(conditions.col==-2?'彻底':'')+'删除'}}"><i class="fa fa-trash"></i></div>
 		</div>
 	</div>
 </div>

@@ -27,6 +27,7 @@ function getSearchEngines(data,src,callback){
 	});
 }
 
+var ALL=0, UNDEF=-1, TRASH=-2;
 function collectionData(data){
 	var col={
 		id:data.id,
@@ -37,19 +38,20 @@ function collectionData(data){
 }
 function getCollections(data,src,callback){
 	data=[{
-		id:-2,
+		id:TRASH,
 		title:'回收站',
 		count:0,
 	},{
-		id:-1,
+		id:UNDEF,
 		title:'未分组书签',
 		count: 0,
 	},{
-		id:0,
+		id:ALL,
 		title:'全部书签',
 		count: 0,
 	}];
-	var h={'-1':data[0],0:data[1]};
+	var h={},i;
+	for(i of data) h[i.id]=i;
 	function getCollectionList(){
 		var o=db.transaction('collections').objectStore('collections');
 		o.index('pos').openCursor().onsuccess=function(e){
@@ -73,12 +75,13 @@ function getCollections(data,src,callback){
 				v=r.value;
 				c=h[v.col];
 				if(!v.col&&!c) {
-					v.col=-1;
+					v.col=UNDEF;
 					r.update(v);
-					c=h[-1];
+					c=h[UNDEF];
 				}
 				c.count++;
-				h[0].count++;
+				if(c.id!=TRASH)	// not trash
+					h[ALL].count++;
 				r.continue();
 			} else callback(data);
 		};
@@ -147,7 +150,7 @@ function saveBookmark(data,src,callback){
 		url:data.url||'',
 		desc:data.desc||'',
 		tags:data.tags||[],
-		col:data.col||-1,
+		col:data.col||UNDEF,
 	};
 	if(data.id) bm.id=data.id;
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
@@ -156,10 +159,23 @@ function saveBookmark(data,src,callback){
 	};
 	return true;
 }
+function moveToCollection(data,src,callback){
+	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+	o.get(data.id).onsuccess=function(e){
+		var r=e.target.result;
+		r.col=data.col||UNDEF;
+		o.put(r).onsuccess=function(e){
+			callback(r.id);
+		};
+	};
+	return true;
+}
 function removeBookmark(data,src,callback){
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
-	o.delete(data);
-	callback();
+	o.delete(data).onsuccess=function(e){
+		callback(data);
+	};
+	return true;
 }
 
 function getUserInfo(data,src,callback){
@@ -188,6 +204,7 @@ initDb(function(){
 			GetBookmarks:getBookmarks,
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,
+			MoveToCollection:moveToCollection,
 			RemoveBookmark:removeBookmark,
 			RemoveCollection:removeCollection,
 			GetUserInfo:getUserInfo,
