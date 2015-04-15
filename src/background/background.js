@@ -1,16 +1,22 @@
 function initDb(callback){
-	var request=indexedDB.open('sunshine',1);
+	var request=indexedDB.open('sunshine',2);
 	request.onsuccess=function(e){db=request.result;if(callback) callback();};
 	request.onerror=function(e){console.log('IndexedDB error: '+e.target.error.message);};
 	request.onupgradeneeded=function(e){
 		var r=e.currentTarget.result,o;
-		// collections: id title pos
-		o=r.createObjectStore('collections',{keyPath:'id',autoIncrement:true});
-		o.createIndex('pos','pos',{unique:false});	// should be unique at last
-		// bookmarks: id title url desc tags col
-		o=r.createObjectStore('bookmarks',{keyPath:'id',autoIncrement:true});
-		o.createIndex('col','col',{unique:false});
-		o.createIndex('tag','tags',{multiEntry:true});
+		if(e.oldVersion<1) {
+			// collections: id title pos
+			o=r.createObjectStore('collections',{keyPath:'id',autoIncrement:true});
+			o.createIndex('pos','pos',{unique:false});	// should be unique at last
+			// bookmarks: id title url desc tags col
+			o=r.createObjectStore('bookmarks',{keyPath:'id',autoIncrement:true});
+			o.createIndex('col','col',{unique:false});
+			o.createIndex('tag','tags',{multiEntry:true});
+		}
+		if(e.oldVersion<2) {
+			// settings: key data
+			o=r.createObjectStore('settings',{keyPath:'key'});
+		}
 	};
 }
 
@@ -178,8 +184,31 @@ function removeBookmark(data,src,callback){
 	return true;
 }
 
+function getSettings(key,def,callback){
+	var o=db.transaction('settings').objectStore('settings');
+	var r=o.get(key);
+	r.onsuccess=function(e){
+		var v=e.target.result;
+		callback(v.data);
+	};
+	r.onerror=function(e){
+		callback(def);
+	};
+}
+function setSettings(key,val,callback){
+	var o=db.transaction('settings','readwrite').objectStore('settings');
+	o.put({key:key,data:val}).onsuccess=function(e){
+		callback();
+	};
+}
 function getUserInfo(data,src,callback){
-	callback(user);
+	if(user) callback(user);
+	else {
+		getSettings('user',{id:0},function(data){
+			callback(user=data);
+		});
+		return true;
+	}
 }
 function logIn(data,src,callback){
 	user={
@@ -187,14 +216,21 @@ function logIn(data,src,callback){
 		name:'Gerald',
 		avatar:'http://cn.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80',
 	};
-	callback(user);
+	setSettings('user',user,function(){
+		callback(user);
+	});
+	return true;
 }
 function logOut(data,src,callback){
+	// send log out request
 	user={id:0};
-	callback(user);
+	setSettings('user',user,function(){
+		callback(user);
+	});
+	return true;
 }
 
-var db,user={id:0};
+var db,user=null;
 initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
