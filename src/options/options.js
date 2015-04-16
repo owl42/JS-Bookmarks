@@ -177,6 +177,12 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		$scope.current.collection=$rootScope.data.d_cols[$scope.current.edit.col];
 	};
 	$scope.save=function(){
+		var url=apis.normalizeURL($scope.current.edit.url);
+		if(!url) {
+			alert('请填写正确的网址！');
+			return;
+		}
+		$scope.current.edit.url=url;
 		apis.saveBookmark($scope.current.item,$scope.current.edit).then(function(data){
 			var old=$scope.current.item,
 					root=$rootScope.data,

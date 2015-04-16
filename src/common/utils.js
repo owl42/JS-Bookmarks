@@ -11,6 +11,12 @@ angular.module('app')
 				e.preventDefault();
 				e.stopPropagation();
 			},
+			normalizeURL: function(url){
+				if(url) {
+					var parts=url.match(/^(\w+:\/\/)?([^/]+.*)$/);
+					if(parts) return (parts[1]||'http://')+parts[2];
+				}
+			},
 			getCollections: function(){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
@@ -304,7 +310,7 @@ angular.module('app')
 			return url.replace(/^https?:\/\//i,'');
 		}
 		function open(data){
-			if(data.url) window.open(data.url);
+			if(data.url) window.open(apis.normalizeURL(data.url));
 		}
 		function getIcon(data){
 			return data.icon||'/img/icon48.png';
