@@ -35,10 +35,10 @@ angular.module('app',['ui.router'])
 		;
 	})
 	.controller('editColController',function($scope,$rootScope,apis){
-		var data=$rootScope.modal.data||{};
+		var data=$rootScope.modal.data;
 		$scope.col={
-			id:data.id||0,
-			title:data.title||'新分组',
+			id:data.id,
+			title:data.title,
 			icon:data.icon,
 		};
 		$scope.save=function(){
@@ -49,6 +49,43 @@ angular.module('app',['ui.router'])
 		$scope.close=function(){
 			$rootScope.modal=null;
 		};
+	})
+	.controller('removeColController',function($scope,$rootScope,apis){
+		$scope.col=$rootScope.modal.data;
+		$scope.rbdata={
+			items:[
+				{title:'移动到默认频道',data:-1},
+				{title:'移动到垃圾桶',data:-2},
+			],
+			current:0,
+		};
+		$scope.remove=function(){
+			var root=$rootScope.data,moveTo=$scope.rbdata.items[$scope.rbdata.current].data;
+			apis.removeCollection({id:$scope.col.id,moveTo:moveTo}).then(function(moved){
+				var needRefresh=false;
+				if(moved) {
+					if(moveTo===apis.TRASH) {
+						root.colAll.count-=moved;
+					}
+					root.d_cols[moveTo].count+=moved;
+					needRefresh=[apis.ALL,moveTo].indexOf($rootScope.conditions.col)>=0;
+				}
+				var i=root.cols.indexOf($scope.col);
+				root.cols.splice(i,1);
+				delete root.d_cols[$scope.col.id];
+				if($scope.col.id===$rootScope.conditions.col) {
+					$rootScope.conditions.col=(root.cols[i]||root.cols[i-1]||root.colAll).id;
+					needRefresh=true;
+				}
+				if(needRefresh)
+					$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
+				$rootScope.modal=null;
+			});
+		};
+		$scope.close=function(){
+			$rootScope.modal=null;
+		};
+		if(!$scope.col) $scope.close();
 	})
 	.run(function($rootScope,$state,apis){
 		$rootScope.engines={items:[],def:0};
@@ -63,7 +100,7 @@ angular.module('app',['ui.router'])
 			tags:[],
 		};
 		$rootScope._collections=apis.getCollections().then(function(){
-			$rootScope.conditions.col=$rootScope.data.colAll.id;
+			$rootScope.conditions.col=apis.ALL;
 		});
 		$rootScope._tags=apis.getTags();
 		$rootScope._bookmarks=apis.getBookmarks();
@@ -107,10 +144,10 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 		$rootScope.conditions.col=c.id;
 	};
 	$scope.edit=function(data){
-		$rootScope.modal={type:'editCol',data:data};
+		$rootScope.modal={type:'editcol',data:data};
 	};
 	$scope.remove=function(data){
-		alert(data);
+		$rootScope.modal={type:'removecol',data:data};
 	};
 	$rootScope.logout=function(){
 		apis.logOut().then(function(){

@@ -13,9 +13,12 @@
 	<body data-controller="{{$state.current.name}}">
 		<div ui-view="left" class="left side"></div>
 		<div ui-view="center" class="center"></div>
-		<div class="modal abs-mid-wrap" ng-switch="modal.type" ng-show="modal">
-			<div ng-switch-when="editCol" class="{{modal.type}}">
+		<div class="modal abs-mid-wrap" ng-switch="modal.type" ng-show="modal" ng-class="modal.type">
+			<div ng-switch-when="editcol">
 				<div ng-include="'templates/editCollection.html'"></div>
+			</div>
+			<div ng-switch-when="removecol">
+				<div ng-include="'templates/removeCollection.html'"></div>
 			</div>
 		</div>
 		<script src="options.js"></script>

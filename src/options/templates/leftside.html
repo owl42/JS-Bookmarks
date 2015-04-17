@@ -8,9 +8,6 @@
 				<a class="menu" ng-if="config.key=='groups'" ng-click="config.key='settings'"><i class="fa fa-cog"></i></a>
 				<a class="menu" ng-if="config.key!='groups'" ng-click="config.key='groups'"><i class="fa fa-list"></i></a>
 			</div>
-			<div class="cell">
-				<a class="menu" ng-click="conditions.col=-2" ng-class="{active:conditions.col==-2}" title="回收站"><i class="fa fa-trash"></i></a>
-			</div>
 		</div>
 	</div>
 	<div ng-switch="config.key">

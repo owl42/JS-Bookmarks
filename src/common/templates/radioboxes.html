@@ -1,0 +1,8 @@
+<div class="radioboxes">
+	<div class="item" ng-repeat="item in data.items" ng-class="{'active':$index==data.current}" ng-click="data.current=$index">
+		<div class="icon cell">
+			<i class="fa" ng-class="{true:'fa-check-square-o',false:'fa-square-o'}[$index==data.current]"></i>
+		</div>
+		<div class="title cell">{{item.title}}</div>
+	</div>
+</div>

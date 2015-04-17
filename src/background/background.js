@@ -45,15 +45,15 @@ function collectionData(data){
 function getCollections(data,src,callback){
 	data=[{
 		id:TRASH,
-		title:'回收站',
+		title:'垃圾桶',
 		count:0,
 	},{
 		id:UNDEF,
-		title:'未分组书签',
+		title:'默认频道',
 		count: 0,
 	},{
 		id:ALL,
-		title:'全部书签',
+		title:'全部频道',
 		count: 0,
 	}];
 	var h={},i;
@@ -95,20 +95,32 @@ function getCollections(data,src,callback){
 	getCollectionList();
 	return true;
 }
-function removeCollection(id,src,callback){
+function removeCollection(data,src,callback){
+	/* data: {
+	 *   id: id of collection to be removed
+	 *   moveTo: id of collection to hold the bookmarks in this collection
+	 * }
+	 */
 	function remove(){
 		var o=db.transaction('collections','readwrite').objectStore('collections');
-		o.delete(id);
-		callback();
+		o.delete(data.id);
+		callback(moved);
 	}
 	function check(){
-		var o=db.transaction('bookmarks').objectStore('bookmarks');
-		o.index('col').get(id).onsuccess=function(e){
+		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+		o.index('col').openCursor(data.id).onsuccess=function(e){
 			var r=e.target.result;
-			if(r) callback({err:1,msg:'分组内有书签无法删除！'});
-			else remove();
+			if(r) {
+				var v=r.value;
+				v.col=data.moveTo;
+				r.update(v);
+				moved++;
+				r.continue();
+			} else remove();
 		};
 	}
+	var moved=0;
+	data.moveTo=data.moveTo||TRASH;
 	check();
 	return true;
 }
@@ -143,6 +155,7 @@ function saveCollection(data,src,callback){
 		pos:0,	// FIXME
 	};
 	if(data.id) col.id=data.id;
+	else col.count=0;
 	var o=db.transaction('collections','readwrite').objectStore('collections');
 	o.put(col).onsuccess=function(e){
 		col.id=e.target.result;

@@ -42,10 +42,6 @@ table {
 	&.expand {
 		width: 100%;
 		text-align: center;
-		.abs-mid-wrap {
-			left: 0;
-			right: 0;
-		}
 	}
 }
 .hpanel {
@@ -96,12 +92,19 @@ table {
 		height: 100%;
 		//overflow: hidden;
 	}
+	&.left {
+		left: 0;
+	}
+	&.right {
+		right: 0;
+	}
 }
 
 @import 'styles/bookmarkinfo.less';
 @import 'styles/bookmark.less';
 @import 'styles/tags.less';
 @import 'styles/collection.less';
+@import 'styles/radioboxes.less';
 
 .buttons {
 	text-align: center;
@@ -114,9 +117,13 @@ table {
 	}
 }
 button {
-	&.save {
+	&.primary {
 		color: white;
 		.colorButton(rgb(34,143,189));
+	}
+	&.secondary {
+		color: white;
+		.colorButton(brown);
 	}
 }
 
@@ -269,8 +276,11 @@ body {
 	&.newcol {
 		&>input {
 			line-height: 3rem;
-			padding: 0 50px 0 1rem;
+			padding: 0 1rem;
 			text-align: center;
+			&.active {
+				padding-right: 50px;
+			}
 		}
 		.button {
 			cursor: pointer;
@@ -281,11 +291,8 @@ body {
 			}
 		}
 	}
-	input~.abs-mid-wrap {
-		right: 0;
-		&>* {
-			font-size: @field-height;
-		}
+	.abs-mid-wrap>* {
+		font-size: @field-height;
 	}
 }
 .toc {
@@ -494,11 +501,33 @@ button {
 		font-size: 1rem;
 	}
 }
-.editCol {
-	width: 30%;
-	min-width: 300px;
+.dialog {
+	font-size: 12px;
+}
+.editcol {
+	.dialog {
+		width: 30%;
+		min-width: 300px;
+	}
 	button {
 		width: 40%;
+	}
+}
+.removecol {
+	.dialog {
+		width: 30%;
+		min-width: 300px;
+	}
+	button {
+		width: 40%;
+	}
+	.title {
+		text-align: center;
+		margin: .5em;
+	}
+	.radioboxes {
+		padding: 1em;
+		font-size: 1.2em;
 	}
 }
 

@@ -1,0 +1,11 @@
+<div class="dialog" ng-controller="removeColController">
+	<h3>删除频道</h3>
+	<p>您确定要删除以下频道：</p>
+	<p class="title">{{col.title}}</p>
+	<p>并将其中的所有书签</p>
+	<radioboxes data="rbdata"></radioboxes>
+	<div class="buttons">
+		<button class="primary" ng-click="remove()">确定</button>
+		<button class="secondary" ng-click="close()">取消</button>
+	</div>
+</div>

@@ -59,11 +59,11 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			removeCollection: function(id){
+			removeCollection: function(data){
 				var deferred=$q.defer();
-				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:id},function(ret){
+				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:data},function(ret){
 					$rootScope.$apply(function(){
-						deferred.resolve(ret||{});
+						deferred.resolve(ret);
 					});
 				});
 				return deferred.promise;
@@ -275,14 +275,17 @@ angular.module('app')
 			restrict: 'E',
 			scope: {
 				data: '=',
+				edit: '@',
 			},
 			link: function(scope, element, attrs, colsCtrl) {
 				scope.stop=apis.stop;
 				scope.isActive=function(){
 					return colsCtrl.isActive(scope.data);
 				};
-				scope.edit=colsCtrl.edit;
-				scope.remove=colsCtrl.remove;
+				if(scope.edit) {
+					scope.editCol=colsCtrl.edit;
+					scope.removeCol=colsCtrl.remove;
+				}
 				if(attrs.select) element.on('click',function(){
 					scope.$apply(function(){
 						colsCtrl.select(scope.data);
@@ -334,6 +337,16 @@ angular.module('app')
 				scope.limitTag=$rootScope.limitTag;
 				scope.conditions=$rootScope.conditions;
 			},
+		};
+	})
+	.directive('radioboxes',function(paths){
+		return {
+			restrict:'E',
+			replace:true,
+			scope:{
+				data:'=',
+			},
+			templateUrl:paths.common+'templates/radioboxes.html',
 		};
 	})
 ;
