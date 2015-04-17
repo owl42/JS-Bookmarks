@@ -238,8 +238,10 @@ angular.module('app')
 			scope: {
 				cid: '=',
 				colAll: '@',
-				edit: '@',
 				list: '@',
+				editable: '@',
+				edit: '&',
+				remove: '&',
 			},
 			controller: function($scope){
 				$scope.data=$rootScope.data;
@@ -254,6 +256,14 @@ angular.module('app')
 				this.isActive=function(item){
 					return item&&$scope.cid==item.id;
 				};
+				if($scope.editable) {
+					this.edit=function(data){
+						$scope.edit({data:data});
+					};
+					this.remove=function(data){
+						$scope.remove({data:data});
+					};
+				}
 			},
 		};
 	})
@@ -265,32 +275,19 @@ angular.module('app')
 			restrict: 'E',
 			scope: {
 				data: '=',
-				edit: '@',
 			},
 			link: function(scope, element, attrs, colsCtrl) {
 				scope.stop=apis.stop;
 				scope.isActive=function(){
 					return colsCtrl.isActive(scope.data);
 				};
-				scope.editCol=function(){
-					$rootScope.modal={type:'editCol',data:scope.data};
-				};
+				scope.edit=colsCtrl.edit;
+				scope.remove=colsCtrl.remove;
 				if(attrs.select) element.on('click',function(){
 					scope.$apply(function(){
 						colsCtrl.select(scope.data);
 					});
 				});
-				scope.removeCol=function(){
-					if(confirm('确定删除分组【'+scope.data.title+'】吗？'))
-					apis.removeCollection(scope.data.id).then(function(ret){
-						if(ret.err) alert(ret.msg);
-						else {
-							var i=$rootScope.data.cols.indexOf(scope.data);
-							$rootScope.data.cols.splice(i,1);
-							delete $rootScope.data.d_cols[scope.data.id];
-						}
-					});
-				};
 			},
 		};
 	})

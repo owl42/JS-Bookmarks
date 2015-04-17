@@ -106,8 +106,11 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	$scope.limitCol=function(c){
 		$rootScope.conditions.col=c.id;
 	};
-	$scope.editCol=function(){
-		$rootScope.modal={type:'editCol'};
+	$scope.edit=function(data){
+		$rootScope.modal={type:'editCol',data:data};
+	};
+	$scope.remove=function(data){
+		alert(data);
 	};
 	$rootScope.logout=function(){
 		apis.logOut().then(function(){

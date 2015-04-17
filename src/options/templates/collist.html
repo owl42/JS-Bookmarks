@@ -11,7 +11,7 @@
 		</div>
 	</form>
 </div>
-<collections list="true" edit="true" col-all="true" cid="conditions.col"></collections>
+<collections list="true" editable="true" edit="edit(data)" remove="remove(data)" col-all="true" cid="conditions.col"></collections>
 <div class="padded tags list">
 	<div ng-repeat="(tag,count) in data.d_tags" class="tag" ng-click="limitTag(tag)">
 		<i class="fa fa-tag"></i>
