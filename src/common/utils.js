@@ -307,7 +307,7 @@ angular.module('app')
 	})
 	.directive('bookmark',function($rootScope,$state,paths,apis){
 		function shortUrl(url){
-			return url.replace(/^https?:\/\//i,'');
+			return url.replace(/^http?:\/\//i,'').replace(/^([^/]+)\/$/,'$1');
 		}
 		function open(data){
 			if(data.url) window.open(apis.normalizeURL(data.url));
