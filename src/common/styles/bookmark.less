@@ -1,7 +1,7 @@
 .bookmark {
 	@icon-size: 32px;
 	cursor: pointer;
-	height: 50px;
+	height: @icon-size;
 	position: relative;
 	&>* {
 		display: inline-block;
@@ -14,8 +14,14 @@
 	}
 	.title {
 		font-size: 20px;
+		width: 40%;
+		.textNoWrap;
 	}
-	.tags {
+	.url {
+		width: 40%;
+		.textNoWrap;
+	}
+	/*.tags {
 		margin-left: @icon-size;
-	}
+	}*/
 }

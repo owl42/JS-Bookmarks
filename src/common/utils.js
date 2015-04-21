@@ -4,9 +4,9 @@ angular.module('app')
 	})
 	.factory('apis',function($q,$rootScope){
 		var apis={
-			ALL: 0,
+			//ALL: 0,
 			UNDEF: -1,
-			TRASH: -2,
+			//TRASH: -2,
 			stop: function(e){
 				e.preventDefault();
 				e.stopPropagation();
@@ -20,19 +20,19 @@ angular.module('app')
 			getCollections: function(){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				data.colAll={};
+				//data.colAll={};
 				data.colUnd={};
-				data.colTrash={};
+				//data.colTrash={};
 				data.cols=[];
 				data.d_cols={};
 				chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
 					cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
 							data.colUnd=col;
-						else if(col.id==apis.ALL)
+						/*else if(col.id==apis.ALL)
 							data.colAll=col;
 						else if(col.id==apis.TRASH)
-							data.colTrash=col;
+							data.colTrash=col;*/
 						else
 							data.cols.push(col);
 						data.d_cols[col.id]=col;
@@ -68,7 +68,7 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			getTags: function(){
+			/*getTags: function(){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				data.d_tags={};
@@ -79,7 +79,7 @@ angular.module('app')
 					});
 				});
 				return deferred.promise;
-			},
+			},*/
 			getBookmarks: function(col){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
@@ -107,7 +107,7 @@ angular.module('app')
 						}
 					} else {
 						item.id=id;
-						data.colAll.count++;
+						//data.colAll.count++;
 						data.d_cols[item.col].count++;
 					}
 					$rootScope.$apply(function(){
@@ -123,8 +123,8 @@ angular.module('app')
 					if(id===item.id) {
 						var i=data.bookmarks.indexOf(item);
 						if(i>=0) {
-							if(item.col===apis.TRASH) data.colAll.count++;
-							else if(col===apis.TRASH) data.colAll.count--;
+							/*if(item.col===apis.TRASH) data.colAll.count++;
+							else if(col===apis.TRASH) data.colAll.count--;*/
 							data.d_cols[item.col].count--;
 							data.d_cols[item.col=col].count++;
 							data.bookmarks.splice(i,1);
@@ -144,7 +144,7 @@ angular.module('app')
 					if(id===item.id) {
 						var i=data.bookmarks.indexOf(item);
 						if(i>=0) {
-							if(item.col!==apis.TRASH) data.colAll.count--;
+							//if(item.col!==apis.TRASH) data.colAll.count--;
 							data.d_cols[item.col].count--;
 							data.bookmarks.splice(i,1);
 							delete data.d_bookmarks[item.id];
@@ -189,7 +189,7 @@ angular.module('app')
 		};
 		return apis;
 	})
-	.directive('tags',function(paths){
+	/*.directive('tags',function(paths){
 		return {
 			templateUrl: paths.common+'templates/tags.html',
 			replace: true,
@@ -229,7 +229,7 @@ angular.module('app')
 				});
 			},
 		};
-	})
+	})*/
 	.directive('collections',function(paths,$rootScope){
 		return {
 			templateUrl: paths.common+'templates/collections.html',
@@ -237,7 +237,7 @@ angular.module('app')
 			restrict: 'E',
 			scope: {
 				cid: '=',
-				colAll: '@',
+				//colAll: '@',
 				list: '@',
 				editable: '@',
 				edit: '&',
@@ -309,8 +309,12 @@ angular.module('app')
 		function shortUrl(url){
 			return url.replace(/^http?:\/\//i,'').replace(/^([^/]+)\/$/,'$1');
 		}
-		function open(data){
-			if(data.url) window.open(apis.normalizeURL(data.url));
+		function open(data,target){
+			var url=data.url&&apis.normalizeURL(data.url);
+			if(url) {
+				if(target=='_blank') window.open(url);
+				else location.href=url;
+			}
 		}
 		function getIcon(data){
 			return data.icon||'/img/icon48.png';
@@ -331,7 +335,9 @@ angular.module('app')
 			link:function(scope,element,attrs){
 				scope.shortUrl=shortUrl;
 				scope.getIcon=getIcon;
-				scope.open=open;
+				scope.open=function(){
+					open(scope.data,attrs.target);
+				};
 				scope.stop=apis.stop;
 				scope.edit=edit;
 				scope.limitTag=$rootScope.limitTag;

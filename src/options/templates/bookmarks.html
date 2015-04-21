@@ -14,7 +14,7 @@
 			</div></div>
 		</td>
 	</tr>
-	<tr>
+	<!--<tr>
 		<td>
 			<div class="header">
 				<div class="tags">
@@ -29,11 +29,11 @@
 				</div>
 			</div>
 		</td>
-	</tr>
+	</tr>-->
 	<tr class="expand">
 		<td class="bookmarks">
 			<div class="abs-fill-wrap">
-				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" remove="remove(data)" revert="revert(data)" ng-show="checkCondition(bookmark)"></bookmark>
+				<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" detail="true" remove="remove(data)" revert="revert(data)" ng-show="bmFilter(bookmark)"></bookmark>
 			</div>
 		</td>
 	</tr>

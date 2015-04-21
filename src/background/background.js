@@ -8,10 +8,11 @@ function initDb(callback){
 			// collections: id title pos
 			o=r.createObjectStore('collections',{keyPath:'id',autoIncrement:true});
 			o.createIndex('pos','pos',{unique:false});	// should be unique at last
-			// bookmarks: id title url desc tags col
+			// bookmarks: id title url col
+			// deprecated: desc, tags
 			o=r.createObjectStore('bookmarks',{keyPath:'id',autoIncrement:true});
 			o.createIndex('col','col',{unique:false});
-			o.createIndex('tag','tags',{multiEntry:true});
+			// o.createIndex('tag','tags',{multiEntry:true});
 		}
 		if(e.oldVersion<2) {
 			// settings: key data
@@ -43,19 +44,21 @@ function collectionData(data){
 	return col;
 }
 function getCollections(data,src,callback){
-	data=[{
-		id:TRASH,
-		title:'垃圾桶',
-		count:0,
-	},{
-		id:UNDEF,
-		title:'默认频道',
-		count: 0,
-	},{
-		id:ALL,
-		title:'全部频道',
-		count: 0,
-	}];
+	data=[
+		/*{
+			id:TRASH,
+			title:'垃圾桶',
+			count:0,
+		},*/{
+			id:UNDEF,
+			title:'默认频道',
+			count: 0,
+		}/*,{
+			id:ALL,
+			title:'全部频道',
+			count: 0,
+		}*/
+	];
 	var h={},i;
 	for(i of data) h[i.id]=i;
 	function getCollectionList(){
@@ -86,8 +89,8 @@ function getCollections(data,src,callback){
 					c=h[UNDEF];
 				}
 				c.count++;
-				if(c.id!=TRASH)	// not trash
-					h[ALL].count++;
+				/*if(c.id!=TRASH)	// not trash
+					h[ALL].count++;*/
 				r.continue();
 			} else callback(data);
 		};
@@ -124,7 +127,7 @@ function removeCollection(data,src,callback){
 	check();
 	return true;
 }
-function getTags(data,src,callback){
+/*function getTags(data,src,callback){
 	data={};
 	var o=db.transaction('bookmarks').objectStore('bookmarks');
 	o.index('tag').openCursor().onsuccess=function(e){
@@ -135,7 +138,7 @@ function getTags(data,src,callback){
 		} else callback(data);
 	};
 	return true;
-}
+}*/
 function getBookmarks(data,src,callback){
 	var bm=[],o=db.transaction('bookmarks').objectStore('bookmarks');
 	if(!data) data=IDBKeyRange.lowerBound(-1);
@@ -167,8 +170,8 @@ function saveBookmark(data,src,callback){
 	var bm={
 		title:data.title||'未命名',
 		url:data.url||'',
-		desc:data.desc||'',
-		tags:data.tags||[],
+		//desc:data.desc||'',
+		//tags:data.tags||[],
 		col:data.col||UNDEF,
 	};
 	if(data.id) bm.id=data.id;
@@ -249,7 +252,7 @@ initDb(function(){
 		var mappings={
 			GetSearchEngines:getSearchEngines,
 			GetCollections:getCollections,
-			GetTags:getTags,
+			//GetTags:getTags,
 			GetBookmarks:getBookmarks,
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,

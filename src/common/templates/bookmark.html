@@ -1,15 +1,15 @@
-<div class="bookmark" title="{{data.url}}" ng-click="open(data)">
+<div class="bookmark" title="{{data.url}}" ng-click="open()">
 	<img class="icon" ng-src="{{getIcon(data)}}">
 	<div class="title" title="{{data.desc}}">
 		{{data.title}}
 	</div>
 	<div class="url" ng-if="detail">{{shortUrl(data.url)}}</div>
-	<div class="desc" ng-if="detail">{{data.desc}}</div>
+	<!--<div class="desc" ng-if="detail">{{data.desc}}</div>
 	<br>
 	<div class="tags" ng-click="stop($event)">
 		<a class="tag" ng-repeat="tag in data.tags" ng-click="limitTag(tag)">#{{tag}}</a>
 	</div>
-	<div class="snapshot" ng-if="detail"></div>
+	<div class="snapshot" ng-if="detail"></div>-->
 	<div class="hpanel" ng-if="detail" ng-click="stop($event)">
 		<div class="rel-mid-wrap">
 			<div class="revert" ng-if="conditions.col==-2" ng-click="revert({data:data})" title="还原"><i class="fa fa-undo"></i></div>

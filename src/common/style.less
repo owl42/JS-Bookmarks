@@ -12,6 +12,11 @@
 		.darken;
 	}
 }
+.textNoWrap() {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
 
 * {
 	margin: 0;
@@ -102,9 +107,9 @@ table {
 
 @import 'styles/bookmarkinfo.less';
 @import 'styles/bookmark.less';
-@import 'styles/tags.less';
 @import 'styles/collection.less';
 @import 'styles/radioboxes.less';
+//@import 'styles/tags.less';
 
 .buttons {
 	text-align: center;
@@ -257,7 +262,7 @@ body {
 		border: none;
 		resize: none;
 	}
-	.tags {
+	/*.tags {
 		border-radius: .3rem;
 		padding: .3rem;
 		cursor: text;
@@ -266,7 +271,7 @@ body {
 			color: white;
 			background: gray;
 		}
-	}
+	}*/
 	&>input {
 		line-height: @field-height;
 		width: 100%;
@@ -376,7 +381,7 @@ body {
 			height: @nav-height;
 		}
 	}
-	.header {
+	/*.header {
 		line-height: 4rem;
 		padding: 8px 60px;
 		.tags {
@@ -386,7 +391,7 @@ body {
 			color: white;
 			background: #789;
 		}
-	}
+	}*/
 }
 button {
 	&.sign {
@@ -414,21 +419,19 @@ button {
 			color: gray;
 			margin: 0 2em;
 			max-width: 300px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+			.textNoWrap;
 		}
 		.desc {
 			color: gray;
 		}
-		.tags {
+		/*.tags {
 			a {
 				color: #456;
 				&:hover {
 					color: #89f;
 				}
 			}
-		}
+		}*/
 		&:hover {
 			box-shadow: 4px 4px 2px gray;
 		}
@@ -450,7 +453,7 @@ button {
 		}
 	}
 }
-.tags.list {
+/*.tags.list {
 	margin-top: 10px;
 	.tag {
 		color: #234;
@@ -463,7 +466,7 @@ button {
 		font-size: .8rem;
 		background: #456;
 	}
-}
+}*/
 .fill-wrap {
 	width: 100%;
 	height: 100%;
@@ -552,16 +555,14 @@ button {
 	.bookmark {
 		.title {
 			max-width: 250px;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
+			.textNoWrap;
 		}
-		.tags {
+		/*.tags {
 			@color: #abc;
 			a {
 				color: @color;
 			}
-		}
+		}*/
 		&:hover {
 			background: darken(white,10%);
 		}

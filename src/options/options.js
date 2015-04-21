@@ -96,19 +96,19 @@ angular.module('app',['ui.router'])
 		});
 		$rootScope.data={};
 		$rootScope.conditions={
-			col:apis.ALL,
-			tags:[],
+			col:apis.UNDEF,
+			//tags:[],
 		};
 		$rootScope._collections=apis.getCollections().then(function(){
-			$rootScope.conditions.col=apis.ALL;
+			$rootScope.conditions.col=apis.UNDEF;
 		});
-		$rootScope._tags=apis.getTags();
+		//$rootScope._tags=apis.getTags();
 		$rootScope._bookmarks=apis.getBookmarks();
 		$rootScope.$state=$state;
-		$rootScope.limitTag=function(tag){
+		/*$rootScope.limitTag=function(tag){
 			var i=$rootScope.conditions.tags.indexOf(tag);
 			if(i<0) $rootScope.conditions.tags.push(tag);
-		};
+		};*/
 		$rootScope.$watch('conditions.col',function(){
 			$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
 		},false);
@@ -171,10 +171,10 @@ var Bookmarks=function($scope,$rootScope,$state,apis){
 	$scope.conditions=$rootScope.conditions;
 	$scope.remove=function(data){
 		var def;
-		if($scope.conditions.col==apis.TRASH)
+		//if($scope.conditions.col==apis.TRASH)
 			def=apis.removeBookmark(data);
-		else
-			def=apis.moveToCollection(data,apis.TRASH);
+		//else
+			//def=apis.moveToCollection(data,apis.TRASH);
 		def.then(function(){
 			if(data===$scope.current.item) $state.go('bookmarks');
 		});
@@ -182,13 +182,14 @@ var Bookmarks=function($scope,$rootScope,$state,apis){
 	$scope.revert=function(data){
 		apis.moveToCollection(data,apis.UNDEF);
 	};
-	$scope.removeTag=function(i){
+	/*$scope.removeTag=function(i){
 		$scope.conditions.tags.splice(i,1);
-	};
-	$scope.checkCondition=function(item){
-		return $scope.conditions.tags.every(function(tag){
+	};*/
+	$scope.bmFilter=function(item){
+		/*return $scope.conditions.tags.every(function(tag){
 			return item.tags.indexOf(tag)>=0;
-		});
+		});*/
+		return true;
 	};
 	// 为了突出显示正在编辑的项目
 	$scope.current={
@@ -204,7 +205,7 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 			$scope.current.item={
 				title:'新书签',
 				col:$rootScope.conditions.col||apis.UNDEF,
-				tags:[],
+				//tags:[],
 			};
 		$scope.revert();
 	});
@@ -224,10 +225,10 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		}
 		$scope.current.edit.url=url;
 		apis.saveBookmark($scope.current.item,$scope.current.edit).then(function(data){
-			var old=$scope.current.item,
-					root=$rootScope.data,
-					ccol=$rootScope.conditions.col,
-					otags=old.tags;
+			var old=$scope.current.item;
+			var root=$rootScope.data;
+			var ccol=$rootScope.conditions.col;
+			//var otags=old.tags;
 			if(old.id) {
 				if(old.col!=data.col&&old.col==ccol) {
 					var i=root.bookmarks.indexOf(old);
@@ -236,14 +237,14 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 				} else
 					angular.extend(old,data);
 			} else {
-				otags=[];
+				//otags=[];
 				if(data.col==ccol||ccol===root.colAll.id) {
 					root.d_bookmarks[data.id]=data;
 					root.bookmarks.push(data);
 				}
 				$state.go('bookmarks.edit',{bid:data.id});
 			}
-			data.tags.forEach(function(tag){
+			/*data.tags.forEach(function(tag){
 				var i=otags.indexOf(tag);
 				if(i<0) {
 					root.d_tags[tag]=(root.d_tags[tag]||0)+1;
@@ -254,7 +255,7 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 				if(tag) {
 					if(!--root.d_tags[tag]) delete root.d_tags[tag];
 				}
-			});
+			});*/
 			//$scope.revert();
 			$state.go('bookmarks');
 		});

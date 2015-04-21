@@ -9,10 +9,18 @@
 		"48":"img/icon48.png",
 		"128":"img/icon128.png"
 	},
-	"browser_action": {
+	/*"browser_action": {
 		"default_icon": "img/icon48.png",
 		"default_title": "Just do it.",
 		"default_popup": "popup/popup.html"
+	},*/
+	"page_action": {
+		"default_icon": {
+			"19": "img/icon16.png",
+			"38": "img/icon48.png"
+		},
+		"default_title": "Add to favorite",
+		"default_popup": "popup.html"
 	},
 	"author": "Gerald <gera2ld@163.com>",
 	"background": {
