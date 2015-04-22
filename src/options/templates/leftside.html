@@ -1,16 +1,17 @@
 <div class="fill-wrap toc">
 	<div class="nav" ng-if="user.id">
-		<div>
-			<div class="cell avatar">
-				<img ng-src="{{user.avatar}}">
-			</div>
-			<div class="cell expand">
-				<a class="menu" ng-if="config.key=='groups'" ng-click="config.key='settings'"><i class="fa fa-cog"></i></a>
-				<a class="menu" ng-if="config.key!='groups'" ng-click="config.key='groups'"><i class="fa fa-list"></i></a>
-			</div>
+		<div class="cell avatar">
+			<img ng-src="{{user.avatar}}">
+		</div>
+		<div class="cell expand">
+			<a class="menu" ng-if="config.key=='groups'" ng-click="config.key='settings'"><i class="fa fa-cog"></i></a>
+			<a class="menu" ng-if="config.key!='groups'" ng-click="config.key='groups'"><i class="fa fa-list"></i></a>
+		</div>
+		<div class="cell">
+			<a class="menu" ng-click="logout()" title="退出账号"><i class="fa fa-sign-out"></i></a>
 		</div>
 	</div>
-	<div ng-switch="config.key">
+	<div ng-switch="config.key" class="content">
 		<div ng-switch-when="groups">
 			<div ng-include="'templates/collist.html'"></div>
 		</div>

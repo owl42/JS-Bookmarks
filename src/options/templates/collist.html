@@ -1,19 +1,18 @@
-<div class="buttons">
-	<form class="newcol field" ng-submit="newCol()">
-		<input type=text placeholder="添加频道" ng-model="colData.title" ng-class="{'active':colData.title}">
-		<div class="abs-mid-wrap right" ng-show="colData.title">
-			<span class="button" ng-click="colData.title=''">
-				<i class="fa fa-times-circle"></i>
-			</span>
-			<span class="button" ng-click="newCol()">
-				<i class="fa fa-check-circle"></i>
-			</span>
+<collection data="root.colUnd" select="select(data)"></collection>
+<br class="separator" />
+<collection ng-repeat="item in root.cols" data="item" select="select(item)" change="change(data)" blur="change"></collection>
+<div class="collection" ng-click="startAddCol($event)" ng-class="{em:newCol.mode=='edit'}">
+	<div class="cell">
+		<img class="icon" src="/images/collection.png">
+	</div>
+	<div class="cell expand">
+		<div class="abs-mid-wrap left right">
+			<editable class="title" data="newCol" button="确定" placeholder="{{newCol.placeholder}}" change="addCol()" blur="cancelAddCol()"></editable>
 		</div>
-	</form>
+	</div>
 </div>
-<collections list="true" editable="true" edit="edit(data)" remove="remove(data)" col-all="true" cid="conditions.col"></collections>
 <!--<div class="padded tags list">
-	<div ng-repeat="(tag,count) in data.d_tags" class="tag" ng-click="limitTag(tag)">
+	<div ng-repeat="(tag,count) in root.d_tags" class="tag" ng-click="limitTag(tag)">
 		<i class="fa fa-tag"></i>
 		<span class="title">{{tag}}</span>
 		<span class="count">{{count}}</span>

@@ -265,4 +265,10 @@ initDb(function(){
 		},f=mappings[req.cmd];
 		if(f) return f(req.data,src,callback);
 	});
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+		if(tab.url) {
+			if(/^(http|ftp)s?:/i.test(tab.url)) chrome.pageAction.show(tabId);
+			else chrome.pageAction.hide(tabId);
+		}
+	});
 });

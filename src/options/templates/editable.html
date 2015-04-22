@@ -1,0 +1,7 @@
+<div class="editable">
+  <form class="wrap" ng-if="data.mode=='edit'" ng-submit="checkSubmit()" ng-click="$event.stopPropagation()">
+    <input class="submit" ng-show="button" type="submit" value="{{button}}">
+    <input class="edit" type=text ng-model="data.text" placeholder={{placeholder}}>
+  </form>
+  <span ng-if="data.mode!='edit'" class="text">{{data.text||placeholder}}</span>
+</div>

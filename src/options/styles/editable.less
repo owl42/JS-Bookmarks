@@ -1,0 +1,27 @@
+.editable {
+  @height: 20px;
+  .wrap {
+    width: 100%;
+    height: @height;
+    position: relative;
+  }
+  .edit {
+    color: inherit;
+    border: none;
+    outline: none;
+    line-height: @height;
+    background: transparent;
+    width: 100%;
+  }
+  .submit {
+    @width: 40px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: @width;
+    &:not(.ng-hide)~.edit {
+      padding-right: @width+5px;
+    }
+  }
+}

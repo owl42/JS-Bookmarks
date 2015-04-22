@@ -5,24 +5,15 @@
 		<title>Sunshine</title>
 		<link rel="stylesheet" type="text/css" href="../lib/angular-csp.css" />
 		<link rel="stylesheet" type="text/css" href="../lib/font-awesome/font-awesome.min.css" />
-		<link rel="stylesheet/less" type="text/css" href="../common/style.less" />
+		<link rel="stylesheet/less" type="text/css" href="options.less" />
 		<script src="../lib/less.min.js"></script>
 		<script src="../lib/angular.js"></script>
 		<script src="../lib/angular-ui-router.js"></script>
 	</head>
-	<body data-controller="{{$state.current.name}}">
+	<body>
 		<div ui-view="left" class="left side"></div>
 		<div ui-view="center" class="center"></div>
-		<div class="modal abs-mid-wrap" ng-switch="modal.type" ng-show="modal" ng-class="modal.type">
-			<div ng-switch-when="editcol">
-				<div ng-include="'templates/editCollection.html'"></div>
-			</div>
-			<div ng-switch-when="removecol">
-				<div ng-include="'templates/removeCollection.html'"></div>
-			</div>
-		</div>
 		<script src="options.js"></script>
 		<script src="utils.js"></script>
-		<script src="../common/utils.js"></script>
 	</body>
 </html>

@@ -27,65 +27,7 @@ angular.module('app',['ui.router'])
 					},
 				},
 			})
-			.state('bookmarks.edit',{
-				url:'/edit/:bid',
-				templateUrl:'templates/edit.html',
-				controller: EditBookmark,
-			})
 		;
-	})
-	.controller('editColController',function($scope,$rootScope,apis){
-		var data=$rootScope.modal.data;
-		$scope.col={
-			id:data.id,
-			title:data.title,
-			icon:data.icon,
-		};
-		$scope.save=function(){
-			apis.saveCollection($scope.col).then(function(){
-				$rootScope.modal=null;
-			});
-		};
-		$scope.close=function(){
-			$rootScope.modal=null;
-		};
-	})
-	.controller('removeColController',function($scope,$rootScope,apis){
-		$scope.col=$rootScope.modal.data;
-		$scope.rbdata={
-			items:[
-				{title:'移动到默认频道',data:-1},
-				{title:'移动到垃圾桶',data:-2},
-			],
-			current:0,
-		};
-		$scope.remove=function(){
-			var root=$rootScope.data,moveTo=$scope.rbdata.items[$scope.rbdata.current].data;
-			apis.removeCollection({id:$scope.col.id,moveTo:moveTo}).then(function(moved){
-				var needRefresh=false;
-				if(moved) {
-					if(moveTo===apis.TRASH) {
-						root.colAll.count-=moved;
-					}
-					root.d_cols[moveTo].count+=moved;
-					needRefresh=[apis.ALL,moveTo].indexOf($rootScope.conditions.col)>=0;
-				}
-				var i=root.cols.indexOf($scope.col);
-				root.cols.splice(i,1);
-				delete root.d_cols[$scope.col.id];
-				if($scope.col.id===$rootScope.conditions.col) {
-					$rootScope.conditions.col=(root.cols[i]||root.cols[i-1]||root.colAll).id;
-					needRefresh=true;
-				}
-				if(needRefresh)
-					$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
-				$rootScope.modal=null;
-			});
-		};
-		$scope.close=function(){
-			$rootScope.modal=null;
-		};
-		if(!$scope.col) $scope.close();
 	})
 	.run(function($rootScope,$state,apis){
 		$rootScope.engines={items:[],def:0};
@@ -95,23 +37,36 @@ angular.module('app',['ui.router'])
 			});
 		});
 		$rootScope.data={};
-		$rootScope.conditions={
+		$rootScope.cond={
 			col:apis.UNDEF,
 			//tags:[],
 		};
 		$rootScope._collections=apis.getCollections().then(function(){
-			$rootScope.conditions.col=apis.UNDEF;
+			$rootScope.cond.col=apis.UNDEF;
 		});
 		//$rootScope._tags=apis.getTags();
 		$rootScope._bookmarks=apis.getBookmarks();
 		$rootScope.$state=$state;
 		/*$rootScope.limitTag=function(tag){
-			var i=$rootScope.conditions.tags.indexOf(tag);
-			if(i<0) $rootScope.conditions.tags.push(tag);
+			var i=$rootScope.cond.tags.indexOf(tag);
+			if(i<0) $rootScope.cond.tags.push(tag);
 		};*/
-		$rootScope.$watch('conditions.col',function(){
-			$rootScope._bookmarks=apis.getBookmarks($rootScope.conditions.col);
+		$rootScope.$watch('cond.col',function(){
+			$rootScope._bookmarks=apis.getBookmarks($rootScope.cond.col);
 		},false);
+		$rootScope.blur=[];
+		angular.element(document).on('mousedown', function(e){
+			var blur=$rootScope.blur;
+			if(blur.length) {
+				$rootScope.blur=[];
+				angular.forEach(blur, function(item){
+					if(item[0].compareDocumentPosition(e.target)&16)
+						$rootScope.blur.push(item);
+					else
+						item[1]();
+				});
+			}
+		});
 	})
 ;
 
@@ -139,39 +94,54 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 		if(!$rootScope.user.id) $state.go('login');
 	});
 	$scope.config={key:'groups'};
-	$scope.data=$rootScope.data;
-	$scope.limitCol=function(c){
-		$rootScope.conditions.col=c.id;
+	$scope.root=$rootScope.data;
+	$scope.select=function(item){
+		$rootScope.cond.col=item.id;
 	};
-	$scope.edit=function(data){
-		$rootScope.modal={type:'editcol',data:data};
+	$scope.isActive=function(item){
+		return $rootScope.cond.col===item.id;
 	};
-	$scope.remove=function(data){
-		$rootScope.modal={type:'removecol',data:data};
+	$scope.change=function(data){
+		if(data.id>0&&data.title) {
+			apis.saveCollection({
+				id:data.id,
+				title:data.title,
+			});
+		}
 	};
 	$rootScope.logout=function(){
 		apis.logOut().then(function(){
 			$state.go('login');
 		});
 	};
-	$scope.colData={
-		id:0,
-		title:'',
-		icon:null,
+	$scope.newCol={
+		text:'',
+		placeholder:'添加频道',
 	};
-	$scope.newCol=function(){
-		if($scope.colData.title) {
-			apis.saveCollection($scope.colData).then(function(){
-				$scope.colData.title='';
+	$scope.startAddCol=function(e){
+		apis.stop(e);
+		$scope.newCol.mode='edit';
+	};
+	$scope.addCol=function(){
+		if($scope.newCol.text) {
+			apis.saveCollection({
+				id:0,
+				title:$scope.newCol.text,
+			}).then(function(){
+				$scope.newCol.text='';
 			});
 		}
 	};
+	$scope.cancelAddCol=function(){
+		$scope.newCol.mode='';
+		$scope.newCol.text='';
+	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
-	$scope.conditions=$rootScope.conditions;
+	$scope.cond=$rootScope.cond;
 	$scope.remove=function(data){
 		var def;
-		//if($scope.conditions.col==apis.TRASH)
+		//if($scope.cond.col==apis.TRASH)
 			def=apis.removeBookmark(data);
 		//else
 			//def=apis.moveToCollection(data,apis.TRASH);
@@ -183,10 +153,10 @@ var Bookmarks=function($scope,$rootScope,$state,apis){
 		apis.moveToCollection(data,apis.UNDEF);
 	};
 	/*$scope.removeTag=function(i){
-		$scope.conditions.tags.splice(i,1);
+		$scope.cond.tags.splice(i,1);
 	};*/
 	$scope.bmFilter=function(item){
-		/*return $scope.conditions.tags.every(function(tag){
+		/*return $scope.cond.tags.every(function(tag){
 			return item.tags.indexOf(tag)>=0;
 		});*/
 		return true;
@@ -204,7 +174,7 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		else
 			$scope.current.item={
 				title:'新书签',
-				col:$rootScope.conditions.col||apis.UNDEF,
+				col:$rootScope.cond.col||apis.UNDEF,
 				//tags:[],
 			};
 		$scope.revert();
@@ -227,7 +197,7 @@ var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
 		apis.saveBookmark($scope.current.item,$scope.current.edit).then(function(data){
 			var old=$scope.current.item;
 			var root=$rootScope.data;
-			var ccol=$rootScope.conditions.col;
+			var ccol=$rootScope.cond.col;
 			//var otags=old.tags;
 			if(old.id) {
 				if(old.col!=data.col&&old.col==ccol) {

@@ -5,33 +5,27 @@
 	"default_locale": "en",
 	"description": "__MSG_extDesc__",
 	"icons": {
-		"16":"img/icon16.png",
-		"48":"img/icon48.png",
-		"128":"img/icon128.png"
+		"16":"images/icon16.png",
+		"48":"images/icon48.png",
+		"128":"images/icon128.png"
 	},
-	/*"browser_action": {
-		"default_icon": "img/icon48.png",
-		"default_title": "Just do it.",
-		"default_popup": "popup/popup.html"
-	},*/
 	"page_action": {
 		"default_icon": {
-			"19": "img/icon16.png",
-			"38": "img/icon48.png"
+			"19": "images/icon16.png",
+			"38": "images/icon48.png"
 		},
 		"default_title": "Add to favorite",
-		"default_popup": "popup.html"
+		"default_popup": "popup/popup.html"
 	},
 	"author": "Gerald <gera2ld@163.com>",
 	"background": {
-		//"persistent": true,
 		"page": "background/background.html"
 	},
 	"chrome_url_overrides": {
 		"newtab": "options/options.html"
 	},
 	"options_page": "options/options.html",
-	"homepage_url": "http://geraldl.net",
+	"homepage_url": "http://gerald.top",
 	"offline_enabled": true,
 	"permissions": [
 		"<all_urls>",

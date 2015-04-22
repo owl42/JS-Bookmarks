@@ -1,0 +1,20 @@
+<div class="collection" ng-class="{em:editdata.mode=='edit',active:data.id===cond.col}">
+	<div class="cell">
+		<img class="icon" ng-src="{{data.icon||'/images/collection.png'}}">
+	</div>
+	<div class="cell expand">
+		<div class="abs-mid-wrap left right">
+			<editable class="title" ng-if="edit" data="editdata" change="check()" blur="blur()"></editable>
+			<span class="title" ng-if="!edit">{{data.title}}</span>
+		</div>
+	</div>
+	<div class="cell" ng-show="editdata.mode!='edit'">
+		<div class="number">{{data.count}}</div>
+	</div>
+	<div class="hpanel" ng-if="edit" ng-show="editdata.mode!='edit'" ng-click="stop($event)">
+		<div class="rel-mid-wrap">
+			<div class="edit" ng-click="editCol(data)"><i class="fa fa-edit"></i></div>
+			<div class="remove" ng-click="removeCol(data)"><i class="fa fa-trash"></i></div>
+		</div>
+	</div>
+</div>
