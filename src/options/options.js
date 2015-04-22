@@ -19,13 +19,28 @@ angular.module('app',[])
 		},false);
 		apis.getUserInfo();
 	})
-	.controller('SideController',function($scope,$rootScope,apis){
+	.controller('SideController',function($scope,$rootScope,apis,blurFactory){
 		$scope.config={key:'groups'};
 		$scope.root=$rootScope.data;
+		$scope.usershown=false;
+		var user=document.querySelector('.toc .user');
+		var hideUser=function(){
+			$scope.usershown=false;
+			$scope.showUser=showUser;
+		};
+		var showUser=function(){
+			$scope.showUser=null;
+			$scope.usershown=true;
+			blurFactory.add(user,hideUser);
+		};
+		$scope.showUser=showUser;
 		$scope.isActive=function(item){
 			return $rootScope.cond.col===item.id;
 		};
-		$rootScope.logout=function(){
+		$scope.login=function(){
+			apis.logIn();
+		};
+		$scope.logout=function(){
 			apis.logOut();
 		};
 		$scope.newCol={

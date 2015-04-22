@@ -29,6 +29,8 @@ html,body {
 }
 
 @field-height: 2rem;
+@field-radius: 3px;
+@field-icon-width: 1.5rem;
 
 .cell {
 	display: table-cell;
@@ -99,7 +101,6 @@ html,body {
 @import 'styles/editable.less';
 
 .buttons {
-	text-align: center;
 	button {
 		font-size: 1rem;
 		cursor: pointer;
@@ -212,16 +213,6 @@ body {
 		border: none;
 		resize: none;
 	}
-	/*.tags {
-		border-radius: .3rem;
-		padding: .3rem;
-		cursor: text;
-		background: white;
-		.tag:not(.input) {
-			color: white;
-			background: gray;
-		}
-	}*/
 	&>input {
 		line-height: @field-height;
 		width: 100%;
@@ -250,13 +241,52 @@ body {
 		font-size: @field-height;
 	}
 }
+
+.user {
+	&>.info {
+		padding: 10px 35px;
+	}
+	&>.card {
+		color: black;
+		position: relative;
+		&>.wrap {
+			background: white;
+			position: absolute;
+			box-shadow: 0 4px 4px #ccc;
+			left: 0;
+			top: 0;
+			width: 100%;
+			z-index: 10;
+			padding: 10px 40px 5px;
+		}
+	}
+	.field {
+		&>input {
+			border: 1px solid gray;
+			border-radius: @field-radius;
+			padding: 0 .5rem 0 @field-icon-width;
+			&:focus {
+				&~.fa {
+					color: darken(#ccc,20%);
+				}
+				border-color: dodgerblue;
+			}
+		}
+		&>.fa {
+			color: #ccc;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: @field-icon-width;
+			line-height: @field-height;
+			text-align: center;
+		}
+	}
+}
 .toc {
 	@background: #567;
 	color: white;
 	background: @background;
-	.header {
-		padding: 10px 35px;
-	}
 	.avatar {
 		cursor: pointer;
 		padding-right: 10px;
@@ -265,27 +295,6 @@ body {
 			height: 40px;
 			border-radius: 50%;
 			display: block;
-		}
-	}
-	.user {
-		position: absolute;
-		left: 0;
-		top: 70px;
-		color: black;
-		background: white;
-		width: 100%;
-		z-index: 10;
-		&>* {
-			margin-bottom: .5rem;
-		}
-		.header {
-			margin-bottom: 1rem;
-		}
-		.field {
-			&>input {
-				background: rgb(221,240,237);
-				text-align: center;
-			}
 		}
 	}
 	.content {
@@ -350,7 +359,7 @@ body {
 		}
 		button {
 			padding: 3px;
-			border-radius: 3px;
+			border-radius: @field-radius;
 			width: 60px;
 		}
 	}
@@ -364,7 +373,8 @@ button {
 	&.sign {
 		.colorButton(rgb(34,143,189));
 		color: white;
-		width: 100%;
+		width: 80px;
+		border-radius: @field-radius;
 	}
 	&.remove {
 		.colorButton(brown);
@@ -399,71 +409,4 @@ button {
 	bottom: 0;
 	left: 0;
 	right: 0;
-}
-.modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 10;
-	background: rgba(0,0,0,.7);
-	text-align: center;
-	&>* {
-		text-align: left;
-		display: inline-block;
-		background: rgb(204,204,204);
-		border-radius: 1rem;
-		padding: 1rem;
-		font-size: 1rem;
-	}
-}
-.dialog {
-	font-size: 12px;
-}
-.editcol {
-	.dialog {
-		width: 30%;
-		min-width: 300px;
-	}
-	button {
-		width: 40%;
-	}
-}
-.removecol {
-	.dialog {
-		width: 30%;
-		min-width: 300px;
-	}
-	button {
-		width: 40%;
-	}
-	.title {
-		text-align: center;
-		margin: .5em;
-	}
-	.radioboxes {
-		padding: 1em;
-		font-size: 1.2em;
-	}
-}
-
-// Popup page
-
-.fill() {
-	width: 100%;
-	height: 100%;
-}
-#popup {
-	width: 270px;
-	height: 300px;
-	.bookmark {
-		.title {
-			max-width: 250px;
-			.textNoWrap;
-		}
-		&:hover {
-			background: darken(white,10%);
-		}
-	}
 }

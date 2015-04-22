@@ -1,17 +1,18 @@
 <form class="fill-wrap">
-	<div class="padded header">
-		<span class="mode">登录账号</span>
+	<div class="right">
+		<a href>我要注册</a>
 	</div>
-	<div class="padded field">
+	<h3>登录账号</h3>
+	<div class="field">
 		<input type=email placeholder="邮　箱" ng-model="email">
+		<i class="fa fa-user"></i>
 	</div>
-	<div class="padded field">
+	<div class="field">
 		<input type=password placeholder="密　码" ng-model="pwd">
+		<i class="fa fa-lock"></i>
 	</div>
-	<div class="padded buttons">
-		<button type=submit class="sign" ng-click="sign()">登　录</button>
-	</div>
-	<div class="padded">
-		<a>忘记密码</a>
+	<div class="buttons">
+		<a class="right" href>忘记密码</a>
+		<button type=submit class="sign" ng-click="login()">登　录</button>
 	</div>
 </form>

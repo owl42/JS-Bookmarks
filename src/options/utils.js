@@ -2,7 +2,7 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
 	})
-	.factory('blurFactory',function(){
+	.factory('blurFactory',function($rootScope){
 		var blur=[];
 		function findItem(ele){
 			for(var i=0;i<blur.length;i++)
@@ -18,6 +18,7 @@ angular.module('app')
 					else
 						item.funcs.forEach(function(f){f();});
 				});
+				$rootScope.$apply();
 			}
 		});
 		return {

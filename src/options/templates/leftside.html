@@ -1,18 +1,21 @@
 <div class="fill-wrap toc" ng-controller="SideController">
-	<div class="header">
-		<div class="cell avatar">
-			<img ng-src="{{user.avatar||'/images/icon128.png'}}">
-		</div>
-		<div class="cell name">
-			{{user.name||'未登录用户'}}
-		</div>
-	</div>
 	<div class="user">
-		<div ng-if="user.id">
-			<a class="menu" ng-click="logout()" title="退出账号"><i class="fa fa-sign-out"></i></a>
+		<div class="info">
+			<div class="cell avatar" ng-click="showUser()">
+				<img ng-src="{{user.avatar||'/images/icon128.png'}}">
+			</div>
+			<div class="cell name">
+				{{user.name||'未登录用户'}}
+			</div>
 		</div>
-		<div ng-if="!user.id">
-			<div ng-include="'templates/login.html'"></div>
+		<div class="card" ng-show="usershown">
+			<div class="wrap" ng-if="user.id">
+				你好，<span>{{user.name}}</span>！
+				<a href ng-click="logout()">退出 <i class="fa fa-sign-out"></i></a>
+			</div>
+			<div class="wrap" ng-if="!user.id">
+				<div ng-include="'templates/login.html'"></div>
+			</div>
 		</div>
 	</div>
 	<div class="content">
