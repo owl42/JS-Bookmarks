@@ -91,19 +91,17 @@ angular.module('app')
 				}); else deferred.resolve();
 				return deferred.promise;
 			},
-			saveBookmark: function(olditem,item){
+			saveBookmark: function(item){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(id){
-					if(olditem.id) {
-						if(olditem.col!=item.col) {
-							data.d_cols[olditem.col].count--;
-							data.d_cols[item.col].count++;
-						}
+					if(item.id) {
+						angular.extend(data.d_bookmarks[item.id],item);
 					} else {
 						item.id=id;
-						//data.colAll.count++;
 						data.d_cols[item.col].count++;
+						data.d_bookmarks[item.id]=item;
+						data.bookmarks.push(item);
 					}
 					$rootScope.$apply(function(){
 						deferred.resolve(item);
@@ -195,28 +193,51 @@ angular.module('app')
 		function getIcon(data){
 			return data.icon||'/images/icon16.png';
 		}
-		function edit(data){
-			$state.go('bookmarks.edit',{bid:data.id});
-		}
 		return {
 			restrict:'E',
 			replace:true,
 			scope:{
 				data:'=',
-				detail:'@',
-				remove:'&',
-				revert:'&',
 			},
 			templateUrl:'templates/bookmark.html',
 			link:function(scope,element,attrs){
 				scope.getIcon=getIcon;
+				scope.stop=apis.stop;
+				scope.edittitle={
+					text:scope.data.title,
+				};
+				scope.editurl={
+					text:scope.data.url,
+				};
+				var reset=function(){
+					scope.edittitle.text=scope.data.title;
+					scope.editurl.text=scope.data.url;
+				};
+				scope.remove=function(){
+					apis.removeBookmark(scope.data);
+				};
+				scope.edit=function(){
+					scope.edittitle.mode='edit';
+					scope.editurl.mode='edit';
+				};
+				scope.close=function(){
+					reset();
+					scope.edittitle.mode='';
+					scope.editurl.mode='';
+				};
+				scope.check=function(){
+					apis.saveBookmark({
+						id: scope.data.id,
+						title: scope.edittitle.text,
+						url: scope.editurl.text,
+						col: scope.data.col,
+					});
+					scope.close();
+				};
 				scope.open=function(){
 					open(scope.data,attrs.target);
 				};
-				scope.stop=apis.stop;
-				scope.edit=edit;
-				scope.limitTag=$rootScope.limitTag;
-				scope.conditions=$rootScope.conditions;
+				scope.$watch('data',reset,true);
 			},
 		};
 	})

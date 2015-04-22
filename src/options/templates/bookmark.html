@@ -2,14 +2,20 @@
 	<div class="cell">
 		<img class="icon" ng-src="{{getIcon(data)}}">
 	</div>
-	<div class="title cell" title="{{data.title}}">
-		{{data.title}}
+	<div class="cell expand">
+		<div class="abs-mid-wrap left right">
+			<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>
+		</div>
 	</div>
-	<div class="url cell" ng-if="detail">{{data.url}}</div>
-	<div class="hpanel" ng-if="detail" ng-click="stop($event)">
+	<div class="cell expand">
+		<div class="abs-mid-wrap left right">
+			<editable class="url" data="editurl" change="check()" cancel="close()"></editable>
+		</div>
+	</div>
+	<div class="hpanel" ng-show="editurl.mode!='edit'" ng-click="stop($event)">
 		<div class="rel-mid-wrap">
-			<div class="edit" ng-if="conditions.col!=-2" ng-click="edit(data)" title="编辑"><i class="fa fa-edit"></i></div>
-			<div class="remove" ng-click="remove({data:data})" title="删除"><i class="fa fa-trash"></i></div>
+			<div class="edit" ng-click="edit()" title="编辑"><i class="fa fa-edit"></i></div>
+			<div class="remove" ng-click="remove()" title="删除"><i class="fa fa-trash"></i></div>
 		</div>
 	</div>
 </div>

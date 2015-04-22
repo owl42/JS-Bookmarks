@@ -2,11 +2,22 @@
 	@icon-size: 16px;
 	cursor: pointer;
 	background: white;
-	line-height: 35px;
 	position: relative;
-	.title.cell, .url.cell {
-		width: 60%;
-		.textNoWrap;
+	.editable {
+		width: 98%;
+		.wrap {
+			padding: 0 5px;
+		}
+		.edit {
+			outline: 1px solid dodgerblue;
+		}
+	}
+	.cell {
+		height: 35px;
+		&.expand {
+			width: 60%;
+			.textNoWrap;
+		}
 	}
 	img.icon {
 		width: @icon-size;
@@ -19,6 +30,7 @@
 	}
 	.url {
 		color: gray;
+		font-size: 10px;
 	}
 	&:not(:hover) {
 		.hpanel {

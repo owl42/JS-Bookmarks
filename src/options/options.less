@@ -34,9 +34,10 @@ html,body {
 	display: table-cell;
 	vertical-align: middle;
 	position: relative;
-	white-space: nowrap;
 	&.expand {
 		width: 100%;
+	}
+	&.center {
 		text-align: center;
 	}
 }
@@ -165,7 +166,7 @@ body {
 	&.left {
 		width: @side-width;
 		left: 0;
-		&:not(.ng-hide)~.center {
+		&:not(.ng-hide)~#center {
 			padding-left: @side-width;
 		}
 		.footer {
@@ -181,14 +182,6 @@ body {
 			.fa {
 				font-size: 2rem;
 			}
-		}
-	}
-	&.right {
-		background: rgb(78,125,166);
-		width: @side-width;
-		right: 0;
-		&:not(.ng-hide)~.center {
-			padding-right: @side-width;
 		}
 	}
 	&:not(.ng-hide) {
@@ -360,7 +353,7 @@ button {
 		width: 100%;
 	}
 }
-.center {
+#center {
 	position: fixed;
 	top: 0;
 	left: 0;

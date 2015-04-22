@@ -127,32 +127,8 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
-	$scope.cond=$rootScope.cond;
-	$scope.remove=function(data){
-		var def;
-		//if($scope.cond.col==apis.TRASH)
-			def=apis.removeBookmark(data);
-		//else
-			//def=apis.moveToCollection(data,apis.TRASH);
-		def.then(function(){
-			if(data===$scope.current.item) $state.go('bookmarks');
-		});
-	};
-	$scope.revert=function(data){
-		apis.moveToCollection(data,apis.UNDEF);
-	};
-	/*$scope.removeTag=function(i){
-		$scope.cond.tags.splice(i,1);
-	};*/
 	$scope.bmFilter=function(item){
-		/*return $scope.cond.tags.every(function(tag){
-			return item.tags.indexOf(tag)>=0;
-		});*/
 		return true;
-	};
-	// 为了突出显示正在编辑的项目
-	$scope.current={
-		bid:null,
 	};
 };
 var EditBookmark=function($scope,$rootScope,$stateParams,$state,apis){
