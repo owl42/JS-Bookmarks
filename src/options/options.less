@@ -203,23 +203,6 @@ body {
 .pointer {
 	cursor: pointer;
 }
-.login {
-	color: white;
-	padding-top: 50px;
-	background: rgb(78,125,166);
-	&>* {
-		margin-bottom: .5rem;
-	}
-	.header {
-		margin-bottom: 1rem;
-	}
-	.field {
-		&>input {
-			background: rgb(221,240,237);
-			text-align: center;
-		}
-	}
-}
 .field {
 	margin-bottom: .5rem;
 	position: relative;
@@ -269,16 +252,40 @@ body {
 }
 .toc {
 	@background: #567;
+	color: white;
 	background: @background;
-	.nav {
+	.header {
 		padding: 10px 35px;
 	}
 	.avatar {
+		cursor: pointer;
+		padding-right: 10px;
 		img {
 			width: 40px;
 			height: 40px;
 			border-radius: 50%;
 			display: block;
+		}
+	}
+	.user {
+		position: absolute;
+		left: 0;
+		top: 70px;
+		color: black;
+		background: white;
+		width: 100%;
+		z-index: 10;
+		&>* {
+			margin-bottom: .5rem;
+		}
+		.header {
+			margin-bottom: 1rem;
+		}
+		.field {
+			&>input {
+				background: rgb(221,240,237);
+				text-align: center;
+			}
 		}
 	}
 	.content {
@@ -292,7 +299,6 @@ body {
 		@icon-size: 16px;
 		padding-left: 5px;
 		.cell {
-			color: white;
 			height: @height;
 			.darken;
 		}

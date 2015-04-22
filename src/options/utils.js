@@ -43,9 +43,7 @@ angular.module('app')
 	})
 	.factory('apis',function($q,$rootScope){
 		var apis={
-			//ALL: 0,
 			UNDEF: -1,
-			//TRASH: -2,
 			stop: function(e){
 				e.preventDefault();
 				e.stopPropagation();
@@ -59,19 +57,13 @@ angular.module('app')
 			getCollections: function(){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				//data.colAll={};
 				data.colUnd={};
-				//data.colTrash={};
 				data.cols=[];
 				data.d_cols={};
 				chrome.runtime.sendMessage({cmd:'GetCollections',data:{count:true}},function(cols){
 					cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
 							data.colUnd=col;
-						/*else if(col.id==apis.ALL)
-							data.colAll=col;
-						else if(col.id==apis.TRASH)
-							data.colTrash=col;*/
 						else
 							data.cols.push(col);
 						data.d_cols[col.id]=col;
@@ -156,8 +148,6 @@ angular.module('app')
 					if(id===item.id) {
 						var i=data.bookmarks.indexOf(item);
 						if(i>=0) {
-							/*if(item.col===apis.TRASH) data.colAll.count++;
-							else if(col===apis.TRASH) data.colAll.count--;*/
 							data.d_cols[item.col].count--;
 							data.d_cols[item.col=col].count++;
 							data.bookmarks.splice(i,1);

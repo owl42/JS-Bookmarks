@@ -8,11 +8,10 @@
 		<link rel="stylesheet/less" type="text/css" href="options.less" />
 		<script src="../lib/less.min.js"></script>
 		<script src="../lib/angular.js"></script>
-		<script src="../lib/angular-ui-router.js"></script>
 	</head>
 	<body>
-		<div ui-view="left" class="left side"></div>
-		<div ui-view="center" id="center"></div>
+		<div class="left side" ng-include="'templates/leftside.html'"></div>
+		<div id="center" ng-include="'templates/bookmarks.html'"></div>
 		<script src="options.js"></script>
 		<script src="utils.js"></script>
 	</body>
