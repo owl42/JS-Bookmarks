@@ -1,27 +1,28 @@
 .bookmark {
-	@icon-size: 32px;
+	@icon-size: 16px;
 	cursor: pointer;
-	height: @icon-size;
+	background: white;
+	line-height: 35px;
 	position: relative;
-	&>* {
-		display: inline-block;
-		vertical-align: middle;
+	.title.cell, .url.cell {
+		width: 60%;
+		.textNoWrap;
 	}
 	img.icon {
 		width: @icon-size;
 		height: @icon-size;
-		margin-right: .5em;
+		margin: 0 5px;
+		display: block;
 	}
 	.title {
-		font-size: 20px;
-		width: 40%;
-		.textNoWrap;
+		font-size: 12px;
 	}
 	.url {
-		width: 40%;
-		.textNoWrap;
+		color: gray;
 	}
-	/*.tags {
-		margin-left: @icon-size;
-	}*/
+	&:not(:hover) {
+		.hpanel {
+			display: none;
+		}
+	}
 }

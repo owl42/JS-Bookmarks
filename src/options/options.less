@@ -93,10 +93,8 @@ html,body {
 	}
 }
 
-//@import 'styles/bookmarkinfo.less';
 @import 'styles/bookmark.less';
 @import 'styles/collection.less';
-//@import 'styles/radioboxes.less';
 @import 'styles/editable.less';
 
 .buttons {
@@ -119,8 +117,6 @@ button {
 		.colorButton(brown);
 	}
 }
-
-// Options page
 
 .circleButton(@size,@color,@bgcolor) {
 	text-align: center;
@@ -339,6 +335,7 @@ body {
 	@header-height: 100px;
 	background: #def;
 	padding: 0 10px;
+	position: relative;
 	.path {
 		padding: 10px 0 5px;
 	}
@@ -371,30 +368,6 @@ button {
 	right: 0;
 	.main {
 		background: rgb(204,204,204);
-	}
-	.bookmark {
-		background: rgb(242,242,242);
-		margin: 5px 60px;
-		padding-left: .5rem;
-		white-space: nowrap;
-		overflow: hidden;
-		.url {
-			color: gray;
-			margin: 0 2em;
-			max-width: 300px;
-			.textNoWrap;
-		}
-		.desc {
-			color: gray;
-		}
-		&:hover {
-			box-shadow: 4px 4px 2px gray;
-		}
-		&:not(:hover) {
-			.hpanel {
-				display: none;
-			}
-		}
 	}
 }
 .fill-wrap {

@@ -1,22 +1,28 @@
 function initDb(callback){
-	var request=indexedDB.open('sunshine',2);
+	var request=indexedDB.open('sunshine',3);
 	request.onsuccess=function(e){db=request.result;if(callback) callback();};
 	request.onerror=function(e){console.log('IndexedDB error: '+e.target.error.message);};
 	request.onupgradeneeded=function(e){
 		var r=e.currentTarget.result,o;
-		if(e.oldVersion<1) {
+		if(!r.objectStoreNames.contains('collections')) {
 			// collections: id title pos
 			o=r.createObjectStore('collections',{keyPath:'id',autoIncrement:true});
 			o.createIndex('pos','pos',{unique:false});	// should be unique at last
+		}
+		if(!r.objectStoreNames.contains('bookmarks')) {
 			// bookmarks: id title url col
 			// deprecated: desc, tags
 			o=r.createObjectStore('bookmarks',{keyPath:'id',autoIncrement:true});
 			o.createIndex('col','col',{unique:false});
 			// o.createIndex('tag','tags',{multiEntry:true});
 		}
-		if(e.oldVersion<2) {
+		if(!r.objectStoreNames.contains('settings')) {
 			// settings: key data
 			o=r.createObjectStore('settings',{keyPath:'key'});
+		}
+		if(e.oldVersion<3) {
+			o=e.currentTarget.transaction.objectStore('bookmarks');
+			o.createIndex('url','url',{unique:false});
 		}
 	};
 }
@@ -43,8 +49,9 @@ function collectionData(data){
 	if('count' in data) col.count=data.count||0;
 	return col;
 }
-function getCollections(data,src,callback){
-	data=[
+function getCollections(config,src,callback){
+	config=config||{};
+	var data=[
 		/*{
 			id:TRASH,
 			title:'垃圾桶',
@@ -68,12 +75,15 @@ function getCollections(data,src,callback){
 			if(r) {
 				v=r.value;
 				if(v.id>0) {
-					v.count=0;
+					if(config.count) v.count=0;
 					h[v.id]=v=collectionData(v);
 					data.push(v);
 				}
 				r.continue();
-			} else getCollectionData();
+			} else {
+				if(config.count) getCollectionData();
+				else callback(data);
+			}
 		};
 	}
 	function getCollectionData(){
@@ -139,6 +149,14 @@ function removeCollection(data,src,callback){
 	};
 	return true;
 }*/
+function getBookmark(data,src,callback){
+	var o=db.transaction('bookmarks').objectStore('bookmarks');
+	o.index('url').get(data).onsuccess=function(e){
+		// result may be undefined if not found
+		callback(e.target.result);
+	};
+	return true;
+}
 function getBookmarks(data,src,callback){
 	var bm=[],o=db.transaction('bookmarks').objectStore('bookmarks');
 	if(!data) data=IDBKeyRange.lowerBound(-1);
@@ -253,6 +271,7 @@ initDb(function(){
 			GetSearchEngines:getSearchEngines,
 			GetCollections:getCollections,
 			//GetTags:getTags,
+			GetBookmark:getBookmark,
 			GetBookmarks:getBookmarks,
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,

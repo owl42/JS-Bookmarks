@@ -25,7 +25,7 @@ angular.module('app')
 				//data.colTrash={};
 				data.cols=[];
 				data.d_cols={};
-				chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
+				chrome.runtime.sendMessage({cmd:'GetCollections',data:{count:true}},function(cols){
 					cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
 							data.colUnd=col;
@@ -68,18 +68,6 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			/*getTags: function(){
-				var deferred=$q.defer();
-				var data=$rootScope.data;
-				data.d_tags={};
-				chrome.runtime.sendMessage({cmd:'GetTags'},function(tags){
-					data.d_tags=tags;
-					$rootScope.$apply(function(){
-						deferred.resolve();
-					});
-				});
-				return deferred.promise;
-			},*/
 			getBookmarks: function(col){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
@@ -189,99 +177,7 @@ angular.module('app')
 		};
 		return apis;
 	})
-	/*.directive('tags',function(){
-		return {
-			templateUrl: 'templates/tags.html',
-			replace: true,
-			restrict: 'E',
-			scope: {
-				data: '=',
-			},
-			link: function(scope, element, attrs) {
-				var placeholder=null;
-				scope.tag='';
-				scope.focused=false;
-				scope.getPlaceholder=function(){
-					return placeholder
-						||(scope.data&&scope.data.length?'':attrs.placeholder)
-						||'';
-				};
-				scope.add=function(next){
-					var v=scope.tag,i=scope.data.indexOf(v);
-					if(v&&i<0) scope.data.push(v);
-					scope.tag='';
-					if(next) input.focus();
-					else {
-						scope.focused=false;
-						placeholder=null;
-					}
-				};
-				scope.remove=function(i){
-					scope.data.splice(i,1);
-				};
-				var input=element[0].querySelector('.input input');
-				element.on('click',function(e){
-					scope.$apply(function(){
-						scope.focused=true;
-						placeholder="新标签";
-						input.focus();
-					});
-				});
-			},
-		};
-	})*/
-	/*.directive('collections',function($rootScope){
-		return {
-			templateUrl: 'templates/collections.html',
-			replace: true,
-			restrict: 'E',
-			scope: {
-				cid: '=',
-				//colAll: '@',
-				list: '@',
-				editable: '@',
-				edit: '&',
-				remove: '&',
-			},
-			controller: function($scope){
-				$scope.data=$rootScope.data;
-				$scope.key=$scope.list?'select':'current';
-				$scope.select=function(){
-					$scope.key='select';
-				};
-				this.select=function(item){
-					$scope.cid=item.id;
-					if(!$scope.list) $scope.key='current';
-				};
-				this.isActive=function(item){
-					return item&&$scope.cid==item.id;
-				};
-				if($scope.editable) {
-					this.edit=function(data){
-						$scope.edit({data:data});
-					};
-					this.remove=function(data){
-						$scope.remove({data:data});
-					};
-				}
-			},
-		};
-	})*/
-	.directive('bookmarkinfo',function($rootScope){
-		return {
-			restrict:'E',
-			replace:true,
-			scope:{
-				save:'&',
-				data:'=',
-			},
-			templateUrl:'templates/bookmarkinfo.html',
-		};
-	})
 	.directive('bookmark',function($rootScope,$state,apis){
-		function shortUrl(url){
-			return url.replace(/^http?:\/\//i,'').replace(/^([^/]+)\/$/,'$1');
-		}
 		function open(data,target){
 			var url=data.url&&apis.normalizeURL(data.url);
 			if(url) {
@@ -290,7 +186,7 @@ angular.module('app')
 			}
 		}
 		function getIcon(data){
-			return data.icon||'/images/icon48.png';
+			return data.icon||'/images/icon16.png';
 		}
 		function edit(data){
 			$state.go('bookmarks.edit',{bid:data.id});
@@ -306,7 +202,6 @@ angular.module('app')
 			},
 			templateUrl:'templates/bookmark.html',
 			link:function(scope,element,attrs){
-				scope.shortUrl=shortUrl;
 				scope.getIcon=getIcon;
 				scope.open=function(){
 					open(scope.data,attrs.target);
@@ -316,16 +211,6 @@ angular.module('app')
 				scope.limitTag=$rootScope.limitTag;
 				scope.conditions=$rootScope.conditions;
 			},
-		};
-	})
-	.directive('radioboxes',function(){
-		return {
-			restrict:'E',
-			replace:true,
-			scope:{
-				data:'=',
-			},
-			templateUrl:'templates/radioboxes.html',
 		};
 	})
 	.directive('editable', function($rootScope,apis){

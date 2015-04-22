@@ -1,70 +1,84 @@
-angular.module('app',['ui.router'])
-	.config(function($stateProvider,$urlRouterProvider){
-		$urlRouterProvider.otherwise('/');
-		$stateProvider
-			.state('home',{
-				url:'/',
-				templateUrl: 'templates/home.html',
-				controller: Home,
-			})
-			.state('bookmarks',{
-				url:'/bookmarks/:cid',
-				controller: Bookmarks,
-				templateUrl: 'templates/bookmarks.html',
-			})
-			.state('edit',{
-				url:'/edit/:id',
-				controller: Bookmark,
-				templateUrl: 'templates/edit.html',
-			})
-		;
-	})
-	.run(function($rootScope,$state,apis){
-		var config=$rootScope.config={count:0};
-		chrome.tabs.query({active:true},function(tab){
-			config.tab=tab[0];
-			$rootScope.$apply(function(){
-				config.urlValid=/^https?:\/\//.test(tab[0].url);
-			});
-		});
-		$rootScope.$state=$state;
-		$rootScope.data={};
-		$rootScope._collections=apis.getCollections();
-	})
-;
-
-var Home=function($scope,$state){
-	$scope.showSettings=function(){
-		chrome.tabs.create({url:chrome.extension.getURL('/options/options.html')});
-	};
-	$scope.current={col:null};
-	$scope.$watch('current.col',function(){
-		if($scope.current.col!=null) $state.go('bookmarks',{cid:$scope.current.col});
+function safeHTML(s){
+	return s.replace(/[&<]/g,function(m){
+		return {
+			'&':'&amp;',
+			'<':'&lt;',
+		}[m];
 	});
-};
-var Bookmarks=function($scope,$rootScope,$stateParams,$state,apis){
-	var col=$rootScope.data.d_cols[$stateParams.cid];
-	if(!col) $state.go('home');
-	$scope.data=$rootScope.data;
-	apis.getBookmarks(col.id);
-	$scope.back=function(){
-		$state.go('home');
-	};
-};
-var Bookmark=function($scope,$rootScope,$state,apis){
-	$scope.bookmark={
-		url:$rootScope.config.tab.url,
-		title:$rootScope.config.tab.title,
-		desc:'',
-		col:-1,
-		tags:[],
-	};
-	$scope.save=function(){
-		apis.saveBookmark({},$scope.bookmark).then(function(){
-			$scope.back();
+}
+function saveBookmark(){
+	if(bookmark.url)
+	chrome.runtime.sendMessage({cmd:'SaveBookmark',data:bookmark},function(id){
+		bookmark.id=id;
+	});
+}
+function updateBookmark(){
+	var i;
+	$('.title').innerHTML=safeHTML(bookmark.title);
+	if(collections.length)
+	for(i=0;i<collections.length;i++){
+		var cls=n_cols[i].classList;
+		if(bookmark.col===collections[i].id) {
+			cls.add('active');
+			cur_col=i;
+		} else cls.remove('active');
+	}
+}
+function checkBookmark(){
+	if(bookmark.url)
+	chrome.runtime.sendMessage({cmd:'GetBookmark',data:bookmark.url},function(data){
+		if(data) {
+			bookmark=data;
+			updateBookmark();
+		} else saveBookmark();
+	});
+}
+function getTabData(){
+	chrome.tabs.query({active:true},function(tabs){
+		var tab=tabs[0];
+		bookmark.title=tab.title;
+		bookmark.url=tab.url;
+		updateBookmark();
+		checkBookmark();
+	});
+}
+function getCollections(){
+	chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
+		collections=cols;
+		j_cols.innerHTML='';
+		var html=[];
+		cols.forEach(function(col){
+			html.push('<div class="collection row">'+safeHTML(col.title)+'</div>');
 		});
-	};
-	$scope.back=function(){
-		$state.go('home');
-	};
+		j_cols.innerHTML=html.join('');
+		n_cols=j_cols.querySelectorAll('.collection');
+		updateBookmark();
+	});
+}
+function bindEvents(){
+	j_cols.addEventListener('click',function(e){
+		j_cols.classList.toggle('select');
+		var i=Array.prototype.indexOf.call(n_cols,e.target);
+		if(i>=0&&cur_col!=i) {
+			n_cols[cur_col].classList.remove('active');
+			n_cols[cur_col=i].classList.add('active');
+			bookmark.col=collections[i].id;
+			saveBookmark();
+		}
+	},false);
+	$('.show-all').addEventListener('click',function(e){
+		var url=chrome.extension.getURL('/options/options.html');
+		/*chrome.tabs.query({currentWindow:true,url:url},function(tabs) {
+			if(tabs[0]) chrome.tabs.update(tabs[0].id,{active:true});
+			else*/ chrome.tabs.create({url:url});
+		//});
+	},false);
+}
+var bookmark={
+	col:-1,
 };
+var $=document.querySelector.bind(document);
+var collections=[],j_cols=$('.collections>.wrap'),cur_col=0,n_cols;
+bindEvents();
+getCollections();
+getTabData();

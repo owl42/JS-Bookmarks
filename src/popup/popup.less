@@ -1,0 +1,66 @@
+.textNoWrap() {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  width: 250px;
+}
+.row {
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 32px;
+}
+.title {
+  height: 50px;
+  padding: 3px;
+  font-size: 14px;
+  font-weight: bold;
+  overflow-y: auto;
+}
+.collections {
+  border-top: 1px solid #899;
+  position: relative;
+  &>i {
+    position: absolute;
+    right: 5px;
+    top: 12px;
+  }
+  .collection {
+    padding-left: 10px;
+    padding-right: 10px;
+    .textNoWrap;
+    &:hover {
+      background: #eee;
+    }
+  }
+  .wrap {
+    width: 100%;
+    &.select {
+      .collection.active {
+        font-weight: bold;
+      }
+      &~i {
+        display: none;
+      }
+    }
+    &:not(.select) {
+      .collection {
+        padding-right: 20px;
+        &:not(.active) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+.show-all {
+  text-align: center;
+  border: 1px solid #899;
+  border-radius: 3px;
+}
