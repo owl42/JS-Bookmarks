@@ -115,6 +115,21 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	};
 };
 var Bookmarks=function($scope,$rootScope,$state,apis){
+	$scope.deselect=function(){
+		angular.forEach($rootScope.data.bookmarks,function(b){
+			b.selected=false;
+		});
+		$rootScope.data.selected=0;
+	};
+	$scope.multiremove=function(){
+		if(confirm('您确定要删除所选的'+$rootScope.data.selected+'个书签吗？')) {
+			var ids=[];
+			$rootScope.data.bookmarks.forEach(function(item){
+				if(item.selected) ids.push(item.id);
+			});
+			apis.removeBookmarks(ids);
+		}
+	};
 	$scope.bmFilter=function(item){
 		return true;
 	};

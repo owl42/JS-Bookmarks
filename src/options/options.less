@@ -339,6 +339,14 @@ body {
 		height: @header-height;
 		padding: 10px 0;
 		border-bottom: 1px solid #899;
+		.right {
+			float: right;
+		}
+		button {
+			padding: 3px;
+			border-radius: 3px;
+			width: 60px;
+		}
 	}
 	.list {
 		top: @header-height;
@@ -351,6 +359,10 @@ button {
 		.colorButton(rgb(34,143,189));
 		color: white;
 		width: 100%;
+	}
+	&.remove {
+		.colorButton(brown);
+		color: white;
 	}
 }
 #center {

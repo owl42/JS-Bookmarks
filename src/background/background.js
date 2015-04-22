@@ -192,11 +192,14 @@ function moveToCollection(data,src,callback){
 	};
 	return true;
 }
-function removeBookmark(data,src,callback){
-	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
-	o.delete(data).onsuccess=function(e){
-		callback(data);
+function removeBookmarks(ids,src,callback){
+	var removeOne=function(){
+		var id=ids.shift();
+		if(id) o.delete(id).onsuccess=removeOne;
+		else callback();
 	};
+	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
+	removeOne();
 	return true;
 }
 
@@ -258,7 +261,7 @@ initDb(function(){
 			SaveCollection:saveCollection,
 			SaveBookmark:saveBookmark,
 			MoveToCollection:moveToCollection,
-			RemoveBookmark:removeBookmark,
+			RemoveBookmarks:removeBookmarks,
 			RemoveCollection:removeCollection,
 			GetUserInfo:getUserInfo,
 			LogIn:logIn,

@@ -119,6 +119,7 @@ angular.module('app')
 				var data=$rootScope.data;
 				data.bookmarks=[];
 				data.d_bookmarks={};
+				data.selected=0;
 				if(col!=undefined) chrome.runtime.sendMessage({cmd:'GetBookmarks',data:col},function(bms){
 					data.bookmarks=bms;
 					bms.forEach(function(b){
@@ -169,19 +170,17 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			removeBookmark: function(item){
+			removeBookmarks: function(ids){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				chrome.runtime.sendMessage({cmd:'RemoveBookmark',data:item.id},function(id){
-					if(id===item.id) {
+				chrome.runtime.sendMessage({cmd:'RemoveBookmarks',data:ids},function(id){
+					ids.forEach(function(id){
+						var item=data.d_bookmarks[id];
 						var i=data.bookmarks.indexOf(item);
-						if(i>=0) {
-							//if(item.col!==apis.TRASH) data.colAll.count--;
-							data.d_cols[item.col].count--;
-							data.bookmarks.splice(i,1);
-							delete data.d_bookmarks[item.id];
-						}
-					}
+						data.d_cols[item.col].count--;
+						data.bookmarks.splice(i,1);
+						delete data.d_bookmarks[id];
+					});
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -249,7 +248,7 @@ angular.module('app')
 					scope.editurl.text=scope.data.url;
 				},blurred=false;
 				scope.remove=function(){
-					apis.removeBookmark(scope.data);
+					apis.removeBookmarks([scope.data.id]);
 				};
 				scope.edit=function(){
 					scope.edittitle.mode='edit';
@@ -277,6 +276,12 @@ angular.module('app')
 				};
 				scope.open=function(){
 					open(scope.data,attrs.target);
+				};
+				scope.select=function(){
+					if(scope.data.selected=!scope.data.selected)
+						$rootScope.data.selected++;
+					else
+						$rootScope.data.selected--;
 				};
 				scope.$watch('data',reset,true);
 			},

@@ -2,9 +2,12 @@
 	<div class="header">
 		<searchbox data="engines"></searchbox>
 		<div class="path">&nbsp;</div>
+		<div class="right buttons" ng-show="data.selected">
+			<button class="remove" ng-click="multiremove()">删除</button>
+		</div>
 		<div class="current">{{data.d_cols[cond.col].title}}</div>
 	</div>
-	<div class="list abs-fill-wrap">
+	<div class="list abs-fill-wrap" ng-click="deselect()">
 		<bookmark ng-repeat="bookmark in data.bookmarks track by bookmark.id" data="bookmark" ng-show="bmFilter(bookmark)"></bookmark>
 	</div>
 </div>
