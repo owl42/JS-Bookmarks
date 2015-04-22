@@ -242,12 +242,8 @@ angular.module('app')
 			link:function(scope,element,attrs){
 				scope.getIcon=getIcon;
 				scope.stop=apis.stop;
-				scope.edittitle={
-					text:scope.data.title,
-				};
-				scope.editurl={
-					text:scope.data.url,
-				};
+				scope.edittitle={focus:true};
+				scope.editurl={};
 				var reset=function(){
 					scope.edittitle.text=scope.data.title;
 					scope.editurl.text=scope.data.url;
@@ -299,7 +295,6 @@ angular.module('app')
 			},
 			templateUrl: 'templates/editable.html',
 			link: function(scope, element, attrs) {
-				// TODO: call cancel when ESC is pressed
 				scope.stop=apis.stop;
 				scope.checkSubmit=function() {
 					if(scope.data.text) {
@@ -323,7 +318,7 @@ angular.module('app')
 						angular.element(input).on('keydown',function(e){
 							if(e.keyCode==27) scope.$apply(cancel);
 						});
-						setTimeout(function(){
+						if(scope.data.focus) setTimeout(function(){
 							input.select();input.focus();
 						},0);
 					}
@@ -378,7 +373,7 @@ angular.module('app')
 				scope.edit=attrs.change;
 				scope.cond=$rootScope.cond;
 				if(attrs.change) {
-					scope.editdata={};
+					scope.editdata={focus:true};
 					scope.editCol=function(){
 						scope.editdata.mode='edit';
 					};

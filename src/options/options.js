@@ -93,6 +93,7 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	$scope.newCol={
 		text:'',
 		placeholder:'添加频道',
+		focus:true,
 	};
 	$scope.startAddCol=function(e){
 		apis.stop(e);
