@@ -2,6 +2,45 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
 	})
+	.factory('blurFactory',function(){
+		var blur=[];
+		function findItem(ele){
+			for(var i=0;i<blur.length;i++)
+				if(blur[i].ele===ele) return blur[i];
+		}
+		angular.element(document).on('mousedown', function(e){
+			if(blur.length) {
+				var _blur=blur;
+				blur=[];
+				angular.forEach(_blur, function(item){
+					if(item.ele.compareDocumentPosition(e.target)&16)
+						blur.push(item);
+					else
+						item.funcs.forEach(function(f){f();});
+				});
+			}
+		});
+		return {
+			add:function(ele,func){
+				var item=findItem(ele);
+				if(item) item.funcs.push(func);
+				else {
+					item={
+						ele:ele,
+						funcs:[func],
+					};
+					blur.push(item);
+				}
+			},
+			remove:function(ele,func){
+				var item=findItem(ele);
+				if(item) {
+					var i=item.funcs.indexOf(func);
+					if(i>=0) item.funcs.splice(i,1);
+				}
+			},
+		};
+	})
 	.factory('apis',function($q,$rootScope){
 		var apis={
 			//ALL: 0,
@@ -182,7 +221,7 @@ angular.module('app')
 		};
 		return apis;
 	})
-	.directive('bookmark',function($rootScope,$state,apis){
+	.directive('bookmark',function($rootScope,apis,blurFactory){
 		function open(data,target){
 			var url=data.url&&apis.normalizeURL(data.url);
 			if(url) {
@@ -212,15 +251,17 @@ angular.module('app')
 				var reset=function(){
 					scope.edittitle.text=scope.data.title;
 					scope.editurl.text=scope.data.url;
-				};
+				},blurred=false;
 				scope.remove=function(){
 					apis.removeBookmark(scope.data);
 				};
 				scope.edit=function(){
 					scope.edittitle.mode='edit';
 					scope.editurl.mode='edit';
+					blurFactory.add(element[0],blur);
 				};
 				scope.close=function(){
+					if(!blurred) blurFactory.remove(element[0],blur);
 					reset();
 					scope.edittitle.mode='';
 					scope.editurl.mode='';
@@ -234,6 +275,10 @@ angular.module('app')
 					});
 					scope.close();
 				};
+				var blur=function(){
+					blurred=true;
+					scope.check();
+				};
 				scope.open=function(){
 					open(scope.data,attrs.target);
 				};
@@ -241,7 +286,7 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('editable', function($rootScope,apis){
+	.directive('editable', function($rootScope,apis,blurFactory){
 		return {
 			restrict: 'E',
 			replace: true,
@@ -262,17 +307,18 @@ angular.module('app')
 						scope.data.mode='';
 					}
 				};
-				var cancel=function() {
+				var cancel=function(blurred) {
+					if(attrs.blur&&!blurred) blurFactory.remove(element[0],blur);
 					scope.cancel();
 					scope.data.mode='';
 				};
 				var blur=function() {
 					if(attrs.blur=='change') scope.change();
-					cancel();
+					cancel(true);
 				};
 				scope.$watch('data.mode',function(){
 					if(scope.data.mode=='edit') {
-						if(attrs.blur) $rootScope.blur.push([element[0],blur]);
+						if(attrs.blur) blurFactory.add(element[0],blur);
 						var input=element[0].querySelector('.edit');
 						angular.element(input).on('keydown',function(e){
 							if(e.keyCode==27) scope.$apply(cancel);

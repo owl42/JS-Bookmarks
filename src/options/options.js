@@ -54,19 +54,6 @@ angular.module('app',['ui.router'])
 		$rootScope.$watch('cond.col',function(){
 			$rootScope._bookmarks=apis.getBookmarks($rootScope.cond.col);
 		},false);
-		$rootScope.blur=[];
-		angular.element(document).on('mousedown', function(e){
-			var blur=$rootScope.blur;
-			if(blur.length) {
-				$rootScope.blur=[];
-				angular.forEach(blur, function(item){
-					if(item[0].compareDocumentPosition(e.target)&16)
-						$rootScope.blur.push(item);
-					else
-						item[1]();
-				});
-			}
-		});
 	})
 ;
 
