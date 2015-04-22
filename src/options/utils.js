@@ -59,11 +59,18 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			removeCollection: function(data){
+			removeCollection: function(id){
 				var deferred=$q.defer();
-				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:data},function(ret){
+				var data=$rootScope.data;
+				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:id},function(){
+					var col=data.d_cols[id];
+					var i=data.cols.indexOf(col);
+					data.cols.splice(i,1);
+					if(id===$rootScope.cond.col)
+						$rootScope.cond.col=(data.cols[i]||data.colUnd).id;
+					delete data.d_cols[id];
 					$rootScope.$apply(function(){
-						deferred.resolve(ret);
+						deferred.resolve();
 					});
 				});
 				return deferred.promise;
@@ -222,22 +229,36 @@ angular.module('app')
 				placeholder: '@',
 				button: '@',
 				change: '&',
-				blur: '&',
+				cancel: '&',
 			},
 			templateUrl: 'templates/editable.html',
 			link: function(scope, element, attrs) {
+				// TODO: call cancel when ESC is pressed
 				scope.stop=apis.stop;
-				scope.checkSubmit = function () {
+				scope.checkSubmit=function() {
 					if(scope.data.text) {
 						scope.change();
 						scope.data.mode='';
 					}
 				};
+				var cancel=function() {
+					scope.cancel();
+					scope.data.mode='';
+				};
+				var blur=function() {
+					if(attrs.blur=='change') scope.change();
+					cancel();
+				};
 				scope.$watch('data.mode',function(){
 					if(scope.data.mode=='edit') {
-						if(attrs.blur) $rootScope.blur.push([element[0],scope.blur]);
+						if(attrs.blur) $rootScope.blur.push([element[0],blur]);
 						var input=element[0].querySelector('.edit');
-						input.select();input.focus();
+						angular.element(input).on('keydown',function(e){
+							if(e.keyCode==27) scope.$apply(cancel);
+						});
+						setTimeout(function(){
+							input.select();input.focus();
+						},0);
 					}
 				});
 			},
@@ -284,9 +305,6 @@ angular.module('app')
 			restrict: 'E',
 			scope: {
 				data: '=',
-				change: '&',
-				select: '&',
-				change: '&',
 			},
 			link: function(scope, element, attrs) {
 				scope.stop=apis.stop;
@@ -297,34 +315,32 @@ angular.module('app')
 					scope.editCol=function(){
 						scope.editdata.mode='edit';
 					};
-					var close=function(){
-						scope.editdata.mode='';
+					scope.close=function(){
 						scope.editdata.text=scope.data.title;
 					};
 					scope.check=function(){
 						if(scope.editdata.text) {
-							if(scope.editdata.text!=scope.data.title)
-								scope.change({
-									data:{
-										id:scope.data.id,
-										title:scope.editdata.text,
-									},
+							if(scope.editdata.text!=scope.data.title) {
+								apis.saveCollection({
+									id:scope.data.id,
+									title:scope.editdata.text,
 								});
-							close();
+							}
+							scope.close();
 							return true;
 						}
 					};
-					if(attrs.blur) scope.blur=function(){
-						attrs.blur=='change'&&scope.check()||close();
+					scope.removeCol=function(){
+						if(confirm('您确定要删除以下频道及其中的所有书签吗？\n\n'+scope.data.title))
+							apis.removeCollection(scope.data.id);
 					};
-					//scope.removeCol=colsCtrl.remove;
 					scope.$watch('data.title',function(){
 						scope.editdata.text=scope.data.title;
 					});
 				}
-				if(attrs.select) element.on('click',function(){
+				element.on('click',function(){
 					scope.$apply(function(){
-						scope.select({data:scope.data});
+						$rootScope.cond.col=scope.data.id;
 					});
 				});
 			},

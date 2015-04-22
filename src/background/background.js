@@ -108,47 +108,29 @@ function getCollections(config,src,callback){
 	getCollectionList();
 	return true;
 }
-function removeCollection(data,src,callback){
+function removeCollection(id,src,callback){
 	/* data: {
 	 *   id: id of collection to be removed
 	 *   moveTo: id of collection to hold the bookmarks in this collection
 	 * }
 	 */
-	function remove(){
+	function removeCollection(){
 		var o=db.transaction('collections','readwrite').objectStore('collections');
-		o.delete(data.id);
-		callback(moved);
+		o.delete(id);
+		callback();
 	}
-	function check(){
+	function removeBookmarks(){
 		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
-		o.index('col').openCursor(data.id).onsuccess=function(e){
+		o.index('col').openCursor(id).onsuccess=function(e){
 			var r=e.target.result;
-			if(r) {
-				var v=r.value;
-				v.col=data.moveTo;
-				r.update(v);
-				moved++;
+			if(r) r.delete().onsuccess=function(e){
 				r.continue();
-			} else remove();
+			}; else removeCollection();
 		};
 	}
-	var moved=0;
-	data.moveTo=data.moveTo||TRASH;
-	check();
+	removeBookmarks();
 	return true;
 }
-/*function getTags(data,src,callback){
-	data={};
-	var o=db.transaction('bookmarks').objectStore('bookmarks');
-	o.index('tag').openCursor().onsuccess=function(e){
-		var r=e.target.result,t;
-		if(r) {
-			data[r.key]=(data[r.key]||0)+1;
-			r.continue();
-		} else callback(data);
-	};
-	return true;
-}*/
 function getBookmark(data,src,callback){
 	var o=db.transaction('bookmarks').objectStore('bookmarks');
 	o.index('url').get(data).onsuccess=function(e){

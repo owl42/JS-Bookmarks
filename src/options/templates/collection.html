@@ -4,7 +4,7 @@
 	</div>
 	<div class="cell expand">
 		<div class="abs-mid-wrap left right">
-			<editable class="title" ng-if="edit" data="editdata" change="check()" blur="blur()"></editable>
+			<editable class="title" ng-if="edit" data="editdata" change="check()" blur="change" cancel="close()"></editable>
 			<span class="title" ng-if="!edit">{{data.title}}</span>
 		</div>
 	</div>

@@ -95,19 +95,8 @@ var SidePanel=function($scope,$rootScope,$state,apis){
 	});
 	$scope.config={key:'groups'};
 	$scope.root=$rootScope.data;
-	$scope.select=function(item){
-		$rootScope.cond.col=item.id;
-	};
 	$scope.isActive=function(item){
 		return $rootScope.cond.col===item.id;
-	};
-	$scope.change=function(data){
-		if(data.id>0&&data.title) {
-			apis.saveCollection({
-				id:data.id,
-				title:data.title,
-			});
-		}
 	};
 	$rootScope.logout=function(){
 		apis.logOut().then(function(){

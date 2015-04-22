@@ -1,13 +1,13 @@
-<collection data="root.colUnd" select="select(data)"></collection>
+<collection data="root.colUnd"></collection>
 <br class="separator" />
-<collection ng-repeat="item in root.cols" data="item" select="select(item)" change="change(data)" blur="change"></collection>
+<collection ng-repeat="item in root.cols" data="item" change="true"></collection>
 <div class="collection" ng-click="startAddCol($event)" ng-class="{em:newCol.mode=='edit'}">
 	<div class="cell">
 		<img class="icon" src="/images/collection.png">
 	</div>
 	<div class="cell expand">
 		<div class="abs-mid-wrap left right">
-			<editable class="title" data="newCol" button="确定" placeholder="{{newCol.placeholder}}" change="addCol()" blur="cancelAddCol()"></editable>
+			<editable class="title" data="newCol" button="确定" placeholder="{{newCol.placeholder}}" change="addCol()" blur="cancel" cancel="cancelAddCol()"></editable>
 		</div>
 	</div>
 </div>
