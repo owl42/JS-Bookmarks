@@ -1,11 +1,11 @@
 angular.module('app',[])
 	.run(function($rootScope,apis){
-		$rootScope.engines={items:[],def:0};
+		/*$rootScope.engines={items:[],def:0};
 		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
 			$rootScope.$apply(function(){
 				$rootScope.engines=data;
 			});
-		});
+		});*/
 		$rootScope.data={};
 		$rootScope.cond={
 			col:apis.UNDEF,
@@ -68,6 +68,11 @@ angular.module('app',[])
 		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis){
+		$scope.search='';
+		$scope.reset=function(){
+			$scope.search='';
+			document.querySelector('.search>input').focus();
+		};
 		$scope.deselect=function(){
 			angular.forEach($rootScope.data.bookmarks,function(b){
 				b.selected=false;
@@ -84,7 +89,7 @@ angular.module('app',[])
 			}
 		};
 		$scope.bmFilter=function(item){
-			return true;
+			return !$scope.search||item.title.indexOf($scope.search)>=0||item.url.indexOf($scope.search)>=0;
 		};
 	})
 ;

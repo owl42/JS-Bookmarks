@@ -1,6 +1,10 @@
 <div class="fill-wrap bookmarks" ng-controller="BookmarksController">
 	<div class="header">
-		<searchbox data="engines"></searchbox>
+		<div class="search">
+			<input type="text" placeholder="搜索书签..." ng-model="search">
+			<i class="fa" ng-class="{true:'fa-remove',false:'fa-search'}[!!search]" ng-click="reset()"></i>
+		</div>
+		<!--<searchbox data="engines"></searchbox>-->
 		<div class="path">&nbsp;</div>
 		<div class="right buttons" ng-show="data.selected">
 			<button class="remove" ng-click="multiremove()">删除</button>

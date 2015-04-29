@@ -27,7 +27,7 @@ function initDb(callback){
 	};
 }
 
-function getSearchEngines(data,src,callback){
+/*function getSearchEngines(data,src,callback){
 	callback({
 		items:[{
 			name:'百度',
@@ -38,9 +38,9 @@ function getSearchEngines(data,src,callback){
 		}],
 		def:0,
 	});
-}
+}*/
 
-var ALL=0, UNDEF=-1, TRASH=-2;
+var /*ALL=0,*/ UNDEF=-1/*, TRASH=-2*/;
 function collectionData(data){
 	var col={
 		id:data.id,
@@ -253,7 +253,7 @@ var db,user=null;
 initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
-			GetSearchEngines:getSearchEngines,
+			//GetSearchEngines:getSearchEngines,
 			GetCollections:getCollections,
 			//GetTags:getTags,
 			GetBookmark:getBookmark,
