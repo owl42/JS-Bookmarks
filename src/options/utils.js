@@ -63,7 +63,7 @@ angular.module('app')
 				data.d_cols={};
 				data.bookmarks=[];
 				data.d_bookmarks={};
-				data.selected=0;
+				data.selected=[];
 				chrome.runtime.sendMessage({cmd:'GetData'},function(d){
 					d.cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
@@ -263,10 +263,13 @@ angular.module('app')
 					open(scope.data,attrs.target);
 				};
 				scope.select=function(){
+					var selected=$rootScope.data.selected;
 					if(scope.data.selected=!scope.data.selected)
-						$rootScope.data.selected++;
-					else
-						$rootScope.data.selected--;
+						selected.push(scope.data);
+					else {
+						var i=selected.indexOf(scope.data);
+						selected.splice(i,1);
+					}
 				};
 				var visible=false;
 				var locate=function(){

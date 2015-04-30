@@ -66,6 +66,7 @@ angular.module('app',[])
 			});
 		};
 		$scope.select=function(data){
+			$rootScope.data.selected=[];
 			$rootScope.cond.search='';
 			$rootScope.cond.col=data;
 		};
@@ -77,16 +78,15 @@ angular.module('app',[])
 			document.querySelector('.search>input').focus();
 		};
 		$scope.deselect=function(){
-			angular.forEach($rootScope.data.bookmarks,function(b){
+			angular.forEach($rootScope.data.selected,function(b){
 				b.selected=false;
 			});
-			$rootScope.data.selected=0;
+			$rootScope.data.selected=[];
 		};
 		$scope.multiremove=function(){
-			if(confirm('您确定要删除所选的'+$rootScope.data.selected+'个书签吗？')) {
-				var ids=[];
-				$rootScope.data.bookmarks.forEach(function(item){
-					if(item.selected) ids.push(item.id);
+			if(confirm('您确定要删除所选的'+$rootScope.data.selected.length+'个书签吗？')) {
+				var ids=$rootScope.data.selected.map(function(item){
+					return item.id;
 				});
 				apis.removeBookmarks(ids);
 			}
@@ -98,14 +98,6 @@ angular.module('app',[])
 			} else {
 				return $rootScope.cond.col.id===item.col;
 			}
-		};
-		$scope.filteredBookmarks=function(){
-			var bookmarks=[];
-			for(var id in $rootScope.data.d_bookmarks) {
-				var item=$rootScope.data.d_bookmarks[id];
-				if(bmFilter(item)) bookmarks.push(item);
-			}
-			return bookmarks;
 		};
 	})
 ;
