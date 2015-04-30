@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<div class="content">
-		<collection data="root.colUnd"></collection>
+		<collection data="root.colUnd" select="select(data)"></collection>
 		<div class="collection" ng-click="startAddCol($event)" ng-class="{em:newCol.mode=='edit'}">
 			<div class="cell">
 				<img class="icon" src="/images/collection.png">
@@ -25,6 +25,6 @@
 			</div>
 		</div>
 		<br class="separator" />
-		<collection ng-repeat="item in root.cols" data="item" change="true"></collection>
+		<collection ng-repeat="item in root.cols" data="item" change="true" select="select(data)"></collection>
 	</div>
 </div>

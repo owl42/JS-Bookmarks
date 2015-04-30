@@ -374,6 +374,7 @@ angular.module('app')
 			restrict: 'E',
 			scope: {
 				data: '=',
+				select: '&',
 			},
 			link: function(scope, element, attrs) {
 				scope.stop=apis.stop;
@@ -408,9 +409,7 @@ angular.module('app')
 					});
 				}
 				element.on('click',function(){
-					scope.$apply(function(){
-						$rootScope.cond.col=scope.data;
-					});
+					scope.$apply(function(){scope.select({data:scope.data});});
 				});
 			},
 		};

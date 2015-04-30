@@ -65,6 +65,10 @@ angular.module('app',[])
 				$scope.importing=false;
 			});
 		};
+		$scope.select=function(data){
+			$rootScope.cond.search='';
+			$rootScope.cond.col=data;
+		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis){
 		$rootScope.cond.search='';
