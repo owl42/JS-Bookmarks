@@ -8,13 +8,13 @@
 			<span class="title" ng-if="!edit">{{data.title}}</span>
 		</div>
 	</div>
-	<div class="cell" ng-show="editdata.mode!='edit'">
+	<div class="cell">
 		<div class="number">{{data.count}}</div>
-	</div>
-	<div class="hpanel" ng-if="edit" ng-show="editdata.mode!='edit'" ng-click="stop($event)">
-		<div class="rel-mid-wrap">
-			<div class="edit" ng-click="editCol(data)"><i class="fa fa-edit"></i></div>
-			<div class="remove" ng-click="removeCol(data)"><i class="fa fa-trash"></i></div>
+		<div class="hpanel" ng-if="edit" ng-show="editdata.mode!='edit'" ng-click="stop($event)">
+			<div class="rel-mid-wrap">
+				<div class="edit" ng-click="editCol(data)"><i class="fa fa-edit"></i></div>
+				<div class="remove" ng-click="removeCol(data)"><i class="fa fa-trash"></i></div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -1,6 +1,16 @@
 .collection {
+	@height: 30px;
+	@icon-size: 16px;
 	cursor: pointer;
 	position: relative;
+	padding-left: 5px;
+	.cell {
+		height: @height;
+		.darken;
+	}
+	.icon {
+		width: @icon-size;
+	}
 	.title {
 		// font-size must be reset in .abs-mid-wrap
 		font-size: 1rem;
@@ -10,5 +20,31 @@
 		text-overflow: ellipsis;
 		text-align: left;
 		padding-left: 10px;
+	}
+	.number {
+		font-size: .8rem;
+		padding: 0 10px 0 5px;
+	}
+	&:hover, &.em {
+		background: #345;
+		.number {
+			display: none;
+		}
+	}
+	&.active {
+		font-weight: bold;
+		.cell {
+			.clearDarken;
+		}
+	}
+	&:not(:hover) {
+		.hpanel {
+			display: none;
+		}
+	}
+	.submit {
+		color: inherit;
+		background: transparent;
+		border: 1px solid #899;
 	}
 }
