@@ -12,6 +12,6 @@
 		<div class="current">{{cond.col.title}}</div>
 	</div>
 	<div class="list abs-fill-wrap" ng-click="deselect()">
-		<bookmark ng-repeat="(id,bookmark) in data.d_bookmarks track by bookmark.id" data="bookmark" ng-show="bmFilter(bookmark)"></bookmark>
+		<bookmark ng-repeat="bookmark in data.bookmarks|filter:bmFilter" data="bookmark"></bookmark>
 	</div>
 </div>

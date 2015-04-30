@@ -48,16 +48,19 @@ function collectionData(data){
 	};
 	return col;
 }
-function getTree(data,src,callback){
-	data=[
-		{
-			id:UNDEF,
-			title:'默认频道',
-			children:[],
-		},
-	];
+function getData(data,src,callback){
+	data={
+		cols:[
+			{
+				id:UNDEF,
+				title:'默认频道',
+				count:0,
+			},
+		],
+		bm:[],
+	};
 	var h={},i;
-	for(i of data) h[i.id]=i;
+	for(i of data.cols) h[i.id]=i;
 	function getCollectionList(){
 		var o=db.transaction('collections').objectStore('collections');
 		o.index('pos').openCursor().onsuccess=function(e){
@@ -68,9 +71,9 @@ function getTree(data,src,callback){
 					h[v.id]=v={
 						id:v.id,
 						title:v.title,
-						children:[],
+						count:0,
 					};
-					data.push(v);
+					data.cols.push(v);
 				}
 				r.continue();
 			} else getBookmarks();
@@ -83,7 +86,8 @@ function getTree(data,src,callback){
 			if(r) {
 				var v=r.value;
 				var col=h[v.col]||h[UNDEF];
-				col.children.push(v);
+				col.count++;
+				data.bm.push(v);
 				r.continue();
 			} else callback(data);
 		};
@@ -288,7 +292,7 @@ initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
 			//GetSearchEngines:getSearchEngines,
-			GetTree:getTree,
+			GetData:getData,
 			//GetTags:getTags,
 			GetBookmark:getBookmark,
 			GetBookmarks:getBookmarks,

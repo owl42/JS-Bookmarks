@@ -8,7 +8,7 @@ angular.module('app',[])
 		});*/
 		$rootScope.data={};
 		$rootScope.cond={};
-		$rootScope._collections=apis.getTree().then(function(){
+		$rootScope._collections=apis.getData().then(function(){
 			$rootScope.cond.col=$rootScope.data.colUnd;
 		});
 		apis.getUserInfo();
@@ -94,6 +94,14 @@ angular.module('app',[])
 			} else {
 				return $rootScope.cond.col.id===item.col;
 			}
+		};
+		$scope.filteredBookmarks=function(){
+			var bookmarks=[];
+			for(var id in $rootScope.data.d_bookmarks) {
+				var item=$rootScope.data.d_bookmarks[id];
+				if(bmFilter(item)) bookmarks.push(item);
+			}
+			return bookmarks;
 		};
 	})
 ;

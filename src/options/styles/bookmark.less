@@ -1,8 +1,8 @@
 .bookmark {
 	@icon-size: 16px;
 	cursor: pointer;
-	background: white;
-	position: relative;
+	position: absolute;
+	transition: all .5s;
 	&:hover {
 		.cell.expand {
 			text-shadow: 0 0px 1px #bbb;
@@ -33,6 +33,7 @@
 	.url {
 		color: gray;
 		font-size: 10px;
+		.textNoWrap;
 	}
 	.hpanel {
 		display: none;
