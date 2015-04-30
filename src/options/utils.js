@@ -1,6 +1,6 @@
 angular.module('app')
 	.config(function($compileProvider){
-		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension):/);
+		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension|chrome):/);
 	})
 	.factory('blurFactory',function($rootScope){
 		var blur=[];
