@@ -55,19 +55,24 @@ angular.module('app')
 					if(parts) return (parts[1]||'http://')+parts[2];
 				}
 			},
-			getCollections: function(){
+			getTree: function(){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				data.colUnd={};
 				data.cols=[];
 				data.d_cols={};
-				chrome.runtime.sendMessage({cmd:'GetCollections',data:{count:true}},function(cols){
-					cols.forEach(function(col){
+				data.d_bookmarks={};
+				data.selected=0;
+				chrome.runtime.sendMessage({cmd:'GetTree'},function(tree){
+					tree.forEach(function(col){
 						if(col.id==apis.UNDEF)
 							data.colUnd=col;
 						else
 							data.cols.push(col);
 						data.d_cols[col.id]=col;
+						col.children.forEach(function(bm){
+							data.d_bookmarks[bm.id]=bm;
+						});
 					});
 					$rootScope.$apply(function(){
 						deferred.resolve();
@@ -107,23 +112,6 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			getBookmarks: function(col){
-				var deferred=$q.defer();
-				var data=$rootScope.data;
-				data.bookmarks=[];
-				data.d_bookmarks={};
-				data.selected=0;
-				if(col!=undefined) chrome.runtime.sendMessage({cmd:'GetBookmarks',data:col},function(bms){
-					data.bookmarks=bms;
-					bms.forEach(function(b){
-						data.d_bookmarks[b.id]=b;
-					});
-					$rootScope.$apply(function(){
-						deferred.resolve();
-					});
-				}); else deferred.resolve();
-				return deferred.promise;
-			},
 			saveBookmark: function(item){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
@@ -132,9 +120,8 @@ angular.module('app')
 						angular.extend(data.d_bookmarks[item.id],item);
 					} else {
 						item.id=id;
-						data.d_cols[item.col].count++;
+						data.d_cols[item.col].children.push(item);
 						data.d_bookmarks[item.id]=item;
-						data.bookmarks.push(item);
 					}
 					$rootScope.$apply(function(){
 						deferred.resolve(item);
@@ -147,11 +134,11 @@ angular.module('app')
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{id:item.id,col:col}},function(id){
 					if(id===item.id) {
-						var i=data.bookmarks.indexOf(item);
+						var col=data.d_cols[item.col];
+						var i=col.children.indexOf(item);
 						if(i>=0) {
-							data.d_cols[item.col].count--;
-							data.d_cols[item.col=col].count++;
-							data.bookmarks.splice(i,1);
+							col.children.splice(i,1)
+							data.d_cols[item.col=col].children.push(item);
 							delete data.d_bookmarks[item.id];
 						}
 					}
@@ -167,9 +154,9 @@ angular.module('app')
 				chrome.runtime.sendMessage({cmd:'RemoveBookmarks',data:ids},function(id){
 					ids.forEach(function(id){
 						var item=data.d_bookmarks[id];
-						var i=data.bookmarks.indexOf(item);
-						data.d_cols[item.col].count--;
-						data.bookmarks.splice(i,1);
+						var col=data.d_cols[item.col];
+						var i=col.children.indexOf(item);
+						col.children.splice(i,1);
 						delete data.d_bookmarks[id];
 					});
 					$rootScope.$apply(function(){
@@ -407,7 +394,7 @@ angular.module('app')
 				}
 				element.on('click',function(){
 					scope.$apply(function(){
-						$rootScope.cond.col=scope.data.id;
+						$rootScope.cond.col=scope.data;
 					});
 				});
 			},

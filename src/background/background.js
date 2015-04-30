@@ -46,25 +46,15 @@ function collectionData(data){
 		id:data.id,
 		title:data.title,
 	};
-	if('count' in data) col.count=data.count||0;
 	return col;
 }
-function getCollections(config,src,callback){
-	config=config||{};
-	var data=[
-		/*{
-			id:TRASH,
-			title:'垃圾桶',
-			count:0,
-		},*/{
+function getTree(data,src,callback){
+	data=[
+		{
 			id:UNDEF,
 			title:'默认频道',
-			count: 0,
-		}/*,{
-			id:ALL,
-			title:'全部频道',
-			count: 0,
-		}*/
+			children:[],
+		},
 	];
 	var h={},i;
 	for(i of data) h[i.id]=i;
@@ -75,32 +65,25 @@ function getCollections(config,src,callback){
 			if(r) {
 				v=r.value;
 				if(v.id>0) {
-					if(config.count) v.count=0;
-					h[v.id]=v=collectionData(v);
+					h[v.id]=v={
+						id:v.id,
+						title:v.title,
+						children:[],
+					};
 					data.push(v);
 				}
 				r.continue();
-			} else {
-				if(config.count) getCollectionData();
-				else callback(data);
-			}
+			} else getBookmarks();
 		};
 	}
-	function getCollectionData(){
-		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
-		o.index('col').openCursor().onsuccess=function(e){
-			var r=e.target.result,v,c;
+	function getBookmarks(){
+		var o=db.transaction('bookmarks').objectStore('bookmarks');
+		o.openCursor().onsuccess=function(e){
+			var r=e.target.result;
 			if(r) {
-				v=r.value;
-				c=h[v.col];
-				if(!v.col&&!c) {
-					v.col=UNDEF;
-					r.update(v);
-					c=h[UNDEF];
-				}
-				c.count++;
-				/*if(c.id!=TRASH)	// not trash
-					h[ALL].count++;*/
+				var v=r.value;
+				var col=h[v.col]||h[UNDEF];
+				col.children.push(v);
 				r.continue();
 			} else callback(data);
 		};
@@ -141,8 +124,7 @@ function getBookmark(data,src,callback){
 }
 function getBookmarks(data,src,callback){
 	var bm=[],o=db.transaction('bookmarks').objectStore('bookmarks');
-	if(!data) data=IDBKeyRange.lowerBound(-1);
-	o.index('col').openCursor(data).onsuccess=function(e){
+	o.openCursor().onsuccess=function(e){
 		var r=e.target.result;
 		if(r) {
 			bm.push(r.value);
@@ -306,7 +288,7 @@ initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
 			//GetSearchEngines:getSearchEngines,
-			GetCollections:getCollections,
+			GetTree:getTree,
 			//GetTags:getTags,
 			GetBookmark:getBookmark,
 			GetBookmarks:getBookmarks,

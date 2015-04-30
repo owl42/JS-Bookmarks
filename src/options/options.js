@@ -7,20 +7,13 @@ angular.module('app',[])
 			});
 		});*/
 		$rootScope.data={};
-		$rootScope.cond={
-			col:apis.UNDEF,
-		};
-		$rootScope._collections=apis.getCollections().then(function(){
-			$rootScope.cond.col=apis.UNDEF;
+		$rootScope.cond={};
+		$rootScope._collections=apis.getTree().then(function(){
+			$rootScope.cond.col=$rootScope.data.colUnd;
 		});
-		$rootScope._bookmarks=apis.getBookmarks();
-		$rootScope.$watch('cond.col',function(){
-			$rootScope._bookmarks=apis.getBookmarks($rootScope.cond.col);
-		},false);
 		apis.getUserInfo();
 	})
 	.controller('SideController',function($scope,$rootScope,apis,blurFactory){
-		$scope.config={key:'groups'};
 		$scope.root=$rootScope.data;
 		$scope.usershown=false;
 		var user=document.querySelector('.toc .user');
@@ -35,7 +28,7 @@ angular.module('app',[])
 		};
 		$scope.showUser=showUser;
 		$scope.isActive=function(item){
-			return $rootScope.cond.col===item.id;
+			return $rootScope.cond.col===item;
 		};
 		$scope.login=function(){
 			apis.logIn();
@@ -74,9 +67,9 @@ angular.module('app',[])
 		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis){
-		$scope.search='';
+		$rootScope.cond.search='';
 		$scope.reset=function(){
-			$scope.search='';
+			$rootScope.cond.search='';
 			document.querySelector('.search>input').focus();
 		};
 		$scope.deselect=function(){
@@ -95,7 +88,12 @@ angular.module('app',[])
 			}
 		};
 		$scope.bmFilter=function(item){
-			return !$scope.search||item.title.indexOf($scope.search)>=0||item.url.indexOf($scope.search)>=0;
+			var search=$rootScope.cond.search;
+			if(search) {
+				return item.title.indexOf(search)>=0||item.url.indexOf(search)>=0;
+			} else {
+				return $rootScope.cond.col.id===item.col;
+			}
 		};
 	})
 ;

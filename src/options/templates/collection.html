@@ -1,4 +1,4 @@
-<div class="collection" ng-class="{em:editdata.mode=='edit',active:data.id===cond.col}">
+<div class="collection" ng-class="{em:editdata.mode=='edit',active:!cond.search&amp;&amp;data===cond.col}">
 	<div class="cell">
 		<img class="icon" ng-src="{{data.icon||'/images/collection.png'}}">
 	</div>
