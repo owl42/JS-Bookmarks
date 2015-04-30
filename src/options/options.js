@@ -66,6 +66,12 @@ angular.module('app',[])
 			$scope.newCol.mode='';
 			$scope.newCol.text='';
 		};
+		$scope.importFromChrome=function(){
+			$scope.importing=true;
+			apis.importFromChrome().then(function(){
+				$scope.importing=false;
+			});
+		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis){
 		$scope.search='';

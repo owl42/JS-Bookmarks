@@ -158,10 +158,10 @@ function saveCollection(data,src,callback){
 		pos:0,	// FIXME
 	};
 	if(data.id) col.id=data.id;
-	else col.count=0;
 	var o=db.transaction('collections','readwrite').objectStore('collections');
 	o.put(col).onsuccess=function(e){
 		col.id=e.target.result;
+		if(!data.id) col.count=0;
 		callback(collectionData(col));
 	};
 	return true;
@@ -249,6 +249,58 @@ function logOut(data,src,callback){
 	return true;
 }
 
+function importFromChrome(data,src,callback){
+	function importTree(folder,cb){
+		importNodes(folder.children,{
+			getCol:function(cb){
+				saveCollection({title:folder.title},null,cb);
+			},
+		},cb);
+	}
+	function importBookmark(item,col,cb){
+		function doImport(){
+			saveBookmark({title:item.title,url:item.url,col:col.id},null,function(){
+				count++;
+				cb();
+			});
+		}
+		col=col||{id:0};
+		if(col.getCol) col.getCol(function(data){
+			delete col.getCol;
+			col.id=data.id;
+			doImport();
+		}); else doImport();
+	}
+	function importNodes(arr,col,cb){
+		function importNode(){
+			var item=arr.shift();
+			if(item) {
+				if(item.url)
+					importBookmark(item,col,importNode);
+				else if(item.title)
+					importTree(item,importNode);
+				else
+					// root node
+					importNodes(item.children,null,importNode);
+			} else cb();
+		}
+		arr=arr.concat();
+		importNode();
+	}
+	function finish(){
+		callback();
+		new Notification('书签导入 - '+chrome.i18n.getMessage('extName'),{
+			body:'从Chrome导入'+count+'个书签！',
+			icon:chrome.extension.getURL('images/icon128.png'),
+		});
+	}
+	var count=0;
+	chrome.bookmarks.getTree(function(arr){
+		importNodes(arr,null,finish);
+	});
+	return true;
+}
+
 var db,user=null;
 initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
@@ -266,6 +318,7 @@ initDb(function(){
 			GetUserInfo:getUserInfo,
 			LogIn:logIn,
 			LogOut:logOut,
+			ImportFromChrome:importFromChrome,
 		},f=mappings[req.cmd];
 		if(f) return f(req.data,src,callback);
 	});

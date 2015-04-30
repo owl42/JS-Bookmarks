@@ -9,13 +9,7 @@
 			</div>
 		</div>
 		<div class="card" ng-show="usershown">
-			<div class="wrap" ng-if="user.id">
-				你好，<span>{{user.name}}</span>！
-				<a href ng-click="logout()">退出 <i class="fa fa-sign-out"></i></a>
-			</div>
-			<div class="wrap" ng-if="!user.id">
-				<div ng-include="'templates/login.html'"></div>
-			</div>
+			<div class="wrap" ng-include="'templates/'+(user.id?'user':'login')+'.html'"></div>
 		</div>
 	</div>
 	<div class="content">

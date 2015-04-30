@@ -208,6 +208,15 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
+			importFromChrome: function(){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({cmd:'ImportFromChrome'},function(){
+					apis.getCollections().then(function(){
+						deferred.resolve();
+					})
+				});
+				return deferred.promise;
+			}
 		};
 		return apis;
 	})
