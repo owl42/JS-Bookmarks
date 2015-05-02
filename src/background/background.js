@@ -48,38 +48,29 @@ function collectionData(data){
 	};
 	return col;
 }
-function getData(data,src,callback){
-	data={
-		cols:[
-			{
-				id:UNDEF,
-				title:'默认频道',
-				count:0,
-			},
-		],
-		bm:[],
+function getCollections(data,src,callback){
+	data=[
+		{
+			id:UNDEF,
+			title:'默认频道',
+		},
+	];
+	var o=db.transaction('collections').objectStore('collections');
+	o.index('pos').openCursor().onsuccess=function(e){
+		var r=e.target.result;
+		if(r) {
+			var v=r.value;
+			if(v.id>0) data.push({
+				id:v.id,
+				title:v.title,
+			});
+			r.continue();
+		} else callback(data);
 	};
-	var h={},i;
-	for(i of data.cols) h[i.id]=i;
-	function getCollectionList(){
-		var o=db.transaction('collections').objectStore('collections');
-		o.index('pos').openCursor().onsuccess=function(e){
-			var r=e.target.result,v;
-			if(r) {
-				v=r.value;
-				if(v.id>0) {
-					h[v.id]=v={
-						id:v.id,
-						title:v.title,
-						count:0,
-					};
-					data.cols.push(v);
-				}
-				r.continue();
-			} else getBookmarks();
-		};
-	}
-	function getBookmarks(){
+	return true;
+}
+function getData(data,src,callback){
+	function getBookmarkData(){
 		var o=db.transaction('bookmarks').objectStore('bookmarks');
 		o.openCursor().onsuccess=function(e){
 			var r=e.target.result;
@@ -92,7 +83,16 @@ function getData(data,src,callback){
 			} else callback(data);
 		};
 	}
-	getCollectionList();
+	data={bm:[]};
+	var h={};
+	getCollections(null,null,function(cols){
+		data.cols=cols;
+		cols.forEach(function(col){
+			h[col.id]=col;
+			col.count=0;
+		});
+		getBookmarkData();
+	});
 	return true;
 }
 function removeCollection(id,src,callback){
@@ -103,18 +103,27 @@ function removeCollection(id,src,callback){
 	 */
 	function removeCollection(){
 		var o=db.transaction('collections','readwrite').objectStore('collections');
-		o.delete(id);
+		o.delete(id).onsuccess=function(e){
+			if(urls.length) updateStars({
+				url:urls,
+				star:false,
+			});
+		};
 		callback();
 	}
 	function removeBookmarks(){
 		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 		o.index('col').openCursor(id).onsuccess=function(e){
 			var r=e.target.result;
-			if(r) r.delete().onsuccess=function(e){
-				r.continue();
-			}; else removeCollection();
+			if(r) {
+				urls.push(r.value.url);
+				r.delete().onsuccess=function(e){
+					r.continue();
+				};
+			} else removeCollection();
 		};
 	}
+	var urls=[];
 	removeBookmarks();
 	return true;
 }
@@ -163,6 +172,10 @@ function saveBookmark(data,src,callback){
 	if(data.id) bm.id=data.id;
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 	o.put(bm).onsuccess=function(e){
+		if(data.updateStar) updateStars({
+			url:data.url,
+			star:true,
+		});
 		callback(e.target.result);
 	};
 	return true;
@@ -179,11 +192,21 @@ function moveToCollection(data,src,callback){
 	return true;
 }
 function removeBookmarks(ids,src,callback){
-	var removeOne=function(){
+	function removeOne(){
 		var id=ids.shift();
-		if(id) o.delete(id).onsuccess=removeOne;
-		else callback();
-	};
+		if(id) o.get(id).onsuccess=function(e){
+			var v=e.target.result;
+			urls.push(v.url);
+			o.delete(id).onsuccess=removeOne;
+		}; else {
+			if(urls.length) updateStars({
+				url:urls,
+				star:false,
+			});
+			callback();
+		}
+	}
+	var urls=[];
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 	removeOne();
 	return true;
@@ -245,8 +268,8 @@ function importFromChrome(data,src,callback){
 	}
 	function importBookmark(item,col,cb){
 		function doImport(){
+			urls.push(item.url);
 			saveBookmark({title:item.title,url:item.url,col:col.id},null,function(){
-				count++;
 				cb();
 			});
 		}
@@ -276,15 +299,32 @@ function importFromChrome(data,src,callback){
 	function finish(){
 		callback();
 		new Notification('书签导入 - '+chrome.i18n.getMessage('extName'),{
-			body:'从Chrome导入'+count+'个书签！',
+			body:'从Chrome导入'+urls.length+'个书签！',
 			icon:chrome.extension.getURL('images/icon128.png'),
 		});
+		if(urls.length) updateStars({
+			url:urls,
+			star:true,
+		});
 	}
-	var count=0;
+	var urls=[];
 	chrome.bookmarks.getTree(function(arr){
 		importNodes(arr,null,finish);
 	});
 	return true;
+}
+function updateStars(data){
+	var icon=chrome.extension.getURL(data.star?'images/star.png':'images/unstar.png');
+	chrome.tabs.query({url:data.url},function(tabs){
+		tabs.forEach(function(tab){
+			chrome.pageAction.setIcon({
+				tabId: tab.id,
+				path: icon,
+			},function(){
+				chrome.pageAction.show(tab.id);
+			});
+		});
+	});
 }
 
 var db,user=null;
@@ -292,6 +332,7 @@ initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
 			//GetSearchEngines:getSearchEngines,
+			GetCollections:getCollections,
 			GetData:getData,
 			//GetTags:getTags,
 			GetBookmark:getBookmark,
@@ -310,7 +351,15 @@ initDb(function(){
 	});
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 		if(tab.url) {
-			if(/^(http|ftp)s?:/i.test(tab.url)) chrome.pageAction.show(tabId);
+			if(/^(http|ftp)s?:/i.test(tab.url))
+				getBookmark(tab.url,null,function(bookmark){
+					chrome.pageAction.setIcon({
+						tabId: tabId,
+						path: chrome.extension.getURL(bookmark?'images/star.png':'images/unstar.png'),
+					},function(){
+						chrome.pageAction.show(tabId);
+					});
+				});
 			else chrome.pageAction.hide(tabId);
 		}
 	});

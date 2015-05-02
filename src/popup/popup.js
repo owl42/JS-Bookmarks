@@ -7,10 +7,12 @@ function safeHTML(s){
 	});
 }
 function saveBookmark(){
-	if(bookmark.url)
-	chrome.runtime.sendMessage({cmd:'SaveBookmark',data:bookmark},function(id){
-		bookmark.id=id;
-	});
+	if(bookmark.url) {
+		bookmark.updateStar=true;
+		chrome.runtime.sendMessage({cmd:'SaveBookmark',data:bookmark},function(id){
+			bookmark.id=id;
+		});
+	}
 }
 function updateBookmark(){
 	var i;
@@ -44,6 +46,7 @@ function getTabData(){
 }
 function getCollections(){
 	chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
+		console.log(cols);
 		collections=cols;
 		j_cols.innerHTML='';
 		var html=[];
