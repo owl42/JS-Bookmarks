@@ -41,15 +41,29 @@ angular.module('app')
 		}*/
 		function locate(index,node){
 			var cond=$rootScope.cond;
+			var firstShow=node.style.opacity!='1';
+			var delta,top;
 			if(cond.view=='bar'){
 				node.style.left=0;
-				node.style.top=index*35+10+'px';
+				top=index*35+10;
+				delta=35;
 			} else if(cond.view=='tile'){
 				var row=Math.floor(index/cond.cols);
 				var col=index%cond.cols;
 				node.style.left=col*260+'px';
-				node.style.top=row*270+10+'px';
+				top=row*270+10;
+				delta=200;
 			}
+			if(firstShow) {
+				top-=delta;
+				node.style.opacity=0;
+				setTimeout(function(){
+					top+=delta;
+					node.style.top=top+'px';
+					node.style.opacity=1;
+				},0);
+			}
+			node.style.top=top+'px';
 		}
 		angular.element(window).on('resize',function(e){
 			$rootScope.$apply(checkView);
