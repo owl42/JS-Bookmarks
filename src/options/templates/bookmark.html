@@ -1,17 +1,7 @@
 <div class="bookmark" ng-click="open()" ng-class="{active:data.selected}">
-	<div class="cell">
-		<img class="icon" ng-src="{{'chrome://favicon/'+data.url}}">
-	</div>
-	<div class="cell expand">
-		<div class="abs-mid-wrap left right">
-			<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>
-		</div>
-	</div>
-	<div class="cell expand">
-		<div class="abs-mid-wrap left right">
-			<editable class="url" data="editurl" change="check()" cancel="close()"></editable>
-		</div>
-	</div>
+	<div class="favicon" style="background-image:url({{'chrome://favicon/'+data.url}})"></div>
+	<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>
+	<editable class="url" data="editurl" change="check()" cancel="close()"></editable>
 	<div class="abs hpanel" ng-show="editurl.mode!='edit'" ng-click="stop($event)">
 		<div class="rel-mid-wrap">
 			<div data="select" ng-click="select()" title="选择"><i class="fa fa-check"></i></div>

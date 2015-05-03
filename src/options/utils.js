@@ -2,6 +2,63 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension|chrome):/);
 	})
+	.factory('settings',function(){
+		return {
+			get: function(key,def){
+				var val=localStorage.getItem(key)||'';
+				try{
+					val=JSON.parse(val);
+				}catch(e){
+					val=def;
+				}
+				return val;
+			},
+			set: function(key,val){
+				localStorage.setItem(key,JSON.stringify(val));
+			},
+		};
+	})
+	.factory('viewFactory',function($rootScope,$timeout){
+		var list=document.querySelector('.list');
+		var checkView=function(){
+			var view=$rootScope.cond.view;
+			if(view=='bar')
+				$rootScope.cond.cols=0;
+			else if(view=='tile') {
+				$rootScope.cond.cols=Math.floor(list.clientWidth/280);
+			}
+		};
+		/*function delayed(cb,delay){
+			var timer=null;
+			function call(){
+				cb();
+				timer=null;
+			}
+			return function(){
+				if(timer) $timeout.cancel(timer);
+				timer=$timeout(call,delay);
+			};
+		}*/
+		function locate(index,node){
+			var cond=$rootScope.cond;
+			if(cond.view=='bar'){
+				node.style.left=0;
+				node.style.top=index*35+10+'px';
+			} else if(cond.view=='tile'){
+				var row=Math.floor(index/cond.cols);
+				var col=index%cond.cols;
+				node.style.left=col*260+'px';
+				node.style.top=row*270+10+'px';
+			}
+		}
+		angular.element(window).on('resize',function(e){
+			$rootScope.$apply(checkView);
+		});
+		return {
+			locate:locate,
+			checkView:checkView,
+		};
+	})
 	.factory('blurFactory',function($rootScope){
 		var blur=[];
 		function findItem(ele){
@@ -205,16 +262,13 @@ angular.module('app')
 		};
 		return apis;
 	})
-	.directive('bookmark',function($rootScope,apis,blurFactory){
+	.directive('bookmark',function($rootScope,apis,blurFactory,viewFactory){
 		function open(data,target){
 			var url=data.url&&apis.normalizeURL(data.url);
 			if(url) {
 				if(target=='_blank') window.open(url);
 				else location.href=url;
 			}
-		}
-		function getIcon(data){
-			return data.icon||'/images/icon16.png';
 		}
 		return {
 			restrict:'E',
@@ -224,10 +278,10 @@ angular.module('app')
 			},
 			templateUrl:'templates/bookmark.html',
 			link:function(scope,element,attrs){
-				scope.getIcon=getIcon;
 				scope.stop=apis.stop;
 				scope.edittitle={focus:true};
 				scope.editurl={};
+				scope.cond=$rootScope.cond;
 				var reset=function(){
 					scope.edittitle.text=scope.data.title;
 					scope.editurl.text=scope.data.url;
@@ -271,24 +325,12 @@ angular.module('app')
 						selected.splice(i,1);
 					}
 				};
-				var visible=false;
 				var locate=function(){
-					if(!visible) {
-						element.css({
-							top:(scope.$parent.$index-2)*35+'px',
-							opacity:0,
-						})
-						visible=true;
-					}
-					setTimeout(function(){
-						element.css({
-							top:scope.$parent.$index*35+'px',
-							opacity:1,
-						});
-					},0);
+					viewFactory.locate(scope.$parent.$index,element[0]);
 				};
 				scope.$watch('data',reset,true);
 				scope.$watch('$parent.$index',locate);
+				scope.$watch('cond.cols',locate);
 			},
 		};
 	})

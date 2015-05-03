@@ -1,31 +1,10 @@
 .bookmark {
-	@icon-size: 16px;
 	cursor: pointer;
 	position: absolute;
 	transition: all .5s;
-	&:hover {
-		.cell.expand {
-			text-shadow: 0 0px 1px #bbb;
-		}
-	}
-	.editable {
-		width: 98%;
-		.edit {
-			border: 1px solid dodgerblue;
-		}
-	}
-	.cell {
-		height: 35px;
-		&.expand {
-			width: 60%;
-			.textNoWrap;
-		}
-	}
-	img.icon {
-		width: @icon-size;
-		height: @icon-size;
-		margin: 0 5px;
-		display: block;
+	.favicon {
+		width: 16px;
+		height: 16px;
 	}
 	.title {
 		font-size: 12px;
@@ -34,6 +13,60 @@
 		color: gray;
 		font-size: 10px;
 		.textNoWrap;
+	}
+	&>* {
+		position: absolute;
+	}
+	&:hover {
+		text-shadow: 0 0px 1px #bbb;
+	}
+	.bar>& {
+		height: 35px;
+		width: 100%;
+		.favicon {
+			left: 5px;
+			top: 10px;
+		}
+		.title {
+			left: 26px;
+			top: 11px;
+			width: 50%;
+			.textNoWrap;
+		}
+		.url {
+			left: calc(~'60% + 26px');
+			top: 12px;
+			width: calc(~'40% - 26px');
+		}
+	}
+	.tile>& {
+		height: 260px;
+		width: 250px;
+		border: 1px solid gray;
+		border-radius: 5px;
+		background: white;
+		.favicon {
+			left: 5px;
+			bottom: 10px;
+		}
+		.title {
+			left: 10px;
+			right: 10px;
+			top: 170px;
+			height: 50px;
+			overflow: hidden;
+			font-weight: bold;
+		}
+		.url {
+			bottom: 10px;
+			left: 26px;
+			right: 0;
+		}
+	}
+	.editable {
+		.edit {
+			border: 1px solid dodgerblue;
+		}
 	}
 	.hpanel {
 		display: none;

@@ -71,8 +71,14 @@ angular.module('app',[])
 			$rootScope.cond.col=data;
 		};
 	})
-	.controller('BookmarksController',function($scope,$rootScope,apis){
+	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory){
 		$rootScope.cond.search='';
+		$scope.setView=function(view){
+			$rootScope.cond.view=view;
+			settings.set('view',view);
+			viewFactory.checkView();
+		};
+		$scope.setView(settings.get('view','bar'));
 		$scope.reset=function(){
 			$rootScope.cond.search='';
 			document.querySelector('.search>input').focus();
