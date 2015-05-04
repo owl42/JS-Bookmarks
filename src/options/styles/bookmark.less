@@ -99,6 +99,9 @@
 		text-align: center;
 		display: none;
 		border-radius: 50%;
+		&:not(:hover) {
+			color: #666;
+		}
 	}
 	.select {
 		left: 4px;
@@ -117,8 +120,12 @@
 		}
 		&.selected {
 			.select {
+				color: black;
 				display: block;
 			}
 		}
+	}
+	&.dragging {
+		opacity: .5;
 	}
 }

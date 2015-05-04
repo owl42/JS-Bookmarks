@@ -45,9 +45,8 @@ angular.module('app')
 				timer=$timeout(call,delay);
 			};
 		}*/
-		function locate(index,node){
+		function locate(index,node,cb){
 			var cond=$rootScope.cond;
-			var firstShow=node.style.opacity!='1';
 			var delta,top;
 			if(cond.view=='bar'){
 				node.style.left=0;
@@ -60,15 +59,14 @@ angular.module('app')
 				top=row*(tileHeight+tileMarginBottom)+marginTop;
 				delta=200;
 			}
-			if(firstShow) {
+			if(node.style.top==='') {
 				top-=delta;
-				node.style.opacity=0;
 				setTimeout(function(){
 					top+=delta;
 					node.style.top=top+'px';
-					node.style.opacity=1;
+					if(cb) cb();
 				},0);
-			}
+			} else cb();
 			node.style.top=top+'px';
 		}
 		angular.element(window).on('resize',function(e){
@@ -209,14 +207,15 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
-			moveToCollection: function(item, col){
+			moveToCollection: function(items, col){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{id:item.id,col:col}},function(id){
-					if(id===item.id) {
+				var ids=items.map(function(item){return item.id;});
+				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{ids:ids,col:col}},function(){
+					items.forEach(function(item){
 						data.d_cols[item.col].count--;
 						data.d_cols[item.col=col].count++;
-					}
+					});
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -300,7 +299,20 @@ angular.module('app')
 	        hash^=((hash << 5) + ch + (hash >> 2));
 	    }
 	    //return hash & 0x7FFFFFFF;
-			return hash & 0xbfbfff;
+			return hash & 0xbfbfbf;
+		}
+		function getItems(item){
+			var selected=$rootScope.data.selected;
+			return selected.length?selected:[item];
+		}
+		function select(item){
+			var selected=$rootScope.data.selected;
+			if(item.selected=!item.selected)
+				selected.push(item);
+			else {
+				var i=selected.indexOf(item);
+				selected.splice(i,1);
+			}
 		}
 		function setIcon(node,url){
 			var m=url.match(/^\w+:\/\/([^/]*)/);
@@ -363,18 +375,30 @@ angular.module('app')
 				};
 				element[0].querySelector('.select').addEventListener('click',function(e){
 					e.stopPropagation();
-					var selected=$rootScope.data.selected;
-					scope.$apply(function(){
-						if(scope.data.selected=!scope.data.selected)
-							selected.push(scope.data);
-						else {
-							var i=selected.indexOf(scope.data);
-							selected.splice(i,1);
-						}
-					});
+					scope.$apply(function(){select(scope.data);});
 				},false);
+				element.on('dragstart',function(e){
+					if(scope.cond.view=='tile')
+						e.dataTransfer.setDragImage(e.target.querySelector('.icon'),-10,-10);
+					scope.$apply(function(){
+						getItems(scope.data).forEach(function(item){item.dragging=true;});
+					});
+				}).on('dragend',function(e){
+					scope.$apply(function(){
+						getItems(scope.data).forEach(function(item){
+							item.dragging=false;
+							item.selected=false;
+						});
+					});
+				});
+				var locating=false;
 				var locate=function(){
-					viewFactory.locate(scope.$parent.$index,element[0]);
+					if(!locating) {
+						locating=true;
+						viewFactory.locate(scope.$parent.$index,element[0],function(){
+							locating=false;
+						});
+					}
 				};
 				scope.$watch('data',reset,true);
 				scope.$watch('$parent.$index',locate);
@@ -467,8 +491,26 @@ angular.module('app')
 						scope.editdata.text=scope.data.title;
 					});
 				}
+				var dragcount=0;
 				element.on('click',function(){
 					scope.$apply(function(){scope.select({data:scope.data});});
+				}).on('dragover',function(e){
+					e.preventDefault();
+				}).on('dragenter',function(e){
+					dragcount++;
+					if(dragcount==1) scope.$apply(function(){
+						scope.data.dragover=true;
+					});
+				}).on('dragleave',function(e){
+					dragcount--;
+					if(dragcount==0) scope.$apply(function(){
+						scope.data.dragover=false;
+					});
+				}).on('drop',function(e){
+					dragcount=0;
+					scope.data.dragover=false;
+					var items=$rootScope.data.bookmarks.filter(function(item){return item.dragging;});
+					apis.moveToCollection(items,scope.data.id);
 				});
 			},
 		};

@@ -1,4 +1,5 @@
-<div class="bookmark" ng-click="open()" ng-class="{selected:data.selected,editing:editurl.mode=='edit'}">
+<div class="bookmark" draggable="true" ng-click="open()"
+ng-class="{selected:data.selected,editing:editurl.mode=='edit',dragging:data.dragging}">
 	<div class="icon"></div>
 	<div class="favicon" style="background-image:url({{'chrome://favicon/'+data.url}})"></div>
 	<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>

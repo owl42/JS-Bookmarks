@@ -1,4 +1,5 @@
-<div class="collection" ng-class="{em:editdata.mode=='edit',active:!cond.search&amp;&amp;data===cond.col}">
+<div class="collection"
+ng-class="{edit:editdata.mode=='edit',active:!cond.search&amp;&amp;data===cond.col,em:data.dragover}">
 	<div class="cell">
 		<!--<img class="icon" ng-src="{{data.icon||'/images/collection.png'}}">-->
 		<i class="fa fa-star"></i>

@@ -27,20 +27,7 @@ function initDb(callback){
 	};
 }
 
-/*function getSearchEngines(data,src,callback){
-	callback({
-		items:[{
-			name:'百度',
-			url:'https://www.baidu.com/s?wd=%q&ie=utf-8',
-		},{
-			name:'搜狗',
-			url:'http://www.sogou.com/sogou?query=%q',
-		}],
-		def:0,
-	});
-}*/
-
-var /*ALL=0,*/ UNDEF=-1/*, TRASH=-2*/;
+var UNDEF=-1;
 function collectionData(data){
 	var col={
 		id:data.id,
@@ -181,14 +168,19 @@ function saveBookmark(data,src,callback){
 	return true;
 }
 function moveToCollection(data,src,callback){
+	function move(){
+		var id=ids.pop();
+		if(id){
+			o.get(id).onsuccess=function(e){
+				var r=e.target.result;
+				r.col=data.col||UNDEF;
+				o.put(r).onsuccess=move;
+			};
+		} else callback();
+	}
+	var ids=data.ids;
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
-	o.get(data.id).onsuccess=function(e){
-		var r=e.target.result;
-		r.col=data.col||UNDEF;
-		o.put(r).onsuccess=function(e){
-			callback(r.id);
-		};
-	};
+	move();
 	return true;
 }
 function removeBookmarks(ids,src,callback){
@@ -335,13 +327,14 @@ initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
 			//GetSearchEngines:getSearchEngines,
+			SaveBookmark:saveBookmark,
+			// for popup only
 			GetCollections:getCollections,
-			GetData:getData,
-			//GetTags:getTags,
 			GetBookmark:getBookmark,
+			// for options only
+			GetData:getData,
 			GetBookmarks:getBookmarks,
 			SaveCollection:saveCollection,
-			SaveBookmark:saveBookmark,
 			MoveToCollection:moveToCollection,
 			RemoveBookmarks:removeBookmarks,
 			RemoveCollection:removeCollection,
