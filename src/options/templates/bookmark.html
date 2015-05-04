@@ -1,12 +1,9 @@
-<div class="bookmark" ng-click="open()" ng-class="{active:data.selected}">
+<div class="bookmark" ng-click="open()" ng-class="{selected:data.selected,editing:editurl.mode=='edit'}">
+	<div class="icon"></div>
 	<div class="favicon" style="background-image:url({{'chrome://favicon/'+data.url}})"></div>
 	<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>
 	<editable class="url" data="editurl" change="check()" cancel="close()"></editable>
-	<div class="abs hpanel" ng-show="editurl.mode!='edit'" ng-click="stop($event)">
-		<div class="rel-mid-wrap">
-			<div data="select" ng-click="select()" title="选择"><i class="fa fa-check"></i></div>
-			<div data="edit" ng-click="edit()" title="编辑" ng-hide="data.selected"><i class="fa fa-edit"></i></div>
-			<div data="remove" ng-click="remove()" title="删除" ng-hide="data.selected"><i class="fa fa-remove"></i></div>
-		</div>
-	</div>
+	<div class="select button" title="选择"><i class="fa fa-check"></i></div>
+	<div class="edit button" title="编辑"><i class="fa fa-pencil"></i></div>
+	<div class="remove button" title="删除"><i class="fa fa-remove"></i></div>
 </div>

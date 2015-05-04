@@ -2,6 +2,11 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension|chrome):/);
 	})
+	.value('constants',{
+		tileHeight: 240,
+		tileWidth: 250,
+		barHeight: 35,
+	})
 	.factory('settings',function(){
 		return {
 			get: function(key,def){
@@ -18,14 +23,14 @@ angular.module('app')
 			},
 		};
 	})
-	.factory('viewFactory',function($rootScope,$timeout){
+	.factory('viewFactory',function($rootScope,$timeout,constants){
 		var list=document.querySelector('.list');
 		var checkView=function(){
 			var view=$rootScope.cond.view;
 			if(view=='bar')
 				$rootScope.cond.cols=0;
 			else if(view=='tile') {
-				$rootScope.cond.cols=Math.floor(list.clientWidth/280);
+				$rootScope.cond.cols=Math.floor(list.clientWidth/(constants.tileWidth+20));
 			}
 		};
 		/*function delayed(cb,delay){
@@ -45,13 +50,13 @@ angular.module('app')
 			var delta,top;
 			if(cond.view=='bar'){
 				node.style.left=0;
-				top=index*35+10;
+				top=index*constants.barHeight+10;
 				delta=35;
 			} else if(cond.view=='tile'){
 				var row=Math.floor(index/cond.cols);
 				var col=index%cond.cols;
-				node.style.left=col*260+'px';
-				top=row*270+10;
+				node.style.left=col*(constants.tileWidth+10)+'px';
+				top=row*(constants.tileHeight+10)+10;
 				delta=200;
 			}
 			if(firstShow) {
@@ -267,7 +272,7 @@ angular.module('app')
 			importFromChrome: function(){
 				var deferred=$q.defer();
 				chrome.runtime.sendMessage({cmd:'ImportFromChrome'},function(){
-					apis.getCollections().then(function(){
+					apis.getData().then(function(){
 						deferred.resolve();
 					})
 				});
@@ -284,6 +289,26 @@ angular.module('app')
 				else location.href=url;
 			}
 		}
+		function hash(str, caseSensitive) {
+	    if(!caseSensitive)
+        str=str.toLowerCase();
+	    // 1315423911=b'1001110011001111100011010100111'
+	    var hash=1315423911,i,ch;
+	    for (i=0;i<str.length;i++) {
+	        ch=str.charCodeAt(i);
+	        hash^=((hash << 5) + ch + (hash >> 2));
+	    }
+	    //return hash & 0x7FFFFFFF;
+			return hash & 0xbfbfbf;
+		}
+		function setIcon(node,url){
+			var m=url.match(/^\w+:\/\/([^/]*)/);
+			m=m?m[1]:url;
+			node.innerHTML=m;
+			var color=hash(m).toString(16);
+			while(color.length<6) color='0'+color;
+			node.style.background='#'+color;
+		}
 		return {
 			restrict:'E',
 			replace:true,
@@ -299,15 +324,20 @@ angular.module('app')
 				var reset=function(){
 					scope.edittitle.text=scope.data.title;
 					scope.editurl.text=scope.data.url;
+					setIcon(element[0].querySelector('.icon'),scope.data.url);
 				},blurred=false;
-				scope.remove=function(){
+				element[0].querySelector('.remove').addEventListener('click',function(e){
+					e.stopPropagation();
 					apis.removeBookmarks([scope.data.id]);
-				};
-				scope.edit=function(){
-					scope.edittitle.mode='edit';
-					scope.editurl.mode='edit';
+				},false);
+				element[0].querySelector('.edit').addEventListener('click',function(e){
+					e.stopPropagation();
 					blurFactory.add(element[0],blur);
-				};
+					scope.$apply(function(){
+						scope.edittitle.mode='edit';
+						scope.editurl.mode='edit';
+					});
+				});
 				scope.close=function(){
 					if(!blurred) blurFactory.remove(element[0],blur);
 					reset();
@@ -330,15 +360,18 @@ angular.module('app')
 				scope.open=function(){
 					open(scope.data,attrs.target);
 				};
-				scope.select=function(){
+				element[0].querySelector('.select').addEventListener('click',function(e){
+					e.stopPropagation();
 					var selected=$rootScope.data.selected;
-					if(scope.data.selected=!scope.data.selected)
-						selected.push(scope.data);
-					else {
-						var i=selected.indexOf(scope.data);
-						selected.splice(i,1);
-					}
-				};
+					scope.$apply(function(){
+						if(scope.data.selected=!scope.data.selected)
+							selected.push(scope.data);
+						else {
+							var i=selected.indexOf(scope.data);
+							selected.splice(i,1);
+						}
+					});
+				},false);
 				var locate=function(){
 					viewFactory.locate(scope.$parent.$index,element[0]);
 				};

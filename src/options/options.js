@@ -59,16 +59,24 @@ angular.module('app',[])
 			$scope.newCol.mode='';
 			$scope.newCol.text='';
 		};
+		$scope.select=function(data){
+			$rootScope.data.selected=[];
+			$rootScope.cond.search='';
+			$rootScope.cond.col=data;
+		};
+		var popup=document.querySelector('.popup.more');
+		var hideMore=function(){
+			$scope.shownMore=false;
+		};
+		$scope.showMore=function(){
+			$scope.shownMore=true;
+			blurFactory.add(popup,hideMore);
+		};
 		$scope.importFromChrome=function(){
 			$scope.importing=true;
 			apis.importFromChrome().then(function(){
 				$scope.importing=false;
 			});
-		};
-		$scope.select=function(data){
-			$rootScope.data.selected=[];
-			$rootScope.cond.search='';
-			$rootScope.cond.col=data;
 		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory){

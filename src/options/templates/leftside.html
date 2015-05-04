@@ -27,4 +27,12 @@
 		<br class="separator" />
 		<collection ng-repeat="item in root.cols" data="item" change="true" select="select(data)"></collection>
 	</div>
+	<div class="footer">
+		<div class="wrap">
+			<div class="popup more" ng-show="shownMore">
+				<a ng-click="importFromChrome()" ng-disabled="importing">{{importing?'正在导入Chrome书签...':'导入Chrome书签'}}</a>
+			</div>
+		</div>
+		<i class="fa fa-ellipsis-h" ng-click="showMore()"></i>
+	</div>
 </div>

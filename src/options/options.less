@@ -165,19 +165,13 @@ body {
 	.right {
 		float: right;
 	}
-	&.left {
-		width: @side-width;
-		left: 0;
-		.footer {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-		}
-	}
 	.field {
 		width: 100%;
 		position: relative;
+	}
+	&.left {
+		width: @side-width;
+		left: 0;
 	}
 }
 .field {
@@ -260,9 +254,9 @@ body {
 	}
 }
 .toc {
-	@background: #567;
+	@footer-height: 30px;
 	color: white;
-	background: @background;
+	background: #567;
 	.avatar {
 		cursor: pointer;
 		padding-right: 10px;
@@ -277,10 +271,44 @@ body {
 		padding: 15px;
 		position: absolute;
 		top: 60px;
-		bottom: 0;
+		bottom: @footer-height;
 	}
 	.collections {
 		margin-top: 15px;
+	}
+	.footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: @footer-height;
+		padding: 0 20px;
+		.wrap {
+			position: relative;
+		}
+		.popup {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			background: white;
+			border: 1px solid gray;
+			&>a {
+				display: block;
+				color: gray;
+				cursor: pointer;
+				padding: 10px;
+				&:hover {
+					background: #eee;
+				}
+			}
+		}
+		.fa {
+			font-size: 20px;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+			cursor: pointer;
+		}
 	}
 }
 .bookmarks {
