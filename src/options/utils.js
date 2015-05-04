@@ -2,11 +2,6 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension|chrome):/);
 	})
-	.value('constants',{
-		tileHeight: 240,
-		tileWidth: 250,
-		barHeight: 35,
-	})
 	.factory('settings',function(){
 		return {
 			get: function(key,def){
@@ -23,14 +18,20 @@ angular.module('app')
 			},
 		};
 	})
-	.factory('viewFactory',function($rootScope,$timeout,constants){
+	.factory('viewFactory',function($rootScope,$timeout){
+		var marginTop=10;
+		var tileHeight=240;
+		var tileWidth=250;
+		var tileMarginRight=10;
+		var tileMarginBottom=10;
+		var barHeight=35;
 		var list=document.querySelector('.list');
 		var checkView=function(){
 			var view=$rootScope.cond.view;
 			if(view=='bar')
 				$rootScope.cond.cols=0;
 			else if(view=='tile') {
-				$rootScope.cond.cols=Math.floor(list.clientWidth/(constants.tileWidth+20));
+				$rootScope.cond.cols=Math.floor(list.clientWidth/(tileWidth+tileMarginRight));
 			}
 		};
 		/*function delayed(cb,delay){
@@ -50,13 +51,13 @@ angular.module('app')
 			var delta,top;
 			if(cond.view=='bar'){
 				node.style.left=0;
-				top=index*constants.barHeight+10;
+				top=index*barHeight+marginTop;
 				delta=35;
 			} else if(cond.view=='tile'){
 				var row=Math.floor(index/cond.cols);
 				var col=index%cond.cols;
-				node.style.left=col*(constants.tileWidth+10)+'px';
-				top=row*(constants.tileHeight+10)+10;
+				node.style.left=col*(tileWidth+tileMarginRight)+'px';
+				top=row*(tileHeight+tileMarginBottom)+marginTop;
 				delta=200;
 			}
 			if(firstShow) {
