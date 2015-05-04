@@ -1,11 +1,5 @@
 angular.module('app',[])
 	.run(function($rootScope,apis){
-		/*$rootScope.engines={items:[],def:0};
-		chrome.runtime.sendMessage({cmd:'GetSearchEngines'},function(data){
-			$rootScope.$apply(function(){
-				$rootScope.engines=data;
-			});
-		});*/
 		$rootScope.data={};
 		$rootScope.cond={};
 		$rootScope._collections=apis.getData().then(function(){
