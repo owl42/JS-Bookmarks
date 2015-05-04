@@ -106,7 +106,10 @@ angular.module('app',[])
 		$scope.bmFilter=function(item){
 			var search=$rootScope.cond.search;
 			if(search) {
-				return item.title.indexOf(search)>=0||item.url.indexOf(search)>=0;
+				search=search.toLowerCase();
+				return [item.title,item.url].some(function(data){
+					return data.toLowerCase().indexOf(search)>=0;
+				});
 			} else {
 				return $rootScope.cond.col.id===item.col;
 			}
