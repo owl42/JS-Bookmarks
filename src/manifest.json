@@ -11,7 +11,7 @@
 	},
 	"page_action": {
 		"default_icon": {
-			"19": "images/star.png"
+			"19": "images/star.svg"
 		},
 		"default_title": "Add to favorite",
 		"default_popup": "popup/popup.html"

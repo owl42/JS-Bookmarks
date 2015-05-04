@@ -304,7 +304,7 @@ angular.module('app')
 		function setIcon(node,url){
 			var m=url.match(/^\w+:\/\/([^/]*)/);
 			m=m?m[1]:url;
-			node.innerHTML=m;
+			node.innerHTML='<div>'+m+'</div>';
 			var color=hash(m).toString(16);
 			while(color.length<6) color='0'+color;
 			node.style.background='#'+color;

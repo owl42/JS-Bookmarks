@@ -313,8 +313,11 @@ function importFromChrome(data,src,callback){
 	});
 	return true;
 }
+function getStarImage(star){
+	return chrome.extension.getURL(star?'images/star.svg':'images/unstar.svg');
+}
 function updateStars(data){
-	var icon=chrome.extension.getURL(data.star?'images/star.png':'images/unstar.png');
+	var icon=getStarImage(data.star);
 	chrome.tabs.query({url:data.url},function(tabs){
 		tabs.forEach(function(tab){
 			chrome.pageAction.setIcon({
@@ -355,7 +358,7 @@ initDb(function(){
 				getBookmark(tab.url,null,function(bookmark){
 					chrome.pageAction.setIcon({
 						tabId: tabId,
-						path: chrome.extension.getURL(bookmark?'images/star.png':'images/unstar.png'),
+						path: getStarImage(bookmark),
 					},function(){
 						chrome.pageAction.show(tabId);
 					});

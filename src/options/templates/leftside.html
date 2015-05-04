@@ -1,12 +1,10 @@
 <div class="fill-wrap toc" ng-controller="SideController">
 	<div class="user">
-		<div class="info">
-			<div class="cell avatar" ng-click="showUser()">
-				<img ng-src="{{user.avatar||'/images/icon128.png'}}">
+		<div class="info" ng-click="showUser()">
+			<div class="cell avatar">
+				<img ng-src="{{user.avatar||'/images/star.svg'}}">
 			</div>
-			<div class="cell name">
-				{{user.name||'未登录用户'}}
-			</div>
+			<div class="cell name">{{user.name||'登录'}}</div>
 		</div>
 		<div class="card" ng-show="usershown">
 			<div class="wrap" ng-include="'templates/'+(user.id?'user':'login')+'.html'"></div>

@@ -252,6 +252,13 @@ body {
 			text-align: center;
 		}
 	}
+	.name {
+		cursor: pointer;
+		color: white;
+		.guest {
+			.darken;
+		}
+	}
 }
 .toc {
 	@footer-height: 30px;
@@ -272,6 +279,7 @@ body {
 		position: absolute;
 		top: 60px;
 		bottom: @footer-height;
+		overflow-y: auto;
 	}
 	.collections {
 		margin-top: 15px;
@@ -282,7 +290,7 @@ body {
 		left: 0;
 		width: 100%;
 		height: @footer-height;
-		padding: 0 20px;
+		padding: 5px 20px;
 		.wrap {
 			position: relative;
 		}
@@ -309,6 +317,18 @@ body {
 			text-align: center;
 			cursor: pointer;
 		}
+	}
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+		background: #456;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #9ab;
+		border-radius: 5px;
+	}
+	::-webkit-scrollbar-corner {
+		background: #456;
 	}
 }
 .bookmarks {

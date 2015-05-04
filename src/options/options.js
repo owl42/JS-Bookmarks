@@ -86,7 +86,7 @@ angular.module('app',[])
 			settings.set('view',view);
 			viewFactory.checkView();
 		};
-		$scope.setView(settings.get('view','bar'));
+		$scope.setView(settings.get('view','tile'));
 		$scope.reset=function(){
 			$rootScope.cond.search='';
 			document.querySelector('.search>input').focus();
