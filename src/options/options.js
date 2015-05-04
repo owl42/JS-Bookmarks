@@ -78,6 +78,10 @@ angular.module('app',[])
 				$scope.importing=false;
 			});
 		};
+		// XXX
+		$scope.loadWebsite=function(){
+			alert('我们没有官网！');
+		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory){
 		$rootScope.cond.search='';

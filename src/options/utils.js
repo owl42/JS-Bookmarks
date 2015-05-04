@@ -299,7 +299,7 @@ angular.module('app')
 	        hash^=((hash << 5) + ch + (hash >> 2));
 	    }
 	    //return hash & 0x7FFFFFFF;
-			return hash & 0xbfbfbf;
+			return hash & 0xbfbfff;
 		}
 		function setIcon(node,url){
 			var m=url.match(/^\w+:\/\/([^/]*)/);
@@ -422,40 +422,6 @@ angular.module('app')
 						},0);
 					}
 				});
-			},
-		};
-	})
-	.directive('searchbox',function($rootScope){
-		return {
-			restrict: 'E',
-			replace: true,
-			scope: {
-				data: '=',
-			},
-			templateUrl: 'templates/searchbox.html',
-			link: function(scope, element, attrs) {
-				scope.current=null;
-				scope.text='';
-				scope.getCurrent=function(){
-					if(!scope.current)
-						scope.current=scope.data.items[scope.data.def];
-					return scope.current;
-				};
-				scope.select=function(item){
-					scope.current=item;
-				};
-				scope.selecting=false;
-				window.addEventListener('click',function(e){
-					scope.$apply(function(){
-						scope.selecting=false;
-					});
-				},false);
-				scope.submit=function(){
-					if(scope.text) {
-						window.open(scope.current.url.replace('%q',scope.text));
-						scope.text='';
-					}
-				};
 			},
 		};
 	})
