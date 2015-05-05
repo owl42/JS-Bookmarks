@@ -46,7 +46,6 @@ function getTabData(){
 }
 function getCollections(){
 	chrome.runtime.sendMessage({cmd:'GetCollections'},function(cols){
-		console.log(cols);
 		collections=cols;
 		j_cols.innerHTML='';
 		var html=[];
@@ -59,7 +58,7 @@ function getCollections(){
 	});
 }
 function bindEvents(){
-	j_cols.addEventListener('click',function(e){
+	j_cols.parentNode.addEventListener('click',function(e){
 		j_cols.classList.toggle('select');
 		var i=Array.prototype.indexOf.call(n_cols,e.target);
 		if(i>=0&&cur_col!=i) {

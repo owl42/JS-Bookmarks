@@ -84,7 +84,7 @@ angular.module('app')
 				if(blur[i].ele===ele) return blur[i];
 		}
 		angular.element(document).on('mousedown', function(e){
-			if(blur.length) {
+			if(blur.length) $rootScope.$apply(function(){
 				var _blur=blur;
 				blur=[];
 				angular.forEach(_blur, function(item){
@@ -93,8 +93,7 @@ angular.module('app')
 					else
 						item.funcs.forEach(function(f){f();});
 				});
-				$rootScope.$apply();
-			}
+			});
 		});
 		return {
 			add:function(ele,func){
@@ -118,6 +117,66 @@ angular.module('app')
 		};
 	})
 	.factory('apis',function($q,$rootScope){
+		var port;
+		function initPort(){
+			port=chrome.runtime.connect({name:'options'});
+			port.onMessage.addListener(function(obj){
+				$rootScope.$apply(function(){
+					var root=$rootScope.data;
+					var data=obj.data;
+					if(obj.type=='collection') {
+						if(obj.cmd=='update') {
+							var col=root.d_cols[data.id];
+							if(col) {
+								// update
+								angular.extend(col,data);
+							} else {
+								// add
+								root.cols.push(data);
+								root.d_cols[data.id]=data;
+							}
+						} else if(obj.cmd=='remove') {
+							var col=root.d_cols[data];
+							if(col) {
+								var i=root.cols.indexOf(col);
+								if(i>=0) root.cols.splice(i,1);
+								if($rootScope.cond.col===col)
+									$rootScope.cond.col=root.cols[i]||root.colUnd;
+								delete root.d_cols[data];
+							}
+						}
+					} else if(obj.type=='bookmark') {
+						if(!Array.isArray(data)) data=[data];
+						data.forEach(function(data){
+							if(obj.cmd=='update') {
+								var bm=root.d_bookmarks[data.id];
+								if(bm) {
+									// update
+									if(data.col&&bm.col!=data.col) {
+										root.d_cols[bm.col].count--;
+										root.d_cols[data.col].count++;
+									}
+									angular.extend(bm,data);
+								} else {
+									// add
+									root.bookmarks.push(data);
+									root.d_bookmarks[data.id]=data;
+									root.d_cols[data.col].count++;
+								}
+							} else if(obj.cmd=='remove') {
+								var bm=root.d_bookmarks[data];
+								if(bm) {
+									var i=root.bookmarks.indexOf(bm);
+									if(i>=0) root.bookmarks.splice(i,1);
+									delete root.d_bookmarks[data];
+									root.d_cols[bm.col].count--;
+								}
+							}
+						});
+					}
+				});
+			});
+		}
 		var apis={
 			UNDEF: -1,
 			stop: function(e){
@@ -151,6 +210,7 @@ angular.module('app')
 					d.bm.forEach(function(bm){
 						data.d_bookmarks[bm.id]=bm;
 					});
+					if(!port) initPort();
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -160,13 +220,7 @@ angular.module('app')
 			saveCollection: function(col){
 				var deferred=$q.defer();
 				var data=$rootScope.data;
-				chrome.runtime.sendMessage({cmd:'SaveCollection',data:col},function(ret){
-					var col=data.d_cols[ret.id];
-					if(!col) {
-						data.cols.push(ret);
-						data.d_cols[ret.id]=ret;
-					} else
-						angular.extend(col,ret);
+				chrome.runtime.sendMessage({cmd:'SaveCollection',data:col},function(){
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -177,12 +231,6 @@ angular.module('app')
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:id},function(){
-					var col=data.d_cols[id];
-					var i=data.cols.indexOf(col);
-					data.cols.splice(i,1);
-					if(id===$rootScope.cond.col)
-						$rootScope.cond.col=(data.cols[i]||data.colUnd).id;
-					delete data.d_cols[id];
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -193,14 +241,6 @@ angular.module('app')
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(id){
-					if(item.id) {
-						angular.extend(data.d_bookmarks[item.id],item);
-					} else {
-						item.id=id;
-						data.d_cols[item.col].count++;
-						data.d_bookmarks[item.id]=item;
-						data.bookmarks.push(item);
-					}
 					$rootScope.$apply(function(){
 						deferred.resolve(item);
 					});
@@ -212,10 +252,6 @@ angular.module('app')
 				var data=$rootScope.data;
 				var ids=items.map(function(item){return item.id;});
 				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{ids:ids,col:col}},function(){
-					items.forEach(function(item){
-						data.d_cols[item.col].count--;
-						data.d_cols[item.col=col].count++;
-					});
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
@@ -226,13 +262,6 @@ angular.module('app')
 				var deferred=$q.defer();
 				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'RemoveBookmarks',data:ids},function(id){
-					ids.forEach(function(id){
-						var item=data.d_bookmarks[id];
-						var i=data.bookmarks.indexOf(item);
-						data.bookmarks.splice(i,1);
-						data.d_cols[item.col].count--;
-						delete data.d_bookmarks[id];
-					});
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});

@@ -95,8 +95,13 @@ function removeCollection(id,src,callback){
 				url:urls,
 				star:false,
 			});
+			callback();
+			updateOptions({
+				type:'collection',
+				cmd:'remove',
+				data:id,
+			});
 		};
-		callback();
 	}
 	function removeBookmarks(){
 		var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
@@ -144,7 +149,12 @@ function saveCollection(data,src,callback){
 	o.put(col).onsuccess=function(e){
 		col.id=e.target.result;
 		if(!data.id) col.count=0;
-		callback(collectionData(col));
+		callback();
+		updateOptions({
+			type:'collection',
+			cmd:'update',
+			data:col,
+		});
 	};
 	return true;
 }
@@ -163,7 +173,13 @@ function saveBookmark(data,src,callback){
 			url:data.url,
 			star:true,
 		});
-		callback(e.target.result);
+		callback();
+		bm.id=e.target.result;
+		updateOptions({
+			type:'bookmark',
+			cmd:'update',
+			data:bm,
+		});
 	};
 	return true;
 }
@@ -174,11 +190,20 @@ function moveToCollection(data,src,callback){
 			o.get(id).onsuccess=function(e){
 				var r=e.target.result;
 				r.col=data.col||UNDEF;
+				items.push({id:id,col:r.col});
 				o.put(r).onsuccess=move;
 			};
-		} else callback();
+		} else {
+			callback();
+			updateOptions({
+				type:'bookmark',
+				cmd:'update',
+				data:items,
+			})
+		}
 	}
 	var ids=data.ids;
+	var items=[];
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 	move();
 	return true;
@@ -196,8 +221,14 @@ function removeBookmarks(ids,src,callback){
 				star:false,
 			});
 			callback();
+			updateOptions({
+				type:'bookmark',
+				cmd:'remove',
+				data:removed,
+			});
 		}
 	}
+	var removed=ids.slice();
 	var urls=[];
 	var o=db.transaction('bookmarks','readwrite').objectStore('bookmarks');
 	removeOne();
@@ -360,3 +391,31 @@ initDb(function(){
 		}
 	});
 });
+
+var ports=[];
+chrome.runtime.onConnect.addListener(function(port){
+	ports.push(port);
+	port.onDisconnect.addListener(function(){
+		var i=ports.indexOf(port);
+		if(i>=0) ports.splice(i,1);
+	})
+});
+function updateOptions(data) {
+	/**
+	 * data = {
+	 *   type: bookmark/collection
+	 *   cmd: update/remove
+	 *   data: object
+	 * }
+	 */
+	for(var i=0;i<ports.length;i++) {
+		var port=ports[i];
+		try {
+			port.postMessage(data);
+		} catch(e) {
+			port=ports.pop();
+			if(i<ports.length) ports[i]=port;
+			i--;
+		}
+	}
+}
