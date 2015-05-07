@@ -149,7 +149,7 @@ function saveCollection(data,src,callback){
 	o.put(col).onsuccess=function(e){
 		col.id=e.target.result;
 		if(!data.id) col.count=0;
-		callback();
+		callback(col.id);
 		updateOptions({
 			type:'collection',
 			cmd:'update',
@@ -296,10 +296,10 @@ function importFromChrome(data,src,callback){
 				cb();
 			});
 		}
-		col=col||{id:0};
+		col=col||{};
 		if(col.getCol) col.getCol(function(data){
 			delete col.getCol;
-			col.id=data.id;
+			col.id=data;
 			doImport();
 		}); else doImport();
 	}
