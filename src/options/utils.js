@@ -445,11 +445,13 @@ angular.module('app')
 				button: '@',
 				change: '&',
 				cancel: '&',
+				wrap: '@',
 			},
 			templateUrl: 'templates/editable.html',
 			link: function(scope, element, attrs) {
 				scope.stop=apis.stop;
-				scope.checkSubmit=function() {
+				scope.cond=$rootScope.cond;
+				scope.submit=function() {
 					if(scope.data.text) {
 						scope.change();
 						scope.data.mode='';
@@ -461,18 +463,25 @@ angular.module('app')
 					scope.data.mode='';
 				};
 				var blur=function() {
-					if(attrs.blur=='change') scope.change();
+					if(attrs.blur=='change') scope.submit();
 					cancel(true);
 				};
 				scope.$watch('data.mode',function(){
 					if(scope.data.mode=='edit') {
 						if(attrs.blur) blurFactory.add(element[0],blur);
-						var input=element[0].querySelector('.edit');
-						angular.element(input).on('keydown',function(e){
-							if(e.keyCode==27) scope.$apply(cancel);
-						});
-						if(scope.data.focus) setTimeout(function(){
-							input.select();input.focus();
+						setTimeout(function(){
+							var input=element[0].querySelector('.edit');
+							if(scope.data.focus) {
+								input.select();input.focus();
+							}
+							angular.element(input).on('keydown',function(e){
+								scope.$apply(function(){
+									if(e.keyCode==27) cancel();
+									else if(e.keyCode==13) scope.submit();
+									else return;
+									e.preventDefault();
+								});
+							});
 						},0);
 					}
 				});

@@ -1,8 +1,8 @@
-<div class="bookmark" draggable="true" ng-click="open()"
+<div class="bookmark" draggable="{{editurl.mode=='edit'?'':'true'}}" ng-click="open()"
 ng-class="{selected:data.selected,editing:editurl.mode=='edit',dragging:data.dragging}">
 	<div class="icon"></div>
 	<div class="favicon" style="background-image:url({{'chrome://favicon/'+data.url}})"></div>
-	<editable class="title" data="edittitle" change="check()" cancel="close()"></editable>
+	<editable class="title" data="edittitle" change="check()" cancel="close()" wrap="{{cond.view=='tile'?'true':''}}"></editable>
 	<editable class="url" data="editurl" change="check()" cancel="close()" title="{{data.url}}"></editable>
 	<div class="select button" title="选择"><i class="fa fa-check"></i></div>
 	<div class="edit button" title="编辑"><i class="fa fa-pencil"></i></div>
