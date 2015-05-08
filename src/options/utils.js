@@ -2,21 +2,19 @@ angular.module('app')
 	.config(function($compileProvider){
 		$compileProvider.imgSrcSanitizationWhitelist(/^(https?|ftp|chrome-extension|chrome):/);
 	})
-	.factory('settings',function(){
-		return {
-			get: function(key,def){
-				var val=localStorage.getItem(key)||'';
-				try{
-					val=JSON.parse(val);
-				}catch(e){
-					val=def;
-				}
-				return val;
-			},
-			set: function(key,val){
-				localStorage.setItem(key,JSON.stringify(val));
-			},
-		};
+	.constant('settings', {
+		get: function(key,def){
+			var val=localStorage.getItem(key)||'';
+			try{
+				val=JSON.parse(val);
+			}catch(e){
+				val=def;
+			}
+			return val;
+		},
+		set: function(key,val){
+			localStorage.setItem(key,JSON.stringify(val));
+		},
 	})
 	.factory('viewFactory',function($rootScope,$timeout){
 		var marginTop=10;
@@ -116,60 +114,74 @@ angular.module('app')
 			},
 		};
 	})
-	.factory('apis',function($q,$rootScope){
+	.factory('rootData', function() {
+		function clear() {
+			data.colUnd={};
+			data.cols=[];
+			data.d_cols={};
+			data.bookmarks=[];
+			data.d_bookmarks={};
+			data.selected=[];
+		}
+		var data={
+			clear: clear,
+		};
+		clear();
+		return data;
+	})
+	.factory('apis',function($q,$rootScope,rootData){
 		var port;
 		function initPort(){
 			port=chrome.runtime.connect({name:'options'});
 			port.onMessage.addListener(function(obj){
 				$rootScope.$apply(function(){
-					var root=$rootScope.data;
 					var data=obj.data;
 					if(obj.type=='collection') {
 						if(obj.cmd=='update') {
-							var col=root.d_cols[data.id];
+							var col=rootData.d_cols[data.id];
 							if(col) {
 								// update
 								angular.extend(col,data);
 							} else {
 								// add
-								root.cols.push(data);
-								root.d_cols[data.id]=data;
+								rootData.cols.push(data);
+								rootData.d_cols[data.id]=data;
 							}
 						} else if(obj.cmd=='remove') {
-							var col=root.d_cols[data];
+							var col=rootData.d_cols[data];
 							if(col) {
-								var i=root.cols.indexOf(col);
-								if(i>=0) root.cols.splice(i,1);
+								var i=rootData.cols.indexOf(col);
+								if(i>=0) rootData.cols.splice(i,1);
 								if($rootScope.cond.col===col)
-									$rootScope.cond.col=root.cols[i]||root.colUnd;
-								delete root.d_cols[data];
+									$rootScope.cond.col=rootData.cols[i]||rootData.colUnd;
+								delete rootData.d_cols[data];
 							}
 						}
 					} else if(obj.type=='bookmark') {
 						if(!Array.isArray(data)) data=[data];
 						data.forEach(function(data){
 							if(obj.cmd=='update') {
-								var bm=root.d_bookmarks[data.id];
+								var bm=rootData.d_bookmarks[data.id];
 								if(bm) {
 									// update
 									if(data.col&&bm.col!=data.col) {
-										root.d_cols[bm.col].count--;
-										root.d_cols[data.col].count++;
+										rootData.d_cols[bm.col].count--;
+										rootData.d_cols[data.col].count++;
 									}
 									angular.extend(bm,data);
 								} else {
 									// add
-									root.bookmarks.push(data);
-									root.d_bookmarks[data.id]=data;
-									root.d_cols[data.col].count++;
+									rootData.bookmarks.push(data);
+									rootData.d_bookmarks[data.id]=data;
+									rootData.d_cols[data.col].count++;
 								}
 							} else if(obj.cmd=='remove') {
-								var bm=root.d_bookmarks[data];
+								var bm=rootData.d_bookmarks[data];
 								if(bm) {
-									var i=root.bookmarks.indexOf(bm);
-									if(i>=0) root.bookmarks.splice(i,1);
-									delete root.d_bookmarks[data];
-									root.d_cols[bm.col].count--;
+									var i=rootData.bookmarks.indexOf(bm);
+									if(i>=0) rootData.bookmarks.splice(i,1);
+									delete rootData.d_bookmarks[data];
+									rootData.d_cols[bm.col].count--;
 								}
 							}
 						});
@@ -191,24 +203,21 @@ angular.module('app')
 			},
 			getData: function(){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
-				data.colUnd={};
-				data.cols=[];
-				data.d_cols={};
-				data.bookmarks=[];
-				data.d_bookmarks={};
-				data.selected=[];
+				rootData.clear();
 				chrome.runtime.sendMessage({cmd:'GetData'},function(d){
 					d.cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
-							data.colUnd=col;
-						else
-							data.cols.push(col);
-						data.d_cols[col.id]=col;
+							rootData.colUnd=col;
+						else {
+							rootData.cols.push(col);
+							col.change=true;	// allow modification
+							col.draggable=true;	// allow ordering
+						}
+						rootData.d_cols[col.id]=col;
 					});
-					data.bookmarks=d.bm;
+					rootData.bookmarks=d.bm;
 					d.bm.forEach(function(bm){
-						data.d_bookmarks[bm.id]=bm;
+						rootData.d_bookmarks[bm.id]=bm;
 					});
 					if(!port) initPort();
 					$rootScope.$apply(function(){
@@ -219,7 +228,6 @@ angular.module('app')
 			},
 			saveCollection: function(col){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'SaveCollection',data:col},function(){
 					$rootScope.$apply(function(){
 						deferred.resolve();
@@ -227,9 +235,37 @@ angular.module('app')
 				});
 				return deferred.promise;
 			},
+			moveCollection: function(idxFrom, idxTo){
+				var deferred=$q.defer();
+				chrome.runtime.sendMessage({
+					cmd:'MoveCollection',
+					data:{
+						id:rootData.cols[idxFrom].id,
+						offset:idxTo-idxFrom,
+					},
+				},function(){
+					$rootScope.$apply(function(){
+						var i=Math.min(idxFrom,idxTo);
+						var j=Math.max(idxFrom,idxTo);
+						var seq=[
+							rootData.cols.slice(0,i),
+							rootData.cols.slice(i,j+1),
+							rootData.cols.slice(j+1),
+						];
+						if(i==idxTo)
+							seq[1].unshift(seq[1].pop());
+						else
+							seq[1].push(seq[1].shift());
+						var list=[];
+						seq.forEach(function(seq){list=list.concat(seq);});
+						rootData.cols=list;
+						deferred.resolve();
+					});
+				});
+				return deferred.promise;
+			},
 			removeCollection: function(id){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'RemoveCollection',data:id},function(){
 					$rootScope.$apply(function(){
 						deferred.resolve();
@@ -239,7 +275,6 @@ angular.module('app')
 			},
 			saveBookmark: function(item){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'SaveBookmark',data:item},function(id){
 					$rootScope.$apply(function(){
 						deferred.resolve(item);
@@ -249,7 +284,6 @@ angular.module('app')
 			},
 			moveToCollection: function(items, col){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
 				var ids=items.map(function(item){return item.id;});
 				chrome.runtime.sendMessage({cmd:'MoveToCollection',data:{ids:ids,col:col}},function(){
 					$rootScope.$apply(function(){
@@ -260,7 +294,6 @@ angular.module('app')
 			},
 			removeBookmarks: function(ids){
 				var deferred=$q.defer();
-				var data=$rootScope.data;
 				chrome.runtime.sendMessage({cmd:'RemoveBookmarks',data:ids},function(id){
 					$rootScope.$apply(function(){
 						deferred.resolve();
@@ -310,7 +343,7 @@ angular.module('app')
 		};
 		return apis;
 	})
-	.directive('bookmark',function($rootScope,apis,blurFactory,viewFactory){
+	.directive('bookmark',function($rootScope,apis,blurFactory,viewFactory,rootData){
 		function open(data,target){
 			var url=data.url&&apis.normalizeURL(data.url);
 			if(url) {
@@ -331,11 +364,11 @@ angular.module('app')
 			return hash & 0xbfbfbf;
 		}
 		function getItems(item){
-			var selected=$rootScope.data.selected;
+			var selected=rootData.selected;
 			return selected.length?selected:[item];
 		}
 		function select(item){
-			var selected=$rootScope.data.selected;
+			var selected=rootData.selected;
 			if(item.selected=!item.selected)
 				selected.push(item);
 			else {
@@ -407,9 +440,10 @@ angular.module('app')
 					scope.$apply(function(){select(scope.data);});
 				},false);
 				element.on('dragstart',function(e){
-					if(scope.cond.view=='tile')
-						e.dataTransfer.setDragImage(e.target.querySelector('.icon'),-10,-10);
 					scope.$apply(function(){
+						if(scope.cond.view=='tile')
+							e.dataTransfer.setDragImage(e.target.querySelector('.icon'),-10,-10);
+						rootData.dragging='bookmarks';
 						getItems(scope.data).forEach(function(item){item.dragging=true;});
 					});
 				}).on('dragend',function(e){
@@ -488,20 +522,18 @@ angular.module('app')
 			},
 		};
 	})
-	.directive('collection',function($rootScope,apis){
+	.directive('collection',function($rootScope,apis,rootData){
 		return {
 			templateUrl: 'templates/collection.html',
 			replace: true,
 			restrict: 'E',
 			scope: {
 				data: '=',
-				select: '&',
 			},
 			link: function(scope, element, attrs) {
 				scope.stop=apis.stop;
-				scope.edit=attrs.change;
 				scope.cond=$rootScope.cond;
-				if(attrs.change) {
+				if(scope.data.change) {
 					scope.editdata={focus:true};
 					scope.editCol=function(){
 						scope.editdata.mode='edit';
@@ -531,9 +563,12 @@ angular.module('app')
 				}
 				var dragcount=0;
 				element.on('click',function(){
-					scope.$apply(function(){scope.select({data:scope.data});});
+					scope.$apply(function(){
+						$rootScope.selectCollection(scope.data);
+					});
 				}).on('dragover',function(e){
-					e.preventDefault();
+					if(['bookmarks'].indexOf(rootData.dragging)>=0)
+						e.preventDefault();
 				}).on('dragenter',function(e){
 					dragcount++;
 					if(dragcount==1) scope.$apply(function(){
@@ -546,9 +581,86 @@ angular.module('app')
 					});
 				}).on('drop',function(e){
 					dragcount=0;
-					scope.data.dragover=false;
-					var items=$rootScope.data.bookmarks.filter(function(item){return item.dragging;});
-					apis.moveToCollection(items,scope.data.id);
+					if(rootData.dragging=='bookmarks') {
+						scope.data.dragover=false;
+						var items=rootData.bookmarks.filter(function(item){return item.dragging;});
+						apis.moveToCollection(items,scope.data.id);
+					}
+					rootData.dragging=null;
+				});
+			},
+		};
+	})
+	.directive('listview', function(){
+		return {
+			template: '<div class="listview" ng-transclude></div>',
+			replace: true,
+			transclude: true,
+			restrict: 'E',
+			scope: {
+				getpos: '&',
+				getindex: '&',
+				moved: '&',
+			},
+			controller: function($scope,$element){
+				var dragging={},children;
+				function mousemove(e){
+					var node=dragging.node;
+					node.style.left=e.clientX-dragging.offsetX+'px';
+					node.style.top=e.clientY-dragging.offsetY+'px';
+					var i=$scope.getindex({
+						x:e.clientX-dragging.offsetX+e.offsetX,
+						y:e.clientY-dragging.offsetY+e.offsetY,
+					});
+					if(i>=0&&i!=dragging.index) {
+						var cur=dragging.index;
+						var step=i>cur?1:-1;
+						while(i!=cur){
+							cur+=step;
+							var j=cur;
+							if(step*(j-dragging.idxFrom)<=0) j-=step;
+							angular.element(children[j]).css($scope.getpos({index:cur-step}));
+						}
+						dragging.index=i;
+					}
+				}
+				function mouseup(e){
+					dragging.node.classList.remove('dragging');
+					angular.element(dragging.node).css($scope.getpos({index:dragging.index}));
+					if(dragging.index!=dragging.idxFrom)
+						$scope.moved({idxFrom:dragging.idxFrom,idxTo:dragging.index});
+					children=null;
+					dragging.node=null;
+					$element.off('mousemove').off('mouseup');
+				}
+				this.getpos=function(index){
+					return $scope.getpos({index:index});
+				};
+				this.drag=function(e, index){
+					if(dragging.node) return;
+					children=$element.children('.nested');
+					var node=dragging.node=e.target;
+					node.classList.add('dragging');
+					dragging.offsetX=e.clientX-node.offsetLeft;
+					dragging.offsetY=e.clientY-node.offsetTop;
+					dragging.idxFrom=dragging.index=index;
+					$element
+						.on('mousemove',mousemove)
+						.on('mouseup',mouseup);
+				};
+			},
+		};
+	})
+	.directive('nested', function(){
+		return {
+			require: '^listview',
+			restrict: 'A',
+			link: function(scope, element, attrs, listview) {
+				element.addClass('nested')
+				.css(listview.getpos(scope.$index))
+				.on('dragstart', function(e){
+					e.preventDefault();
+					listview.drag(e,scope.$index);
 				});
 			},
 		};

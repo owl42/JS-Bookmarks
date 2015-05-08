@@ -11,7 +11,7 @@
 		</div>
 	</div>
 	<div class="content">
-		<collection data="root.colUnd" select="select(data)"></collection>
+		<collection data="root.colUnd"></collection>
 		<div class="collection" ng-click="startAddCol($event)" ng-class="{em:newCol.mode=='edit'}">
 			<div class="cell">
 				<i class="fa fa-plus"></i>
@@ -22,8 +22,9 @@
 				</div>
 			</div>
 		</div>
-		<br class="separator" />
-		<collection ng-repeat="item in root.cols" data="item" change="true" select="select(data)"></collection>
+		<listview getpos="getPos(index)" getindex="getIndex(x,y)" moved="moved(idxFrom,idxTo)">
+			<collection nested ng-repeat="item in root.cols track by item.id" data="item"></collection>
+		</listview>
 	</div>
 	<div class="footer">
 		<div class="wrap">

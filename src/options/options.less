@@ -279,7 +279,22 @@ body {
 		position: absolute;
 		top: 60px;
 		bottom: @footer-height;
+	}
+	.listview {
+		position: absolute;
+		top: 90px;
+		left: 15px;
+		right: 15px;
+		bottom: 15px;
 		overflow-y: auto;
+		&>.nested {
+			position: absolute;
+			transition: top .5s,left .5s;
+			&.dragging {
+				z-index: 10;
+				transition: none;
+			}
+		}
 	}
 	.collections {
 		margin-top: 15px;

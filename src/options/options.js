@@ -1,14 +1,18 @@
 angular.module('app',[])
-	.run(function($rootScope,apis){
-		$rootScope.data={};
+	.run(function($rootScope,apis,rootData){
 		$rootScope.cond={};
 		$rootScope._collections=apis.getData().then(function(){
-			$rootScope.cond.col=$rootScope.data.colUnd;
+			$rootScope.cond.col=rootData.colUnd;
 		});
+		$rootScope.selectCollection=function(data){
+			rootData.selected=[];
+			$rootScope.cond.search='';
+			$rootScope.cond.col=data;
+		};
 		apis.getUserInfo();
 	})
-	.controller('SideController',function($scope,$rootScope,apis,blurFactory){
-		$scope.root=$rootScope.data;
+	.controller('SideController',function($scope,$rootScope,apis,blurFactory,rootData){
+		$scope.root=rootData;
 		$scope.usershown=false;
 		var user=document.querySelector('.toc .user');
 		var hideUser=function(){
@@ -53,11 +57,6 @@ angular.module('app',[])
 			$scope.newCol.mode='';
 			$scope.newCol.text='';
 		};
-		$scope.select=function(data){
-			$rootScope.data.selected=[];
-			$rootScope.cond.search='';
-			$rootScope.cond.col=data;
-		};
 		var popup=document.querySelector('.popup.more');
 		var hideMore=function(){
 			$scope.shownMore=false;
@@ -76,8 +75,24 @@ angular.module('app',[])
 		$scope.loadWebsite=function(){
 			alert('我们没有官网！');
 		};
+		$scope.getPos=function(index){
+			var css={
+				left: 0,
+				top: index*30+'px',
+			};
+			return css;
+		};
+		$scope.getIndex=function(x,y){
+			var i=Math.floor(y/30);
+			var lower=i*30;
+			var upper=lower+30;
+			var threshold=3;
+			return y>=lower+threshold&&y<=upper-threshold?i:-1;
+		};
+		$scope.moved=apis.moveCollection;
 	})
-	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory){
+	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory,rootData){
+		$scope.root=rootData;
 		$rootScope.cond.search='';
 		$scope.setView=function(view){
 			$rootScope.cond.view=view;
@@ -90,14 +105,14 @@ angular.module('app',[])
 			document.querySelector('.search>input').focus();
 		};
 		$scope.deselect=function(){
-			angular.forEach($rootScope.data.selected,function(b){
+			angular.forEach(rootData.selected,function(b){
 				b.selected=false;
 			});
-			$rootScope.data.selected=[];
+			rootData.selected=[];
 		};
 		$scope.multiremove=function(){
-			if(confirm('您确定要删除所选的'+$rootScope.data.selected.length+'个书签吗？')) {
-				var ids=$rootScope.data.selected.map(function(item){
+			if(confirm('您确定要删除所选的'+rootData.selected.length+'个书签吗？')) {
+				var ids=rootData.selected.map(function(item){
 					return item.id;
 				});
 				apis.removeBookmarks(ids);

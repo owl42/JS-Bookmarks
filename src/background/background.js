@@ -42,17 +42,29 @@ function getCollections(data,src,callback){
 			title:'默认频道',
 		},
 	];
-	var o=db.transaction('collections').objectStore('collections');
+	var o=db.transaction('collections','readwrite').objectStore('collections');
+	var pos=0;
+	var updates={};
 	o.index('pos').openCursor().onsuccess=function(e){
 		var r=e.target.result;
 		if(r) {
 			var v=r.value;
-			if(v.id>0) data.push({
-				id:v.id,
-				title:v.title,
-			});
+			if(!updates[v.id]) {
+				data.push({
+					id:v.id,
+					title:v.title,
+				});
+				if(v.pos!=++pos) {
+					updates[v.id]=v.pos=pos;
+					r.update(v).onsuccess=function(){
+						r.continue();
+					};
+					return;
+				}
+			}
 			r.continue();
-		} else callback(data);
+		} else
+			callback(data);
 	};
 	return true;
 }
@@ -80,6 +92,35 @@ function getData(data,src,callback){
 		});
 		getBookmarkData();
 	});
+	return true;
+}
+function moveCollection(data,src,callback){
+	var o=db.transaction('collections','readwrite').objectStore('collections');
+	o.get(data.id).onsuccess=function(e){
+		var r=e.target.result,k,s,x=r.pos;
+		if(data.offset<0) {
+			k=IDBKeyRange.upperBound(x,true);
+			s='prev';
+			data.offset=-data.offset;
+		} else {
+			k=IDBKeyRange.lowerBound(x,true);
+			s='next';
+		}
+		o.index('pos').openCursor(k,s).onsuccess=function(e){
+			var p=e.target.result,v;
+			if(p) {
+				data.offset--;
+				v=p.value;v.pos=x;x=p.key;
+				p.update(v);
+				if(data.offset)
+					return p.continue();
+				else {
+					r.pos=x;o.put(r);
+				}
+			}
+			callback();
+		};
+	};
 	return true;
 }
 function removeCollection(id,src,callback){
@@ -366,6 +407,7 @@ initDb(function(){
 			GetData:getData,
 			GetBookmarks:getBookmarks,
 			SaveCollection:saveCollection,
+			MoveCollection:moveCollection,
 			MoveToCollection:moveToCollection,
 			RemoveBookmarks:removeBookmarks,
 			RemoveCollection:removeCollection,
