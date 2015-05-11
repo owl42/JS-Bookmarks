@@ -18,7 +18,7 @@
 			<div class="card" ng-show="usershown" ng-include="'templates/'+(user.id?'user':'login')+'.html'"></div>
 		</div>
 		<div class="path">&nbsp;</div>
-		<div class="right buttons" ng-show="root.selected.length">
+		<div class="right buttons" ng-show="root.selected">
 			<button class="remove" ng-click="multiremove()">删除</button>
 		</div>
 		<div class="current">{{cond.search?'搜索“'+cond.search+'”的结果':cond.col.title}}</div>

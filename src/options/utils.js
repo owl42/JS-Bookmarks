@@ -130,7 +130,7 @@ angular.module('app')
 			data.d_cols={};
 			data.bookmarks=[];
 			data.d_bookmarks={};
-			data.selected=[];
+			data.selected=0;
 		}
 		var data={
 			clear: clear,
@@ -197,8 +197,6 @@ angular.module('app')
 					}
 				});
 			});
-		}
-		function getData(cb) {
 		}
 		var apis={
 			UNDEF: -1,
@@ -382,17 +380,13 @@ angular.module('app')
 			return hash & 0xbfbfbf;
 		}
 		function getItems(item){
-			var selected=rootData.selected;
-			return selected.length?selected:[item];
+			return rootData.selected?rootData.bookmarks.filter(function(item){
+				return item.selected;
+			}):[item];
 		}
 		function select(item){
-			var selected=rootData.selected;
-			if(item.selected=!item.selected)
-				selected.push(item);
-			else {
-				var i=selected.indexOf(item);
-				selected.splice(i,1);
-			}
+			if(item.selected=!item.selected) rootData.selected++;
+			else rootData.selected--;
 		}
 		function setIcon(node,url){
 			var m=url.match(/^\w+:\/\/([^/]*)/);
@@ -470,6 +464,7 @@ angular.module('app')
 							item.dragging=false;
 							item.selected=false;
 						});
+						rootData.selected=0;
 					});
 				});
 				var locating=false;

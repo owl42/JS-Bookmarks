@@ -5,7 +5,6 @@ angular.module('app',[])
 			$rootScope.cond.col=rootData.colUnd;
 		});
 		$rootScope.selectCollection=function(data){
-			rootData.selected=[];
 			$rootScope.cond.search='';
 			$rootScope.cond.col=data;
 		};
@@ -106,14 +105,16 @@ angular.module('app',[])
 			document.querySelector('.search>input').focus();
 		};
 		$scope.deselect=function(){
-			angular.forEach(rootData.selected,function(b){
+			angular.forEach(rootData.bookmarks,function(b){
 				b.selected=false;
 			});
-			rootData.selected=[];
+			rootData.selected=0;
 		};
 		$scope.multiremove=function(){
-			if(confirm('您确定要删除所选的'+rootData.selected.length+'个书签吗？')) {
-				var ids=rootData.selected.map(function(item){
+			if(confirm('您确定要删除所选的'+rootData.selected+'个书签吗？')) {
+				var ids=rootData.bookmarks.filter(function(item){
+					return item.selected;
+				}).map(function(item){
 					return item.id;
 				});
 				apis.removeBookmarks(ids);
