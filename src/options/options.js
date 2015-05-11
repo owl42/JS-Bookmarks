@@ -11,28 +11,10 @@ angular.module('app',[])
 		};
 		apis.getUserInfo();
 	})
-	.controller('SideController',function($scope,$rootScope,apis,blurFactory,rootData){
+	.controller('SideController',function($scope,$rootScope,apis,blurFactory,rootData,constants){
 		$scope.root=rootData;
-		$scope.usershown=false;
-		var user=document.querySelector('.toc .user');
-		var hideUser=function(){
-			$scope.usershown=false;
-			$scope.showUser=showUser;
-		};
-		var showUser=function(){
-			$scope.showUser=null;
-			$scope.usershown=true;
-			blurFactory.add(user,hideUser);
-		};
-		$scope.showUser=showUser;
 		$scope.isActive=function(item){
 			return $rootScope.cond.col===item;
-		};
-		$scope.login=function(){
-			apis.logIn();
-		};
-		$scope.logout=function(){
-			apis.logOut();
 		};
 		$scope.newCol={
 			text:'',
@@ -75,23 +57,42 @@ angular.module('app',[])
 		$scope.loadWebsite=function(){
 			alert('我们没有官网！');
 		};
+		var collectionHeight=constants.collectionHeight;
 		$scope.getPos=function(index){
 			var css={
 				left: 0,
-				top: index*30+'px',
+				top: index*collectionHeight+'px',
 			};
 			return css;
 		};
 		$scope.getIndex=function(x,y){
-			var i=Math.floor(y/30);
-			var lower=i*30;
-			var upper=lower+30;
+			var i=Math.floor(y/collectionHeight);
+			var lower=i*collectionHeight;
+			var upper=lower+collectionHeight;
 			var threshold=3;
 			return y>=lower+threshold&&y<=upper-threshold?i:-1;
 		};
 		$scope.moved=apis.moveCollection;
 	})
-	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory,rootData){
+	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory,rootData,blurFactory){
+		$scope.usershown=false;
+		var user=document.querySelector('.user');
+		var hideUser=function(){
+			$scope.usershown=false;
+			$scope.showUser=showUser;
+		};
+		var showUser=function(){
+			$scope.showUser=null;
+			$scope.usershown=true;
+			blurFactory.add(user,hideUser);
+		};
+		$scope.showUser=showUser;
+		$scope.login=function(){
+			apis.logIn();
+		};
+		$scope.logout=function(){
+			apis.logOut();
+		};
 		$scope.root=rootData;
 		$rootScope.cond.search='';
 		$scope.setView=function(view){

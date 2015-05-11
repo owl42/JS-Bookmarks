@@ -8,6 +8,15 @@
 			<input type="text" placeholder="搜索书签..." ng-model="cond.search" ng-model-options="{debounce:300}">
 			<i class="fa" ng-class="{true:'fa-remove',false:'fa-search'}[!!cond.search]" ng-click="reset()"></i>
 		</div>
+		<div class="user">
+			<div class="info" ng-click="showUser()">
+				<div class="cell avatar">
+					<img ng-src="{{user.avatar||'/images/logo.svg'}}">
+				</div>
+				<div class="cell name">{{user.name||'登录'}}</div>
+			</div>
+			<div class="card" ng-show="usershown" ng-include="'templates/'+(user.id?'user':'login')+'.html'"></div>
+		</div>
 		<div class="path">&nbsp;</div>
 		<div class="right buttons" ng-show="root.selected.length">
 			<button class="remove" ng-click="multiremove()">删除</button>

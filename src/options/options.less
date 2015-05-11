@@ -212,22 +212,19 @@ body {
 }
 
 .user {
-	&>.info {
-		padding: 10px 35px;
-	}
+	position: absolute;
+	right: 10px;
+	top: 0;
+	padding: 10px;
 	&>.card {
-		color: black;
-		position: relative;
-		&>.wrap {
-			background: white;
-			position: absolute;
-			box-shadow: 0 4px 4px #ccc;
-			left: 0;
-			top: 0;
-			width: 100%;
-			z-index: 10;
-			padding: 10px 40px 5px;
-		}
+		background: white;
+		position: absolute;
+		box-shadow: -2px 2px 4px #ccc;
+		right: 0;
+		top: 100%;
+		width: 200px;
+		z-index: 10;
+		padding: 10px;
 	}
 	.field {
 		&>input {
@@ -253,7 +250,6 @@ body {
 	}
 	.name {
 		cursor: pointer;
-		color: white;
 		.guest {
 			.darken;
 		}
@@ -263,26 +259,15 @@ body {
 	@footer-height: 30px;
 	color: white;
 	background: #567;
-	.avatar {
-		cursor: pointer;
-		padding-right: 10px;
-		img {
-			width: 40px;
-			height: 40px;
-			border-radius: 50%;
-			display: block;
-			background: white;
-		}
-	}
 	.content {
 		padding: 15px;
 		position: absolute;
-		top: 60px;
+		top: 0;
 		bottom: @footer-height;
 	}
 	.listview {
 		position: absolute;
-		top: 90px;
+		top: 100px;
 		left: 15px;
 		right: 15px;
 		bottom: 15px;
@@ -354,6 +339,16 @@ body {
 	background: #def;
 	padding: 0 10px;
 	position: relative;
+	.avatar {
+		cursor: pointer;
+		padding-right: 10px;
+		img {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			display: block;
+		}
+	}
 	.path {
 		padding: 10px 0 5px;
 	}

@@ -16,13 +16,22 @@ angular.module('app')
 			localStorage.setItem(key,JSON.stringify(val));
 		},
 	})
-	.factory('viewFactory',function($rootScope,$timeout){
-		var marginTop=10;
-		var tileHeight=240;
-		var tileWidth=250;
-		var tileMarginRight=10;
-		var tileMarginBottom=10;
-		var barHeight=35;
+	.constant('constants', {
+		bookmarkMarginTop: 10,
+		tileHeight: 240,
+		tileWidth: 250,
+		tileMarginRight: 10,
+		tileMarginBottom: 10,
+		barHeight: 35,
+		collectionHeight: 30,
+	})
+	.factory('viewFactory',function($rootScope,$timeout,constants){
+		var marginTop=constants.bookmarkMarginTop;
+		var tileHeight=constants.tileHeight;
+		var tileWidth=constants.tileWidth;
+		var tileMarginRight=constants.tileMarginRight;
+		var tileMarginBottom=constants.tileMarginBottom;
+		var barHeight=constants.barHeight;
 		var list=document.querySelector('.list');
 		var checkView=function(){
 			var view=$rootScope.cond.view;
@@ -189,6 +198,8 @@ angular.module('app')
 				});
 			});
 		}
+		function getData(cb) {
+		}
 		var apis={
 			UNDEF: -1,
 			stop: function(e){
@@ -202,10 +213,9 @@ angular.module('app')
 				}
 			},
 			getData: function(){
-				var deferred=$q.defer();
-				rootData.clear();
-				chrome.runtime.sendMessage({cmd:'GetData'},function(d){
-					d.cols.forEach(function(col){
+				function initData(data) {
+					rootData.clear();
+					data.cols.forEach(function(col){
 						if(col.id==apis.UNDEF)
 							rootData.colUnd=col;
 						else {
@@ -215,15 +225,23 @@ angular.module('app')
 						}
 						rootData.d_cols[col.id]=col;
 					});
-					rootData.bookmarks=d.bm;
-					d.bm.forEach(function(bm){
+					rootData.bookmarks=data.bm;
+					data.bm.forEach(function(bm){
 						rootData.d_bookmarks[bm.id]=bm;
 					});
 					if(!port) initPort();
 					$rootScope.$apply(function(){
 						deferred.resolve();
 					});
-				});
+				}
+				function getData() {
+					chrome.runtime.sendMessage({cmd:'GetData'},function(data){
+						if(data) initData(data);
+						else setTimeout(getData, 500);
+					});
+				}
+				var deferred=$q.defer();
+				getData();
 				return deferred.promise;
 			},
 			saveCollection: function(col){

@@ -1,15 +1,4 @@
 <div class="fill-wrap toc" ng-controller="SideController">
-	<div class="user">
-		<div class="info" ng-click="showUser()">
-			<div class="cell avatar">
-				<img ng-src="{{user.avatar||'/images/logo.svg'}}">
-			</div>
-			<div class="cell name">{{user.name||'登录'}}</div>
-		</div>
-		<div class="card" ng-show="usershown">
-			<div class="wrap" ng-include="'templates/'+(user.id?'user':'login')+'.html'"></div>
-		</div>
-	</div>
 	<div class="content">
 		<collection data="root.colUnd"></collection>
 		<div class="collection" ng-click="startAddCol($event)" ng-class="{em:newCol.mode=='edit'}">

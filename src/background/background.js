@@ -398,7 +398,6 @@ var db,user=null;
 initDb(function(){
 	chrome.runtime.onMessage.addListener(function(req,src,callback){
 		var mappings={
-			//GetSearchEngines:getSearchEngines,
 			SaveBookmark:saveBookmark,
 			// for popup only
 			GetCollections:getCollections,
