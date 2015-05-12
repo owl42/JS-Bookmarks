@@ -218,7 +218,6 @@ angular.module('app')
 							rootData.colUnd=col;
 						else {
 							rootData.cols.push(col);
-							col.change=true;	// allow modification
 							col.draggable=true;	// allow ordering
 						}
 						rootData.d_cols[col.id]=col;
@@ -350,9 +349,7 @@ angular.module('app')
 			importFromChrome: function(){
 				var deferred=$q.defer();
 				chrome.runtime.sendMessage({cmd:'ImportFromChrome'},function(){
-					apis.getData().then(function(){
-						deferred.resolve();
-					})
+					deferred.resolve();
 				});
 				return deferred.promise;
 			}
@@ -404,6 +401,7 @@ angular.module('app')
 			},
 			templateUrl:'templates/bookmark.html',
 			link:function(scope,element,attrs){
+				scope._=_;
 				scope.stop=apis.stop;
 				scope.edittitle={focus:true};
 				scope.editurl={};
@@ -514,7 +512,8 @@ angular.module('app')
 					cancel(true);
 				};
 				scope.$watch('data.mode',function(){
-					if(scope.data.mode=='edit') {
+					// this is also called when data is changed to null
+					if(scope.data&&scope.data.mode=='edit') {
 						if(attrs.blur) blurFactory.add(element[0],blur);
 						setTimeout(function(){
 							var input=element[0].querySelector('.edit');
@@ -669,12 +668,15 @@ angular.module('app')
 			require: '^listview',
 			restrict: 'A',
 			link: function(scope, element, attrs, listview) {
+				var locate=function(){
+					element.css(listview.getpos(scope.$index));
+				};
 				element.addClass('nested')
-				.css(listview.getpos(scope.$index))
 				.on('dragstart', function(e){
 					e.preventDefault();
 					listview.drag(e,scope.$index);
 				});
+				scope.$watch('$index',locate);
 			},
 		};
 	})

@@ -27,12 +27,15 @@ function initDb(callback){
 	};
 }
 
-var UNDEF=-1;
-function collectionData(data){
+var UNDEF=-1,pos=0;
+function userCollection(data){
 	var col={
 		id:data.id,
 		title:data.title,
+		change:true,	// allow modification
+		count:0,
 	};
+	if('count' in data) col.count=data.count;
 	return col;
 }
 function getCollections(data,src,callback){
@@ -43,17 +46,17 @@ function getCollections(data,src,callback){
 		},
 	];
 	var o=db.transaction('collections','readwrite').objectStore('collections');
-	var pos=0;
+	pos=0;
 	var updates={};
 	o.index('pos').openCursor().onsuccess=function(e){
 		var r=e.target.result;
 		if(r) {
 			var v=r.value;
 			if(!updates[v.id]) {
-				data.push({
+				data.push(userCollection({
 					id:v.id,
 					title:v.title,
-				});
+				}));
 				if(v.pos!=++pos) {
 					updates[v.id]=v.pos=pos;
 					r.update(v).onsuccess=function(){
@@ -88,7 +91,6 @@ function getData(data,src,callback){
 		data.cols=cols;
 		cols.forEach(function(col){
 			h[col.id]=col;
-			col.count=0;
 		});
 		getBookmarkData();
 	});
@@ -183,9 +185,10 @@ function saveCollection(data,src,callback){
 	var col={
 		title:data.title||'未命名',
 		icon:data.icon||'',
-		pos:0,	// FIXME
+		pos:data.pos,
 	};
 	if(data.id) col.id=data.id;
+	if(!col.pos) col.pos=++pos;
 	var o=db.transaction('collections','readwrite').objectStore('collections');
 	o.put(col).onsuccess=function(e){
 		col.id=e.target.result;
@@ -194,7 +197,7 @@ function saveCollection(data,src,callback){
 		updateOptions({
 			type:'collection',
 			cmd:'update',
-			data:col,
+			data:userCollection(col),
 		});
 	};
 	return true;
@@ -281,7 +284,8 @@ function getSettings(key,def,callback){
 	var r=o.get(key);
 	r.onsuccess=function(e){
 		var v=e.target.result;
-		callback(v.data);
+		// v might be undefined
+		callback(v);
 	};
 	r.onerror=function(e){
 		callback(def);
@@ -297,7 +301,8 @@ function getUserInfo(data,src,callback){
 	if(user) callback(user);
 	else {
 		getSettings('user',{id:0},function(data){
-			callback(user=data);
+			if(data) user=data.data;
+			callback(user);
 		});
 		return true;
 	}
@@ -364,7 +369,7 @@ function importFromChrome(data,src,callback){
 		callback();
 		new Notification('书签导入 - '+chrome.i18n.getMessage('extName'),{
 			body:'从Chrome导入'+urls.length+'个书签！',
-			icon:chrome.extension.getURL('images/icon128.png'),
+			icon:chrome.extension.getURL('images/logo-128.png'),
 		});
 		if(urls.length) updateStars({
 			url:urls,
