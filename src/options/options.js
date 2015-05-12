@@ -1,5 +1,8 @@
+var _ = chrome.i18n.getMessage;
+
 angular.module('app',[])
 	.run(function($rootScope,apis,rootData){
+		$rootScope._=_;
 		$rootScope.cond={};
 		$rootScope._collections=apis.getData().then(function(){
 			$rootScope.cond.col=rootData.colUnd;
@@ -17,7 +20,7 @@ angular.module('app',[])
 		};
 		$scope.newCol={
 			text:'',
-			placeholder:'添加频道',
+			placeholder:_('placeholderNewCollection'),
 			focus:true,
 		};
 		$scope.startAddCol=function(e){
@@ -54,7 +57,7 @@ angular.module('app',[])
 		};
 		// XXX
 		$scope.loadWebsite=function(){
-			alert('我们没有官网！');
+			alert('We do not have a website yet!');
 		};
 		var collectionHeight=constants.collectionHeight;
 		$scope.getPos=function(index){
@@ -111,7 +114,7 @@ angular.module('app',[])
 			rootData.selected=0;
 		};
 		$scope.multiremove=function(){
-			if(confirm('您确定要删除所选的'+rootData.selected+'个书签吗？')) {
+			if(confirm(_('confirmBookmarkMultiremove',[rootData.selected]))) {
 				var ids=rootData.bookmarks.filter(function(item){
 					return item.selected;
 				}).map(function(item){

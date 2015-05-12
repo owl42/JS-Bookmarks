@@ -566,7 +566,7 @@ angular.module('app')
 						}
 					};
 					scope.removeCol=function(){
-						if(confirm('您确定要删除以下频道及其中的所有书签吗？\n\n'+scope.data.title))
+						if(confirm(_('confirmCollectionRemove',[scope.data.title])))
 							apis.removeCollection(scope.data.id);
 					};
 					scope.$watch('data.title',function(){

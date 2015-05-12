@@ -1,11 +1,11 @@
 {
 	"extName": {
 		"description": "Name of this addon",
-		"message": "Sunshine"
+		"message": "HHCD"
 	},
 	"extDescription": {
 		"description": "Description of this extension",
-		"message": "Bookmark manager"
+		"message": "书签管理工具"
 	},
 	"extTranslator": {
 		"description": "Translators",
@@ -13,114 +13,114 @@
 	},
 	"DefaultCollection": {
 		"description": "Name of default collection",
-		"message": "Default Channel"
+		"message": "默认频道"
 	},
 	"UntitledCollection": {
 		"description": "Name of new collection if not provided",
-		"message": "New Channel"
+		"message": "新增频道"
 	},
 	"UntitledBookmark": {
 		"description": "Name of new bookmark if not provided",
-		"message": "New Bookmark"
+		"message": "新增书签"
 	},
 	"noticeImport": {
 		"description": "Title of the notification for bookmarks import",
-		"message": "Import bookmarks..."
+		"message": "导入书签..."
 	},
 	"noticeImportedFromChrome": {
 		"description": "Message shown when bookmarks are imported from Chrome",
-		"message": "$1 bookmarks are imported from Chrome."
+		"message": "已从Chrome导入 $1 个书签。"
 	},
 	"titlePage": {
 		"description": "Title of page",
-		"message": "Bookmarks Manager"
+		"message": "书签管理"
 	},
 	"placeholderNewCollection": {
 		"description": "Placeholder of new collection",
-		"message": "New Channel"
+		"message": "新增频道"
 	},
 	"confirmBookmarkMultiremove": {
 		"description": "Confirm message shown while trying to remove multiple bookmarks",
-		"message": "Are you sure to remove the $1 selected bookmarks?"
+		"message": "你确定要删除所选择的 $1 个书签吗？"
 	},
 	"confirmCollectionRemove": {
 		"description": "Confirm message shown while trying to remove a collection",
-		"message": "Are you sure to remove the channel below as well as all the bookmarks in it?\n\n$1"
+		"message": "你确定要删除以下分组和其中所有的书签吗？\n\n$1"
 	},
 	"hintSelect": {
 		"description": "Hint for the select button",
-		"message": "Select"
+		"message": "选择"
 	},
 	"hintEdit": {
 		"description": "Hint for the edit button",
-		"message": "Edit"
+		"message": "编辑"
 	},
 	"hintRemove": {
 		"description": "Hint for the remove button",
-		"message": "Remove"
+		"message": "删除"
 	},
 	"placeholderSearch": {
 		"description": "Placeholder for search box",
-		"message": "Search for bookmarks..."
+		"message": "搜索书签..."
 	},
 	"buttonLogIn": {
 		"description": "Text for log in button",
-		"message": "Log In"
+		"message": "登录"
 	},
 	"buttonMultiremove": {
 		"description": "Text for multiremove button",
-		"message": "Remove"
+		"message": "删除"
 	},
 	"labelResultsOfSearch": {
 		"description": "Label shown instead of the current channel when searching text is not empty",
-		"message": "Searching results for \"$1\""
+		"message": "搜索“$1”的结果"
 	},
 	"buttonConfirmNewCollection": {
 		"description": "Text for submit button in the new collection form",
-		"message": "OK"
+		"message": "确定"
 	},
 	"buttonGoToWebsite": {
 		"description": "Text for button to load the website of extension",
-		"message": "Go to website"
+		"message": "进入官方网站"
 	},
 	"buttonImportingFromChrome": {
 		"description": "Text for import-from-Chrome button when the import is in progress",
-		"message": "Importing bookmarks from Chrome..."
+		"message": "正在从Chrome导入书签..."
 	},
 	"buttonImportFromChrome": {
 		"description": "Text for import-from-Chrome button",
-		"message": "Import bookmarks from Chrome"
+		"message": "从Chrome导入书签"
 	},
 	"buttonRegister": {
 		"description": "Text for register button",
-		"message": "Register"
+		"message": "注册"
 	},
 	"labelLogIn": {
 		"description": "Title of the log in box",
-		"message": "Log In"
+		"message": "登录"
 	},
 	"placeholderEmail": {
 		"description": "Placeholder of the email input box",
-		"message": "Email"
+		"message": "邮箱"
 	},
 	"placeholderPassword": {
 		"description": "Placeholder of the password input box",
-		"message": "Password"
+		"message": "密码"
 	},
 	"buttonForgetPassword": {
 		"description": "Text for button to find password back",
-		"message": "Forget password"
+		"message": "忘记密码"
 	},
 	"greetings": {
 		"description": "Message shown when the user is logged in",
-		"message": "Hi, $1!"
+		"message": "你好，$1！"
 	},
 	"buttonLogOut": {
 		"description": "Text for log out button",
-		"message": "Log Out"
+		"message": "登出"
 	},
 	"buttonShowAllBookmarks": {
 		"description": "Text for button in popup menu to load the bookmark manager page",
-		"message": "Show All Bookmarks"
+		"message": "显示所有书签"
 	}
 }

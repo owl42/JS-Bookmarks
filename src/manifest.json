@@ -3,7 +3,7 @@
 	"name": "__MSG_extName__",
 	"version": "0.1",
 	"default_locale": "en",
-	"description": "__MSG_extDesc__",
+	"description": "__MSG_extDescription__",
 	"icons": {
 		"48":"images/logo-48.png",
 		"128":"images/logo-128.png"
@@ -17,7 +17,8 @@
 	},
 	"author": "Gerald <gera2ld@163.com>",
 	"background": {
-		"page": "background/background.html"
+		"page": "background/background.html",
+		"persistent": false
 	},
 	"chrome_url_overrides": {
 		"newtab": "options/options.html"

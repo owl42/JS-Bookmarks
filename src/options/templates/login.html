@@ -1,18 +1,18 @@
 <form class="fill-wrap">
 	<div class="right">
-		<a href>我要注册</a>
+		<a href>{{::_('buttonRegister')}}</a>
 	</div>
-	<h3>登录账号</h3>
+	<h3>{{::_('labelLogIn')}}</h3>
 	<div class="field">
-		<input type=email placeholder="邮　箱" ng-model="email">
+		<input type=email placeholder="{{::_('placeholderEmail')}}" ng-model="email">
 		<i class="fa fa-user"></i>
 	</div>
 	<div class="field">
-		<input type=password placeholder="密　码" ng-model="pwd">
+		<input type=password placeholder="{{::_('placeholderPassword')}}" ng-model="pwd">
 		<i class="fa fa-lock"></i>
 	</div>
 	<div class="buttons">
-		<a class="right" href>忘记密码</a>
-		<button type=submit class="sign" ng-click="login()">登　录</button>
+		<a class="right" href>{{::_('buttonForgetPassword')}}</a>
+		<button type=submit class="sign" ng-click="login()">{{::_('buttonLogIn')}}</button>
 	</div>
 </form>

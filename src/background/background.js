@@ -1,3 +1,5 @@
+var _ = chrome.i18n.getMessage;
+
 function initDb(callback){
 	var request=indexedDB.open('sunshine',3);
 	request.onsuccess=function(e){db=request.result;if(callback) callback();};
@@ -42,7 +44,7 @@ function getCollections(data,src,callback){
 	data=[
 		{
 			id:UNDEF,
-			title:'默认频道',
+			title:_('DefaultCollection'),
 		},
 	];
 	var o=db.transaction('collections','readwrite').objectStore('collections');
@@ -183,7 +185,7 @@ function getBookmarks(data,src,callback){
 }
 function saveCollection(data,src,callback){
 	var col={
-		title:data.title||'未命名',
+		title:data.title||_('UntitledCollection'),
 		icon:data.icon||'',
 		pos:data.pos,
 	};
@@ -204,7 +206,7 @@ function saveCollection(data,src,callback){
 }
 function saveBookmark(data,src,callback){
 	var bm={
-		title:data.title||'未命名',
+		title:data.title||_('UntitledBookmark'),
 		url:data.url||'',
 		//desc:data.desc||'',
 		//tags:data.tags||[],
@@ -367,8 +369,8 @@ function importFromChrome(data,src,callback){
 	}
 	function finish(){
 		callback();
-		new Notification('书签导入 - '+chrome.i18n.getMessage('extName'),{
-			body:'从Chrome导入'+urls.length+'个书签！',
+		new Notification(_('noticeImport')+' - '+_('extName'),{
+			body:_('noticeImportedFromChrome', [urls.length]),
 			icon:chrome.extension.getURL('images/logo-128.png'),
 		});
 		if(urls.length) updateStars({

@@ -1,3 +1,5 @@
+var _ = chrome.i18n.getMessage;
+
 function safeHTML(s){
 	return s.replace(/[&<]/g,function(m){
 		return {

@@ -7,7 +7,7 @@
 			</div>
 			<div class="cell expand">
 				<div class="abs-mid-wrap left right">
-					<editable class="title" data="newCol" button="确定" placeholder="{{newCol.placeholder}}" change="addCol()" blur="cancel" cancel="cancelAddCol()"></editable>
+					<editable class="title" data="newCol" button="{{::_('buttonConfirmNewCollection')}}" placeholder="{{newCol.placeholder}}" change="addCol()" blur="cancel" cancel="cancelAddCol()"></editable>
 				</div>
 			</div>
 		</div>
@@ -18,8 +18,8 @@
 	<div class="footer">
 		<div class="wrap">
 			<div class="popup more" ng-show="shownMore">
-				<a href target=_blank ng-click="loadWebsite()"><i class="fa fa-home"></i> 打开官网</a>
-				<a ng-click="importFromChrome()" ng-disabled="importing">{{importing?'正在导入Chrome书签...':'导入Chrome书签'}}</a>
+				<a href target=_blank ng-click="loadWebsite()"><i class="fa fa-home"></i> {{::_('buttonGoToWebsite')}}</a>
+				<a ng-click="importFromChrome()" ng-disabled="importing">{{importing?_('buttonImportingFromChrome'):_('buttonImportFromChrome')}}</a>
 			</div>
 		</div>
 		<i class="fa fa-ellipsis-h" ng-click="showMore()"></i>

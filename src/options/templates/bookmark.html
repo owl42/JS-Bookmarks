@@ -4,7 +4,7 @@ ng-class="{selected:data.selected,editing:editurl.mode=='edit',dragging:data.dra
 	<div class="favicon" style="background-image:url({{'chrome://favicon/'+data.url}})"></div>
 	<editable class="title" data="edittitle" change="check()" cancel="close()" wrap="{{cond.view=='tile'?'true':''}}"></editable>
 	<editable class="url" data="editurl" change="check()" cancel="close()" title="{{data.url}}"></editable>
-	<div class="select button" title="选择"><i class="fa fa-check"></i></div>
-	<div class="edit button" title="编辑"><i class="fa fa-pencil"></i></div>
-	<div class="remove button" title="删除"><i class="fa fa-remove"></i></div>
+	<div class="select button" title="{{::_('hintSelect')}}"><i class="fa fa-check"></i></div>
+	<div class="edit button" title="{{::_('hintEdit')}}"><i class="fa fa-pencil"></i></div>
+	<div class="remove button" title="{{::_('hintRemove')}}"><i class="fa fa-remove"></i></div>
 </div>
