@@ -625,7 +625,7 @@ angular.module('app')
 						x:e.clientX-dragging.offsetX+e.offsetX,
 						y:e.clientY-dragging.offsetY+e.offsetY,
 					});
-					if(i>=0&&i!=dragging.index) {
+					if(i>=0&&i<children.length&&i!=dragging.index) {
 						var cur=dragging.index;
 						var step=i>cur?1:-1;
 						while(i!=cur){
