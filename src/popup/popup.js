@@ -86,3 +86,6 @@ var collections=[],j_cols=$('.collections>.wrap'),cur_col=0,n_cols;
 bindEvents();
 getCollections();
 getTabData();
+Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(node) {
+	node.innerHTML = _(node.dataset.i18n);
+});
