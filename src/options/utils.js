@@ -155,6 +155,7 @@ angular.module('app')
 								// add
 								rootData.cols.push(data);
 								rootData.d_cols[data.id]=data;
+								if(!('count' in data)) data.count=0;
 							}
 						} else if(obj.cmd=='remove') {
 							var col=rootData.d_cols[data];

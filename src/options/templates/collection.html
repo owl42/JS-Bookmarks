@@ -1,4 +1,4 @@
-<div class="collection" draggable="{{data.draggable||''}}"
+<div class="collection" draggable="{{editdata.mode!='edit'&&data.draggable||''}}"
 ng-class="{edit:editdata.mode=='edit',active:!cond.search&amp;&amp;data===cond.col,em:data.dragover}">
 	<div class="cell">
 		<i class="fa fa-star"></i>

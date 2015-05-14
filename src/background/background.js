@@ -35,9 +35,7 @@ function userCollection(data){
 		id:data.id,
 		title:data.title,
 		change:true,	// allow modification
-		count:0,
 	};
-	if('count' in data) col.count=data.count;
 	return col;
 }
 function getCollections(data,src,callback){
@@ -45,6 +43,7 @@ function getCollections(data,src,callback){
 		{
 			id:UNDEF,
 			title:_('DefaultCollection'),
+			count:0,
 		},
 	];
 	var o=db.transaction('collections','readwrite').objectStore('collections');
@@ -55,10 +54,12 @@ function getCollections(data,src,callback){
 		if(r) {
 			var v=r.value;
 			if(!updates[v.id]) {
-				data.push(userCollection({
+				var col=userCollection({
 					id:v.id,
 					title:v.title,
-				}));
+				});
+				col.count=0;
+				data.push(col);
 				if(v.pos!=++pos) {
 					updates[v.id]=v.pos=pos;
 					r.update(v).onsuccess=function(){
@@ -81,7 +82,7 @@ function getData(data,src,callback){
 			if(r) {
 				var v=r.value;
 				var col=h[v.col]||h[UNDEF];
-				col.count++;
+				col.count=(col.count||0)+1;
 				data.bm.push(v);
 				r.continue();
 			} else callback(data);
@@ -184,24 +185,32 @@ function getBookmarks(data,src,callback){
 	return true;
 }
 function saveCollection(data,src,callback){
-	var col={
+	function update(col) {
+		o.put(col).onsuccess=function(e){
+			col.id=e.target.result;
+			if(!data.id) col.count=0;
+			callback(col.id);
+			updateOptions({
+				type:'collection',
+				cmd:'update',
+				data:userCollection(col),
+			});
+		};
+	}
+	var _col={
 		title:data.title||_('UntitledCollection'),
-		icon:data.icon||'',
-		pos:data.pos,
 	};
-	if(data.id) col.id=data.id;
-	if(!col.pos) col.pos=++pos;
 	var o=db.transaction('collections','readwrite').objectStore('collections');
-	o.put(col).onsuccess=function(e){
-		col.id=e.target.result;
-		if(!data.id) col.count=0;
-		callback(col.id);
-		updateOptions({
-			type:'collection',
-			cmd:'update',
-			data:userCollection(col),
-		});
-	};
+	if(data.id) o.get(data.id).onsuccess=function(e){
+		var col=e.target.result;
+		if(col) {
+			for(var i in _col) col[i] = _col[i];
+			update(col);
+		}
+	}; else {
+		_col.pos=++pos;
+		update(_col);
+	}
 	return true;
 }
 function saveBookmark(data,src,callback){
