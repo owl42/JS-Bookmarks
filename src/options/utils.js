@@ -33,13 +33,16 @@ angular.module('app')
 		var tileMarginBottom=constants.tileMarginBottom;
 		var barHeight=constants.barHeight;
 		var list=document.querySelector('.list');
+		var callbacks=[];
 		var checkView=function(){
 			var view=$rootScope.cond.view;
+			var cols=$rootScope.cond.cols;
 			if(view=='bar')
 				$rootScope.cond.cols=0;
 			else if(view=='tile') {
 				$rootScope.cond.cols=Math.floor(list.clientWidth/(tileWidth+tileMarginRight));
 			}
+			if(cols!=$rootScope.cond.cols) callbacks.forEach(function(cb){cb();});
 		};
 		function locate(index,node){
 			var cond=$rootScope.cond;
@@ -61,6 +64,13 @@ angular.module('app')
 		return {
 			locate:locate,
 			checkView:checkView,
+			register:function(cb){
+				callbacks.push(cb);
+			},
+			unregister:function(cb){
+				var i=callbacks.indexOf(cb);
+				if(i>=0) callbacks.splice(i,1);
+			},
 		};
 	})
 	.factory('blurFactory',function($rootScope){
@@ -457,12 +467,15 @@ angular.module('app')
 						rootData.selected=0;
 					});
 				});
-				var locate=apis.debounce(function(){
+				var locate=function(){
 					viewFactory.locate(scope.$parent.$index,element[0]);
-				},100);
+				};
 				scope.$watch('data',reset,true);
 				scope.$watch('$parent.$index',locate);
-				scope.$watch('cond.cols',locate);
+				viewFactory.register(locate);
+				element.bind('$destroy',function(){
+					viewFactory.unregister(locate);
+				});
 			},
 		};
 	})

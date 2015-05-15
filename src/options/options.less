@@ -310,13 +310,13 @@ body {
 		right: 15px;
 		bottom: 15px;
 		overflow-y: auto;
-		&>.nested {
-			position: absolute;
-			transition: top .5s,left .5s;
-			&.dragging {
-				z-index: 10;
-				transition: none;
-			}
+	}
+	.nested {
+		position: absolute;
+		transition: top .5s,left .5s;
+		&.dragging,&.ng-leave {
+			z-index: 10;
+			transition: none;
 		}
 	}
 	.collections {

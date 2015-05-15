@@ -135,7 +135,7 @@ angular.module('app',['ngAnimate'])
 		// XXX
 		$scope.loadWebsite=function(){
 			alert('We do not have a website yet!');
-		};		
+		};
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory,rootData,blurFactory){
 		$scope.usershown=false;
