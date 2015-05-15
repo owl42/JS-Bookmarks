@@ -1,6 +1,6 @@
 var _ = chrome.i18n.getMessage;
 
-angular.module('app',[])
+angular.module('app',['ngAnimate'])
 	.run(function($rootScope,apis,rootData){
 		$rootScope._=_;
 		$rootScope.cond={};
@@ -13,7 +13,7 @@ angular.module('app',[])
 		};
 		apis.getUserInfo();
 	})
-	.controller('SideController',function($scope,$rootScope,apis,blurFactory,rootData,constants){
+	.controller('SideController',function($scope,$rootScope,apis,rootData,constants){
 		$scope.root=rootData;
 		$scope.isActive=function(item){
 			return $rootScope.cond.col===item;
@@ -41,24 +41,6 @@ angular.module('app',[])
 			$scope.newCol.mode='';
 			$scope.newCol.text='';
 		};
-		var popup=document.querySelector('.popup.more');
-		var hideMore=function(){
-			$scope.shownMore=false;
-		};
-		$scope.showMore=function(){
-			$scope.shownMore=true;
-			blurFactory.add(popup,hideMore);
-		};
-		$scope.importFromChrome=function(){
-			$scope.importing=true;
-			apis.importFromChrome().then(function(){
-				$scope.importing=false;
-			});
-		};
-		// XXX
-		$scope.loadWebsite=function(){
-			alert('We do not have a website yet!');
-		};
 		var collectionHeight=constants.collectionHeight;
 		$scope.getPos=function(index){
 			var css={
@@ -75,6 +57,83 @@ angular.module('app',[])
 			return y>=lower+threshold&&y<=upper-threshold?i:-1;
 		};
 		$scope.moved=apis.moveCollection;
+	})
+	.controller('menuController',function($scope,$element,blurFactory,apis,settings){
+		function locate(loc){
+			var css={left:'auto',right:'auto',top:'auto',bottom:'auto'};
+			if('right' in loc) {
+				css.right=loc.right;
+				if(css.right<0) css.right=0;
+				css.right+='px';
+			} else {
+				css.left=loc.left||0;
+				if(css.left<0) css.left=0;
+				css.left+='px';
+			}
+			if('top' in loc) {
+				css.top=loc.top;
+				if(css.top<0) css.top=0;
+				css.top+='px';
+			} else {
+				css.bottom=loc.bottom||0;
+				if(css.bottom<0) css.bottom=0;
+				css.bottom+='px';
+			}
+			$element.css(css);
+		}
+		var dragging;
+		var moveMenu=function(e){
+			var left=e.clientX-dragging.offsetX;
+			var top=e.clientY-dragging.offsetY;
+			var loc=dragging.loc={};
+			if(left<window.innerWidth/2) loc.left=left;
+			else loc.right=window.innerWidth-$element[0].offsetWidth-left;
+			if(top<window.innerHeight/2) loc.top=top;
+			else loc.bottom=window.innerHeight-$element[0].offsetHeight-top;
+			locate(loc);
+		};
+		var moveMenuEnd=function(e){
+			settings.set('menuLocation',dragging.loc);
+			dragging=null;
+			angular.element(document)
+				.off('mousemove',moveMenu)
+				.off('mouseup',moveMenuEnd);
+		};
+		$element.on('dragstart',function(e){
+			e.preventDefault();
+			if(!dragging) {
+				dragging={
+					offsetX:e.offsetX,
+					offsetY:e.offsetY,
+				};
+				angular.element(document)
+					.on('mousemove',moveMenu)
+					.on('mouseup',moveMenuEnd);
+			}
+		});
+		locate(settings.get('menuLocation',{left:20,bottom:20}));
+		var menuShrink=function(){
+			$scope.menuExpanded=false;
+		};
+		$scope.menuExpand=function(){
+			if($scope.menuExpanded=!$scope.menuExpanded)
+				blurFactory.add($element[0],menuShrink);
+			else
+				menuShrink();
+		};
+		$scope.importFromChrome=function(){
+			$scope.importing=true;
+			apis.importFromChrome().then(function(){
+				$scope.importing=false;
+			});
+		};
+		angular.forEach(document.querySelector('.menu-expand').children,function(ele,i){
+			ele.style.left=(i+1)*50+'px';
+		});
+		// XXX
+		$scope.loadWebsite=function(){
+			alert('We do not have a website yet!');
+		};		
 	})
 	.controller('BookmarksController',function($scope,$rootScope,apis,settings,viewFactory,rootData,blurFactory){
 		$scope.usershown=false;

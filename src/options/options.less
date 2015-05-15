@@ -134,19 +134,57 @@ button {
 
 @side-width: 280px;
 @bookmark-button-size: 2rem;
+@menu-height: 35px;
 
 body {
 	background: white;
 }
 .menu {
-	color: white;
-	font-size: 25px;
+	position: fixed;
+	height: @menu-height;
+	z-index: 100;
+}
+.menu-expand {
+	transition: all .5s;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.menu-button {
+	position: absolute;
+	top: 0;
+	opacity: 1;
 	cursor: pointer;
-	display: inline-block;
-	.darken;
-	&:hover,&.active {
-		.clearDarken;
+	color: black;
+	border-radius: 50%;
+	background: white;
+	display: block;
+	width: @menu-height;
+	height: @menu-height;
+	line-height: @menu-height;
+	font-size: 14px;
+	text-align: center;
+	transition: all .5s;
+	.ng-hide & {
+		left: 0 !important;
+		opacity: 0;
 	}
+	&:not(:hover) {
+		.darken;
+	}
+}
+.menu-main {
+	box-shadow: 0 0 5px black;
+	opacity: .5;
+	&:hover {
+		opacity: 1;
+	}
+}
+.menu-words {
+	width: auto;
+	white-space: nowrap;
+	border-radius: 10px;
+	padding: 0 10px;
 }
 .side {
 	z-index: 1;

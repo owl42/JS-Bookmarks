@@ -15,13 +15,4 @@
 			<collection nested ng-repeat="item in root.cols track by item.id" data="item"></collection>
 		</listview>
 	</div>
-	<div class="footer">
-		<div class="wrap">
-			<div class="popup more" ng-show="shownMore">
-				<a href target=_blank ng-click="loadWebsite()"><i class="fa fa-home"></i> {{::_('buttonGoToWebsite')}}</a>
-				<a ng-click="importFromChrome()" ng-disabled="importing">{{importing?_('buttonImportingFromChrome'):_('buttonImportFromChrome')}}</a>
-			</div>
-		</div>
-		<i class="fa fa-ellipsis-h" ng-click="showMore()"></i>
-	</div>
 </div>
