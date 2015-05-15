@@ -122,10 +122,12 @@ angular.module('app',['ngAnimate'])
 				menuShrink();
 		};
 		$scope.importFromChrome=function(){
-			$scope.importing=true;
-			apis.importFromChrome().then(function(){
-				$scope.importing=false;
-			});
+			if(!$scope.importing) {
+				$scope.importing=true;
+				apis.importFromChrome().then(function(){
+					$scope.importing=false;
+				});
+			}
 		};
 		angular.forEach(document.querySelector('.menu-expand').children,function(ele,i){
 			ele.style.left=(i+1)*50+'px';
