@@ -14,7 +14,7 @@
 		<div class="left side" ng-include="'templates/leftside.html'"></div>
 		<div id="center" ng-include="'templates/bookmarks.html'"></div>
 		<div class="menu" draggable="true" ng-controller="menuController">
-			<div class="menu-button menu-main" ng-click="menuExpand()">Owl</div>
+			<div class="menu-button menu-main" ng-click="menuExpand()"><i class="fa fa-ellipsis-h"></i></div>
 			<div class="menu-expand" ng-show="menuExpanded">
 				<a class="menu-button menu-home" href target=_blank ng-click="loadWebsite()" title="{{::_('buttonGoToWebsite')}}"><i class="fa fa-home"></i></a>
 				<a class="menu-button menu-words menu-import-chrome" ng-click="importFromChrome()" ng-disabled="importing">{{importing?_('buttonImportingFromChrome'):_('buttonImportFromChrome')}}</a>
