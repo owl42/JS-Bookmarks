@@ -25,7 +25,7 @@ angular.module('app')
 		barHeight: 35,
 		collectionHeight: 30,
 	})
-	.factory('viewFactory',function($rootScope,$timeout,constants){
+	.factory('viewFactory',function($rootScope,constants){
 		var marginTop=constants.bookmarkMarginTop;
 		var tileHeight=constants.tileHeight;
 		var tileWidth=constants.tileWidth;
@@ -41,39 +41,18 @@ angular.module('app')
 				$rootScope.cond.cols=Math.floor(list.clientWidth/(tileWidth+tileMarginRight));
 			}
 		};
-		/*function delayed(cb,delay){
-			var timer=null;
-			function call(){
-				cb();
-				timer=null;
-			}
-			return function(){
-				if(timer) $timeout.cancel(timer);
-				timer=$timeout(call,delay);
-			};
-		}*/
-		function locate(index,node,cb){
+		function locate(index,node){
 			var cond=$rootScope.cond;
-			var delta,top;
+			var top;
 			if(cond.view=='bar'){
 				node.style.left=0;
 				top=index*barHeight+marginTop;
-				delta=35;
 			} else if(cond.view=='tile'){
 				var row=Math.floor(index/cond.cols);
 				var col=index%cond.cols;
 				node.style.left=col*(tileWidth+tileMarginRight)+'px';
 				top=row*(tileHeight+tileMarginBottom)+marginTop;
-				delta=200;
 			}
-			if(node.style.top==='') {
-				top-=delta;
-				setTimeout(function(){
-					top+=delta;
-					node.style.top=top+'px';
-					if(cb) cb();
-				},0);
-			} else cb();
 			node.style.top=top+'px';
 		}
 		angular.element(window).on('resize',function(e){
@@ -138,7 +117,7 @@ angular.module('app')
 		clear();
 		return data;
 	})
-	.factory('apis',function($q,$rootScope,rootData){
+	.factory('apis',function($q,$rootScope,$timeout,rootData){
 		var port;
 		function initPort(){
 			port=chrome.runtime.connect({name:'options'});
@@ -199,8 +178,20 @@ angular.module('app')
 				});
 			});
 		}
+		function debounce(cb,delay){
+			var timer=null;
+			function call(){
+				cb();
+				timer=null;
+			}
+			return function(){
+				if(timer) $timeout.cancel(timer);
+				timer=$timeout(call,delay);
+			};
+		}
 		var apis={
 			UNDEF: -1,
+			debounce:debounce,
 			stop: function(e){
 				e.preventDefault();
 				e.stopPropagation();
@@ -466,15 +457,9 @@ angular.module('app')
 						rootData.selected=0;
 					});
 				});
-				var locating=false;
-				var locate=function(){
-					if(!locating) {
-						locating=true;
-						viewFactory.locate(scope.$parent.$index,element[0],function(){
-							locating=false;
-						});
-					}
-				};
+				var locate=apis.debounce(function(){
+					viewFactory.locate(scope.$parent.$index,element[0]);
+				},100);
 				scope.$watch('data',reset,true);
 				scope.$watch('$parent.$index',locate);
 				scope.$watch('cond.cols',locate);
