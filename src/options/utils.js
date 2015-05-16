@@ -616,9 +616,10 @@ angular.module('app')
 			controller: function($scope,$element){
 				var dragging={},children;
 				function mousemove(e){
-					var node=dragging.node;
-					node.style.left=e.clientX-dragging.offsetX+'px';
-					node.style.top=e.clientY-dragging.offsetY+'px';
+					dragging.node.css({
+						left:e.clientX-dragging.offsetX+'px',
+						top:e.clientY-dragging.offsetY+'px',
+					});
 					var i=$scope.getindex({
 						x:e.clientX-dragging.offsetX+e.offsetX,
 						y:e.clientY-dragging.offsetY+e.offsetY,
@@ -636,8 +637,8 @@ angular.module('app')
 					}
 				}
 				function mouseup(e){
-					dragging.node.classList.remove('dragging');
-					angular.element(dragging.node).css($scope.getpos({index:dragging.index}));
+					dragging.node.removeClass('dragging');
+					dragging.node.css($scope.getpos({index:dragging.index}));
 					if(dragging.index!=dragging.idxFrom)
 						$scope.moved({idxFrom:dragging.idxFrom,idxTo:dragging.index});
 					children=null;
@@ -647,13 +648,13 @@ angular.module('app')
 				this.getpos=function(index){
 					return $scope.getpos({index:index});
 				};
-				this.drag=function(e, index){
+				this.drag=function(e, index, element){
 					if(dragging.node) return;
 					children=$element.children('.nested');
-					var node=dragging.node=e.target;
-					node.classList.add('dragging');
-					dragging.offsetX=e.clientX-node.offsetLeft;
-					dragging.offsetY=e.clientY-node.offsetTop;
+					dragging.node=element;
+					element.addClass('dragging');
+					dragging.offsetX=e.clientX-element[0].offsetLeft;
+					dragging.offsetY=e.clientY-element[0].offsetTop;
 					dragging.idxFrom=dragging.index=index;
 					$element
 						.on('mousemove',mousemove)
@@ -673,7 +674,7 @@ angular.module('app')
 				element.addClass('nested')
 				.on('dragstart', function(e){
 					e.preventDefault();
-					listview.drag(e,scope.$index);
+					listview.drag(e,scope.$index,element);
 				});
 				scope.$watch('$index',locate);
 			},
