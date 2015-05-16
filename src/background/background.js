@@ -228,8 +228,8 @@ function saveBookmark(data,src,callback){
 			url:data.url,
 			star:true,
 		});
-		callback();
-		bm.id=e.target.result;
+		// callback refers to bookmark id for popup
+		callback(bm.id=e.target.result);
 		updateOptions({
 			type:'bookmark',
 			cmd:'update',
