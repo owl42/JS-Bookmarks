@@ -127,7 +127,8 @@ angular.module('app')
 		clear();
 		return data;
 	})
-	.factory('apis', ['$q', '$rootScope', /*'$timeout',*/ 'rootData', function($q, $rootScope, /*$timeout,*/ rootData) {
+	.factory('apis', ['$q', '$rootScope', /*'$timeout',*/ 'rootData',
+					 function($q, $rootScope, /*$timeout,*/ rootData) {
 		var port;
 		function initPort() {
 			port = chrome.runtime.connect({name: 'options'});
@@ -154,6 +155,12 @@ angular.module('app')
 								if ($rootScope.cond.col === col)
 									$rootScope.cond.col = rootData.cols[i] || rootData.colUnd;
 								delete rootData.d_cols[data];
+								var bookmarks = [];
+								rootData.bookmarks.forEach(function(bookmark) {
+									if(bookmark.col != col.id) bookmarks.push(bookmark);
+									else delete rootData.d_bookmarks[bookmark.id];
+								});
+								rootData.bookmarks = bookmarks;
 							}
 						}
 					} else if (obj.type == 'bookmark') {
