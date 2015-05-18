@@ -1,15 +1,19 @@
 {
 	"extName": {
 		"description": "Name of this addon",
-		"message": "Sunshine"
+		"message": "Owl"
 	},
 	"extDescription": {
 		"description": "Description of this extension",
-		"message": "Bookmark manager"
+		"message": "Owl bookmark manager"
 	},
 	"extTranslator": {
 		"description": "Translators",
 		"message": "Gerald <i@gerald.top>"
+	},
+	"pageActionTitle": {
+		"description": "Title of page action button",
+		"message": "Add to favorite"
 	},
 	"DefaultCollection": {
 		"description": "Name of default collection",
@@ -34,6 +38,18 @@
 	"titlePage": {
 		"description": "Title of page",
 		"message": "Bookmarks Manager"
+	},
+	"buttonGoToWebsite": {
+		"description": "Text for button to load the website of extension",
+		"message": "Go to website"
+	},
+	"buttonImportingFromChrome": {
+		"description": "Text for import-from-Chrome button when the import is in progress",
+		"message": "Importing bookmarks from Chrome..."
+	},
+	"buttonImportFromChrome": {
+		"description": "Text for import-from-Chrome button",
+		"message": "Import bookmarks from Chrome"
 	},
 	"placeholderNewCollection": {
 		"description": "Placeholder of new collection",
@@ -78,18 +94,6 @@
 	"buttonConfirmNewCollection": {
 		"description": "Text for submit button in the new collection form",
 		"message": "OK"
-	},
-	"buttonGoToWebsite": {
-		"description": "Text for button to load the website of extension",
-		"message": "Go to website"
-	},
-	"buttonImportingFromChrome": {
-		"description": "Text for import-from-Chrome button when the import is in progress",
-		"message": "Importing bookmarks from Chrome..."
-	},
-	"buttonImportFromChrome": {
-		"description": "Text for import-from-Chrome button",
-		"message": "Import bookmarks from Chrome"
 	},
 	"buttonRegister": {
 		"description": "Text for register button",

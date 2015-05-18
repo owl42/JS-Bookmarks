@@ -12,7 +12,7 @@
 		"default_icon": {
 			"19": "images/star.svg"
 		},
-		"default_title": "Add to favorite",
+		"default_title": "__MSG_pageActionTitle__",
 		"default_popup": "popup/popup.html"
 	},
 	"author": "Gerald <gera2ld@163.com>",

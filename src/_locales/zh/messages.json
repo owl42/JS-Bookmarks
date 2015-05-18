@@ -1,15 +1,19 @@
 {
 	"extName": {
 		"description": "Name of this addon",
-		"message": "HHCD"
+		"message": "Owl"
 	},
 	"extDescription": {
 		"description": "Description of this extension",
-		"message": "书签管理工具"
+		"message": "智慧鸟书签工具"
 	},
 	"extTranslator": {
 		"description": "Translators",
 		"message": "Gerald <i@gerald.top>"
+	},
+	"pageActionTitle": {
+		"description": "Title of page action button",
+		"message": "添加到收藏"
 	},
 	"DefaultCollection": {
 		"description": "Name of default collection",
@@ -34,6 +38,18 @@
 	"titlePage": {
 		"description": "Title of page",
 		"message": "书签管理"
+	},
+	"buttonGoToWebsite": {
+		"description": "Text for button to load the website of extension",
+		"message": "进入官方网站"
+	},
+	"buttonImportingFromChrome": {
+		"description": "Text for import-from-Chrome button when the import is in progress",
+		"message": "正在从Chrome导入书签..."
+	},
+	"buttonImportFromChrome": {
+		"description": "Text for import-from-Chrome button",
+		"message": "从Chrome导入书签"
 	},
 	"placeholderNewCollection": {
 		"description": "Placeholder of new collection",
@@ -78,18 +94,6 @@
 	"buttonConfirmNewCollection": {
 		"description": "Text for submit button in the new collection form",
 		"message": "确定"
-	},
-	"buttonGoToWebsite": {
-		"description": "Text for button to load the website of extension",
-		"message": "进入官方网站"
-	},
-	"buttonImportingFromChrome": {
-		"description": "Text for import-from-Chrome button when the import is in progress",
-		"message": "正在从Chrome导入书签..."
-	},
-	"buttonImportFromChrome": {
-		"description": "Text for import-from-Chrome button",
-		"message": "从Chrome导入书签"
 	},
 	"buttonRegister": {
 		"description": "Text for register button",
