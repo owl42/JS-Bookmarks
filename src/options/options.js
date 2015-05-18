@@ -61,46 +61,47 @@ angular.module('app', ['ngAnimate'])
 	}])
 	.controller('menuController', ['$scope', '$element', 'blurFactory', 'apis', 'settings',
 							function ($scope, $element, blurFactory, apis, settings) {
-		function locate(loc) {
+		function locate() {
 			var css = {
 				left: 'auto',
 				right: 'auto',
 				top: 'auto',
 				bottom: 'auto',
 			};
-			if ('right' in loc) {
-				css.right = loc.right;
+			if ('right' in position) {
+				css.right = position.right;
 				if (css.right < 0) css.right = 0;
 				css.right += 'px';
 			} else {
-				css.left = loc.left || 0;
+				css.left = position.left || 0;
 				if (css.left < 0) css.left = 0;
 				css.left += 'px';
 			}
-			if ('top' in loc) {
-				css.top = loc.top;
+			if ('top' in position) {
+				css.top = position.top;
 				if (css.top < 0) css.top = 0;
 				css.top += 'px';
 			} else {
-				css.bottom = loc.bottom || 0;
+				css.bottom = position.bottom || 0;
 				if (css.bottom < 0) css.bottom = 0;
 				css.bottom += 'px';
 			}
 			$element.css(css);
 		}
 		var dragging;
+		var position = settings.get('menuLocation', {left: 20, bottom: 20});
 		var moveMenu = function (e) {
 			var left = e.clientX - dragging.offsetX;
 			var top = e.clientY - dragging.offsetY;
-			var loc = dragging.loc = {};
-			if (left < window.innerWidth / 2) loc.left = left;
-			else loc.right = window.innerWidth - $element[0].offsetWidth - left;
-			if (top < window.innerHeight / 2) loc.top = top;
-			else loc.bottom = window.innerHeight - $element[0].offsetHeight - top;
-			locate(loc);
+			position = {};
+			if (left < window.innerWidth / 2) position.left = left;
+			else position.right = window.innerWidth - $element[0].offsetWidth - left;
+			if (top < window.innerHeight / 2) position.top = top;
+			else position.bottom = window.innerHeight - $element[0].offsetHeight - top;
+			locate();
 		};
 		var moveMenuEnd = function (e) {
-			settings.set('menuLocation', dragging.loc);
+			settings.set('menuLocation', position);
 			dragging = null;
 			angular.element(document)
 				.off('mousemove', moveMenu)
@@ -118,15 +119,33 @@ angular.module('app', ['ngAnimate'])
 					.on('mouseup', moveMenuEnd);
 			}
 		});
-		locate(settings.get('menuLocation', {left: 20, bottom: 20}));
-		var menuShrink = function () {
-			$scope.menuExpanded = false;
+		var expandMenu = function() {
+			function update(shrink) {
+				angular.forEach(children, function (ele, i) {
+					style[key] = shrink ? 0 : (i + 1) * 50 - 20 + 'px';
+					angular.element(ele).css(style);
+				});
+			}
+			var style = {
+				left: 'auto',
+				right: 'auto',
+			};
+			var key = 'left' in position ? 'left' : 'right';
+			var children = document.querySelector('.menu-expand').children;
+			update(true);
+			setTimeout(update, 0);
+			shrinkMenu = function () {
+				update(true);
+				$scope.menuExpanded = false;
+				shrinkMenu = null;
+			};
+			blurFactory.add($element[0], shrinkMenu);
+			$scope.menuExpanded = true;
 		};
+		var shrinkMenu;
 		$scope.menuExpand = function () {
-			if ($scope.menuExpanded = !$scope.menuExpanded)
-				blurFactory.add($element[0], menuShrink);
-			else
-				menuShrink();
+			if (shrinkMenu) shrinkMenu();
+			else expandMenu();
 		};
 		$scope.importFromChrome = function () {
 			if (!$scope.importing) {
@@ -136,9 +155,7 @@ angular.module('app', ['ngAnimate'])
 				});
 			}
 		};
-		angular.forEach(document.querySelector('.menu-expand').children, function (ele, i) {
-			ele.style.left = (i + 1) * 50 + 'px';
-		});
+		locate();
 		// XXX
 		$scope.loadWebsite = function () {
 			alert('We do not have a website yet!');

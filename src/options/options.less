@@ -142,12 +142,13 @@ body {
 .menu {
 	position: fixed;
 	height: @menu-height;
+	width: @menu-height;
 	z-index: 100;
 }
 .menu-expand {
 	transition: all .5s;
 	position: absolute;
-	left: 0;
+	left: 50%;
 	top: 0;
 }
 .menu-button {
@@ -167,7 +168,6 @@ body {
 	text-align: center;
 	transition: all .5s;
 	.ng-hide & {
-		left: 0 !important;
 		opacity: 0;
 	}
 	&:not(:hover) {
