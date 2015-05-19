@@ -1,3 +1,5 @@
+!function(){
+
 var _ = chrome.i18n.getMessage;
 
 function initDb(callback) {
@@ -495,3 +497,5 @@ function updateOptions(data) {
 		}
 	}
 }
+
+}();

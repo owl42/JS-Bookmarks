@@ -1,3 +1,4 @@
+!function(){
 function safeHTML(s) {
 	return s.replace(/[&<]/g, function (m) {
 		return {
@@ -87,3 +88,4 @@ getTabData();
 Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(node) {
 	node.innerHTML = _(node.dataset.i18n);
 });
+}();

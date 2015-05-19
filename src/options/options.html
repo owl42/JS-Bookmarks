@@ -5,8 +5,10 @@
 		<title ng-bind="::_('titlePage')"></title>
 		<link rel="stylesheet" type="text/css" href="../lib/angular-csp.css" />
 		<link rel="stylesheet" type="text/css" href="../lib/font-awesome/font-awesome.min.css" />
+		<!-- options:css -->
 		<link rel="stylesheet/less" type="text/css" href="options.less" />
 		<script src="../lib/less.min.js"></script>
+		<!-- endinject -->
 		<script src="../lib/angular.min.js"></script>
 		<script src="../lib/angular-animate.min.js"></script>
 	</head>
@@ -22,7 +24,9 @@
 				<a class="menu-button menu-words menu-import-chrome" ng-click="importFromChrome()" ng-disabled="importing">{{importing?_('buttonImportingFromChrome'):_('buttonImportFromChrome')}}</a>
 			</div>
 		</div>
+		<!-- options:js -->
 		<script src="options.js"></script>
 		<script src="utils.js"></script>
+		<!-- endinject -->
 	</body>
 </html>

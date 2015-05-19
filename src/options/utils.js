@@ -622,7 +622,7 @@ angular.module('app')
 				getindex: '&',
 				moved: '&',
 			},
-			controller: function($scope, $element) {
+			controller: ['$scope', '$element', function($scope, $element) {
 				var dragging = {}, children;
 				function mousemove(e) {
 					dragging.node.css({
@@ -669,7 +669,7 @@ angular.module('app')
 						.on('mousemove', mousemove)
 						.on('mouseup', mouseup);
 				};
-			},
+			}],
 		};
 	})
 	.directive('nested', function () {
