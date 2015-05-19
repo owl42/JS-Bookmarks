@@ -79,7 +79,9 @@ gulp.task('build-assets', ['inject-html'], function() {
 gulp.task('copy-files', function() {
 	return gulp.src([
 		'src/_locales/**/*',
-		'src/images/*',
+		'src/images/*.png',
+		'src/images/star.svg',
+		'src/images/unstar.svg',
 		'src/*',
 		'src/lib/**/*',
 		'!src/lib/less.min.js',
